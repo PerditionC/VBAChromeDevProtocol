@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "EventMetadata"
 ' BackgroundService.EventMetadata
 ' A key-value pair for additional event information to pass along.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public key AS string
 Public value AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpBackgroundServiceEventMetada
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let key = CStr(obj.Item("key"))
     Let value = CStr(obj.Item("value"))

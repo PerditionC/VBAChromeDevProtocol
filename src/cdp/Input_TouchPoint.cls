@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "TouchPoint"
 ' Input.TouchPoint
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -67,6 +68,7 @@ Public twist AS integer
 Public id AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpInputTouchPoint
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let x = CDbl(obj.Item("x"))
     Let y = CDbl(obj.Item("y"))

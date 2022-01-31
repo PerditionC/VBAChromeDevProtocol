@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Rect"
 ' DOM.Rect
 ' Rectangle.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -29,6 +30,7 @@ Public width AS Double
 Public height AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMRect
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let x = CDbl(obj.Item("x"))
     Let y = CDbl(obj.Item("y"))

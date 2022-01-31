@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Value"
 ' CSS.Value
 ' Data for a simple selector (these are delimited by commas in a selector list).
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -22,6 +23,7 @@ Public text AS string
 Public range AS cdpCSSSourceRange
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSValue
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let text = CStr(obj.Item("text"))
     If obj.Exists("range") Then

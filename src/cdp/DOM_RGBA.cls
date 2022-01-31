@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "RGBA"
 ' DOM.RGBA
 ' A structure holding an RGBA color.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -30,6 +31,7 @@ Public b AS integer
 Public a AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMRGBA
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let r = CInt(obj.Item("r"))
     Let g = CInt(obj.Item("g"))

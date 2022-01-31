@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "SamplingProfileNode"
 ' Memory.SamplingProfileNode
 ' Heap profile sample.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public total AS Double
 Public stack AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpMemorySamplingProfileNode
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let size = CDbl(obj.Item("size"))

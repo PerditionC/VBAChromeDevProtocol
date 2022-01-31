@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PropertyPreview"
 ' Runtime.PropertyPreview
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -36,6 +37,7 @@ Public valuePreview AS cdpRuntimeObjectPreview
 Public subtype AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimePropertyPreview
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     Let fieldType = CStr(obj.Item("type"))

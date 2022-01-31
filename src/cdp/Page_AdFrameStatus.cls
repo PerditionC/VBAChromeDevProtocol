@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AdFrameStatus"
 ' Page.AdFrameStatus
 ' Indicates whether a frame has been identified as an ad and why.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -22,6 +23,7 @@ Public adFrameType AS string
 Public explanations AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpPageAdFrameStatus
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let adFrameType = CStr(obj.Item("adFrameType"))

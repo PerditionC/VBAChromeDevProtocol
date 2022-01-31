@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "FontSizes"
 ' Page.FontSizes
 ' Default font sizes.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -23,6 +24,7 @@ Public standard AS integer
 Public fixed AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpPageFontSizes
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("standard") Then Let standard = CInt(obj.Item("standard"))
     If obj.Exists("fixed") Then Let fixed = CInt(obj.Item("fixed"))

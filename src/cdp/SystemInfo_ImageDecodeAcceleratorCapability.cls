@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ImageDecodeAcceleratorCapability"
 ' SystemInfo.ImageDecodeAcceleratorCapability
 ' Describes a supported image decoding profile with its associated minimum and
 '   maximum resolutions and subsampling.
@@ -30,6 +31,7 @@ Public minDimensions AS cdpSystemInfoSize
 Public subsamplings AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpSystemInfoImageDecodeAcceler
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let imageType = CStr(obj.Item("imageType"))

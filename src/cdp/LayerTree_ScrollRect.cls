@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ScrollRect"
 ' LayerTree.ScrollRect
 ' Rectangle where scrolling happens on the main thread.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public rect AS cdpDOMRect
 Public fieldType AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpLayerTreeScrollRect
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set rect = New cdpDOMRect
     rect.init obj.Item("rect")

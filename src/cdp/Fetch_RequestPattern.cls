@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "RequestPattern"
 ' Fetch.RequestPattern
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -29,6 +30,7 @@ Public resourceType AS string
 Public requestStage AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpFetchRequestPattern
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("urlPattern") Then Let urlPattern = CStr(obj.Item("urlPattern"))
     If obj.Exists("resourceType") Then Let resourceType = CStr(obj.Item("resourceType"))

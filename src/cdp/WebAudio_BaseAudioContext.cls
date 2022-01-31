@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "BaseAudioContext"
 ' WebAudio.BaseAudioContext
 ' Protocol object for BaseAudioContext
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -42,6 +43,7 @@ Public maxOutputChannelCount AS Double
 Public sampleRate AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAudioBaseAudioContext
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let contextId = CStr(obj.Item("contextId"))
     Let contextType = CStr(obj.Item("contextType"))

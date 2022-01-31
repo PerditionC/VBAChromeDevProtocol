@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Layer"
 ' LayerTree.Layer
 ' Information about a compositing layer.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -87,6 +88,7 @@ Public scrollRects AS Collection
 Public stickyPositionConstraint AS cdpLayerTreeStickyPositionConst
 
 Public Function init(ByVal obj as Dictionary) As cdpLayerTreeLayer
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let layerId = CStr(obj.Item("layerId"))

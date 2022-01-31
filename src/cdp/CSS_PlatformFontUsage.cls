@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PlatformFontUsage"
 ' CSS.PlatformFontUsage
 ' Information about amount of glyphs that were rendered with given font.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public isCustomFont AS boolean
 Public glyphCount AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSPlatformFontUsage
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let familyName = CStr(obj.Item("familyName"))
     Let isCustomFont = CBool(obj.Item("isCustomFont"))

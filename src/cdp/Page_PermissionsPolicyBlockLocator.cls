@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PermissionsPolicyBlockLocator"
 ' Page.PermissionsPolicyBlockLocator
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public frameId AS string
 Public blockReason AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpPagePermissionsPolicyBlockLo
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let frameId = CStr(obj.Item("frameId"))
     Let blockReason = CStr(obj.Item("blockReason"))

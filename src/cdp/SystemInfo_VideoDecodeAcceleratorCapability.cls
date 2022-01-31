@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "VideoDecodeAcceleratorCapability"
 ' SystemInfo.VideoDecodeAcceleratorCapability
 ' Describes a supported video decoding profile with its associated minimum and
 '   maximum resolutions.
@@ -26,6 +27,7 @@ Public maxResolution AS cdpSystemInfoSize
 Public minResolution AS cdpSystemInfoSize
 
 Public Function init(ByVal obj as Dictionary) As cdpSystemInfoVideoDecodeAcceler
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let profile = CStr(obj.Item("profile"))
     Set maxResolution = New cdpSystemInfoSize

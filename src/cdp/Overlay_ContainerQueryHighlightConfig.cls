@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ContainerQueryHighlightConfig"
 ' Overlay.ContainerQueryHighlightConfig
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public containerQueryContainerHighlightConfig AS cdpOverlayContainerQueryContain
 Public nodeId AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayContainerQueryHighlig
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set containerQueryContainerHighlightConfig = New cdpOverlayContainerQueryContain
     containerQueryContainerHighlightConfig.init obj.Item("containerQueryContainerHighlightConfig")

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "LocationRange"
 ' Debugger.LocationRange
 ' Location range within one script.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public start AS cdpDebuggerScriptPosition
 Public fieldEnd AS cdpDebuggerScriptPosition
 
 Public Function init(ByVal obj as Dictionary) As cdpDebuggerLocationRange
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let scriptId = CStr(obj.Item("scriptId"))
     Set start = New cdpDebuggerScriptPosition

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AXValue"
 ' Accessibility.AXValue
 ' A single computed AX property.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -32,6 +33,7 @@ Public relatedNodes AS Collection
 Public sources AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpAccessibilityAXValue
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let fieldType = CStr(obj.Item("type"))

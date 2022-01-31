@@ -23,7 +23,7 @@ End Function
 
 Private Sub NewClass(ByVal className As String)
     fOut = FreeFile
-    Open ThisWorkbook.Path & "\cdp\" & className & ".cls" For Output As #fOut
+    Open ThisWorkbook.Path & "\..\src\cdp\" & className & ".cls" For Output As #fOut
     WriteStr "VERSION 1.0 CLASS"
     WriteStr "BEGIN"
     WriteStr "  MultiUse = -1  'True"
@@ -35,6 +35,7 @@ Private Sub NewClass(ByVal className As String)
     WriteStr "Attribute VB_Creatable = False"
     WriteStr "Attribute VB_PredeclaredId = False"
     WriteStr "Attribute VB_Exposed = True"
+    WriteStr "Attribute VB_Description = """ & className & """"
     ' code visible in VBA editor starts here
 End Sub
 
@@ -205,7 +206,7 @@ Private Sub NewType(ByVal typeName As String, ByVal domainName As String, typeDe
     'If typeName = "AdFrameStatus" Then Stop
     Dim fTypeOut As Integer
     fTypeOut = FreeFile
-    Open ThisWorkbook.Path & "\cdp\" & domainName & "_" & typeName & ".cls" For Output As #fTypeOut
+    Open ThisWorkbook.Path & "\..\src\cdp\" & domainName & "_" & typeName & ".cls" For Output As #fTypeOut
     Print #fTypeOut, "VERSION 1.0 CLASS"
     Print #fTypeOut, "BEGIN"
     Print #fTypeOut, "  MultiUse = -1  'True"
@@ -218,6 +219,7 @@ Private Sub NewType(ByVal typeName As String, ByVal domainName As String, typeDe
     Print #fTypeOut, "Attribute VB_Creatable = False"
     Print #fTypeOut, "Attribute VB_PredeclaredId = False"
     Print #fTypeOut, "Attribute VB_Exposed = True"
+    Print #fTypeOut, "Attribute VB_Description = """ & typeName & """"
     ' code visible in VBA editor starts here
     Print #fTypeOut, "' " & domainName & "." & typeName
     Print #fTypeOut, "' " & typeDesc
@@ -226,7 +228,7 @@ Private Sub NewType(ByVal typeName As String, ByVal domainName As String, typeDe
     Print #fTypeOut, ""
     
     ' insert prefix code if exists for this type
-    injectFile fTypeOut, ThisWorkbook.Path & "\cdp" & domainName & typeName & "-pre.cls"
+    injectFile fTypeOut, ThisWorkbook.Path & "\..\src\generator\cdp" & domainName & typeName & "-pre.cls"
     
     Dim typeObj As Dictionary
     Dim initStatements As Dictionary: Set initStatements = New Dictionary
@@ -368,6 +370,7 @@ getSubTypeInfo:
             optionalInitArgs = ", Optional ByVal b As AutomateBrowser"
         End If
         Print #fTypeOut, "Public Function init(ByVal obj as Dictionary" & optionalInitArgs & ") As " & classNameTrunc
+        Print #fTypeOut, "Attribute Item.VB_Description = ""Initialize class from Dictionary returned by CDP method."""
         If needsV Then Print #fTypeOut, "    Dim v as Variant"
         Print #fTypeOut, ""
         For Each v In initFromDictStatements.Items
@@ -376,7 +379,7 @@ getSubTypeInfo:
         Print #fTypeOut, ""
         
         ' insert extra init code if exists for this type
-        injectFile fTypeOut, ThisWorkbook.Path & "\cdp" & domainName & typeName & "-init.cls"
+        injectFile fTypeOut, ThisWorkbook.Path & "\..\src\generator\cdp" & domainName & typeName & "-init.cls"
         
         Print #fTypeOut, "    Set init = Me"
         Print #fTypeOut, "End Function"
@@ -406,7 +409,7 @@ getSubTypeInfo:
     End If
     
     ' insert suffix code if exists for this type
-    injectFile fTypeOut, ThisWorkbook.Path & "\cdp" & domainName & typeName & "-post.cls"
+    injectFile fTypeOut, ThisWorkbook.Path & "\..\src\generator\cdp" & domainName & typeName & "-post.cls"
     
     Close #fTypeOut
 End Sub
@@ -449,6 +452,9 @@ Private Function getName(ByVal obj As Dictionary, domainName As String, Optional
         getName = obj("name")
         ' replace names that conflict with VBA ***
         If getName = "close" Then getName = getName & domainName
+        If getName = "resume" Then getName = getName & domainName
+        If getName = "stop" Then getName = getName & domainName
+        
         If getName = "get" Then getName = "getObject"
         If getName = "set" Then getName = "setObject"
         
@@ -591,7 +597,7 @@ End Sub
 ' ***** run me to generate cdp* class files from protocol JSON
 Sub convert()
     Dim content As String
-    content = FileToString(ThisWorkbook.Path & "\protocol.txt")
+    content = FileToString(ThisWorkbook.Path & "\..\src\generator\protocol.txt")
     
     Dim o As Object
     Set o = JsonConverter.ParseJson(content)

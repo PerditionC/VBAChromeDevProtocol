@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "LayoutViewport"
 ' Page.LayoutViewport
 ' Layout viewport position and dimensions.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -29,6 +30,7 @@ Public clientWidth AS integer
 Public clientHeight AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpPageLayoutViewport
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let pageX = CInt(obj.Item("pageX"))
     Let pageY = CInt(obj.Item("pageY"))

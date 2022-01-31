@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "SourceRange"
 ' CSS.SourceRange
 ' Text range within a resource. All numbers are zero-based.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -29,6 +30,7 @@ Public endLine AS integer
 Public endColumn AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSSourceRange
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let startLine = CInt(obj.Item("startLine"))
     Let startColumn = CInt(obj.Item("startColumn"))

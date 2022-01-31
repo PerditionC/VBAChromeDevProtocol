@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ExecutionContextDescription"
 ' Runtime.ExecutionContextDescription
 ' Description of an isolated world.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -37,6 +38,7 @@ Public uniqueId AS string
 Public auxData AS Dictionary
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeExecutionContextDescr
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let id = CInt(obj.Item("id"))
     Let origin = CStr(obj.Item("origin"))

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CertificateSecurityState"
 ' Security.CertificateSecurityState
 ' Details about the security state of the page certificate.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -88,6 +89,7 @@ Public obsoleteSslCipher AS boolean
 Public obsoleteSslSignature AS boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpSecurityCertificateSecurityS
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let protocol = CStr(obj.Item("protocol"))

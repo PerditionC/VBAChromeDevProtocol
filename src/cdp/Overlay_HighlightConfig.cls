@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "HighlightConfig"
 ' Overlay.HighlightConfig
 ' Configuration data for the highlighting of page elements.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -108,6 +109,7 @@ Public contrastAlgorithm AS string
 Public containerQueryContainerHighlightConfig AS cdpOverlayContainerQueryContain
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayHighlightConfig
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("showInfo") Then Let showInfo = CBool(obj.Item("showInfo"))
     If obj.Exists("showStyles") Then Let showStyles = CBool(obj.Item("showStyles"))

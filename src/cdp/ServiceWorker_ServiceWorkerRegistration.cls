@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ServiceWorkerRegistration"
 ' ServiceWorker.ServiceWorkerRegistration
 ' ServiceWorker registration.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public scopeURL AS string
 Public isDeleted AS boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpServiceWorkerServiceWorkerRe
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let registrationId = CStr(obj.Item("registrationId"))
     Let scopeURL = CStr(obj.Item("scopeURL"))

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PermissionsPolicyFeatureState"
 ' Page.PermissionsPolicyFeatureState
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -26,6 +27,7 @@ Public allowed AS boolean
 Public locator AS cdpPagePermissionsPolicyBlockLo
 
 Public Function init(ByVal obj as Dictionary) As cdpPagePermissionsPolicyFeature
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let feature = CStr(obj.Item("feature"))
     Let allowed = CBool(obj.Item("allowed"))

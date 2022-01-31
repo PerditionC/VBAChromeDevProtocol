@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ViolationSetting"
 ' Log.ViolationSetting
 ' Violation configuration setting.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public name AS string
 Public threshold AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpLogViolationSetting
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     Let threshold = CDbl(obj.Item("threshold"))

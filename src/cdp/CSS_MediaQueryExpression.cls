@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "MediaQueryExpression"
 ' CSS.MediaQueryExpression
 ' Media query expression descriptor.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -35,6 +36,7 @@ Public valueRange AS cdpCSSSourceRange
 Public computedLength AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSMediaQueryExpression
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let value = CDbl(obj.Item("value"))
     Let unit = CStr(obj.Item("unit"))

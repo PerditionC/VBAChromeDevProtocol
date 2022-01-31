@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ScreenshotParams"
 ' HeadlessExperimental.ScreenshotParams
 ' Encoding options for a screenshot.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -23,6 +24,7 @@ Public format AS string
 Public quality AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpHeadlessExperimentalScreensh
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("format") Then Let format = CStr(obj.Item("format"))
     If obj.Exists("quality") Then Let quality = CInt(obj.Item("quality"))

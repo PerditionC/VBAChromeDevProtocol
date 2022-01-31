@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "SecurityStateExplanation"
 ' Security.SecurityStateExplanation
 ' An explanation of an factor contributing to the security state.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -42,6 +43,7 @@ Public certificate AS Collection
 Public recommendations AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpSecuritySecurityStateExplana
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let securityState = CStr(obj.Item("securityState"))

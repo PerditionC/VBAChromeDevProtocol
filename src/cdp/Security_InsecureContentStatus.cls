@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "InsecureContentStatus"
 ' Security.InsecureContentStatus
 ' Information about insecure content on the page.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -41,6 +42,7 @@ Public ranInsecureContentStyle AS string
 Public displayedInsecureContentStyle AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpSecurityInsecureContentStatu
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let ranMixedContent = CBool(obj.Item("ranMixedContent"))
     Let displayedMixedContent = CBool(obj.Item("displayedMixedContent"))

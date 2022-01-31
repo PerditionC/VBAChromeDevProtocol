@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ServiceWorkerVersion"
 ' ServiceWorker.ServiceWorkerVersion
 ' ServiceWorker version.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -54,6 +55,7 @@ Public controlledClients AS Collection
 Public targetId AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpServiceWorkerServiceWorkerVe
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let versionId = CStr(obj.Item("versionId"))

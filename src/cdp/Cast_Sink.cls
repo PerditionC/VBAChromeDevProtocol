@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Sink"
 ' Cast.Sink
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -27,6 +28,7 @@ Public id AS string
 Public session AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpCastSink
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     Let id = CStr(obj.Item("id"))

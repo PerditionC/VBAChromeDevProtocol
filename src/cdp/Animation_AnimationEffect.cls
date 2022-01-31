@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AnimationEffect"
 ' Animation.AnimationEffect
 ' AnimationEffect instance
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -55,6 +56,7 @@ Public keyframesRule AS cdpAnimationKeyframesRule
 Public easing AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpAnimationAnimationEffect
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let delay = CDbl(obj.Item("delay"))
     Let endDelay = CDbl(obj.Item("endDelay"))

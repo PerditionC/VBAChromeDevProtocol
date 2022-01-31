@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "StackTraceId"
 ' Runtime.StackTraceId
 ' If `debuggerId` is set stack trace comes from another debugger and can be resolved there. This
 '   allows to track cross-debugger calls. See `Runtime.StackTrace` and `Debugger.paused` for usages.
@@ -23,6 +24,7 @@ Public id AS string
 Public debuggerId AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeStackTraceId
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let id = CStr(obj.Item("id"))
     If obj.Exists("debuggerId") Then Let debuggerId = CStr(obj.Item("debuggerId"))

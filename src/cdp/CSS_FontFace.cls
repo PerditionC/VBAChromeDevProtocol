@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "FontFace"
 ' CSS.FontFace
 ' Properties of a web font: https://www.w3.org/TR/2008/REC-CSS2-20080411/fonts.html#font-descriptions
 '   and additional information such as platformFontFamily and fontVariationAxes.
@@ -51,6 +52,7 @@ Public platformFontFamily AS string
 Public fontVariationAxes AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSFontFace
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let fontFamily = CStr(obj.Item("fontFamily"))

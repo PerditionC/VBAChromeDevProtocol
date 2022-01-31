@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ContainerQueryContainerHighlightConfig"
 ' Overlay.ContainerQueryContainerHighlightConfig
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -23,6 +24,7 @@ Public containerBorder AS cdpOverlayLineStyle
 Public descendantBorder AS cdpOverlayLineStyle
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayContainerQueryContain
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("containerBorder") Then
         Set containerBorder = New cdpOverlayLineStyle

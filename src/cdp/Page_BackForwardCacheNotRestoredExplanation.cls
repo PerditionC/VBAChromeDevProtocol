@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "BackForwardCacheNotRestoredExplanation"
 ' Page.BackForwardCacheNotRestoredExplanation
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public fieldType AS string
 Public reason AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpPageBackForwardCacheNotResto
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
     Let reason = CStr(obj.Item("reason"))

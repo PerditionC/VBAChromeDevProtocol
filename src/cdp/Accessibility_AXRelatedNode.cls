@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AXRelatedNode"
 ' Accessibility.AXRelatedNode
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -27,6 +28,7 @@ Public idref AS string
 Public text AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpAccessibilityAXRelatedNode
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let backendDOMNodeId = CInt(obj.Item("backendDOMNodeId"))
     If obj.Exists("idref") Then Let idref = CStr(obj.Item("idref"))

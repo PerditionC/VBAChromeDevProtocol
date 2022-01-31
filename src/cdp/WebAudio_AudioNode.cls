@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AudioNode"
 ' WebAudio.AudioNode
 ' Protocol object for AudioNode
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -45,6 +46,7 @@ Public channelCountMode AS string
 Public channelInterpretation AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAudioAudioNode
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let nodeId = CStr(obj.Item("nodeId"))
     Let contextId = CStr(obj.Item("contextId"))

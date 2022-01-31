@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PlayerMessage"
 ' Media.PlayerMessage
 ' Have one type per entry in MediaLogRecord::Type
 '   Corresponds to kMessage
@@ -30,6 +31,7 @@ Public level AS string
 Public message AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpMediaPlayerMessage
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let level = CStr(obj.Item("level"))
     Let message = CStr(obj.Item("message"))

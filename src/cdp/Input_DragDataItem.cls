@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "DragDataItem"
 ' Input.DragDataItem
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -33,6 +34,7 @@ Public title AS string
 Public baseURL AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpInputDragDataItem
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let mimeType = CStr(obj.Item("mimeType"))
     Let data = CStr(obj.Item("data"))

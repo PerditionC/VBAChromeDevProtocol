@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ContextRealtimeData"
 ' WebAudio.ContextRealtimeData
 ' Fields in AudioContext that change in real-time.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -31,6 +32,7 @@ Public callbackIntervalMean AS Double
 Public callbackIntervalVariance AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAudioContextRealtimeData
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let currentTime = CDbl(obj.Item("currentTime"))
     Let renderCapacity = CDbl(obj.Item("renderCapacity"))

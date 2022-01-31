@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AudioListener"
 ' WebAudio.AudioListener
 ' Protocol object for AudioListener
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public listenerId AS string
 Public contextId AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAudioAudioListener
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let listenerId = CStr(obj.Item("listenerId"))
     Let contextId = CStr(obj.Item("contextId"))

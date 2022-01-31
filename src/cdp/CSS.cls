@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "cdpCSS"
 ' CSS [Experimental]
 ' This class is automatically generated, please make changes to generator and not this class directly.
 Option Explicit

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "TraceConfig"
 ' Tracing.TraceConfig
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -53,6 +54,7 @@ Public syntheticDelays AS Collection
 Public memoryDumpConfig AS cdpTracingMemoryDumpConfig
 
 Public Function init(ByVal obj as Dictionary) As cdpTracingTraceConfig
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("recordMode") Then Let recordMode = CStr(obj.Item("recordMode"))

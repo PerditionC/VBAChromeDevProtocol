@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "DOMNode"
 ' DOMSnapshot.DOMNode
 ' A Node in the DOM tree.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -155,6 +156,7 @@ Public scrollOffsetX AS Double
 Public scrollOffsetY AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotDOMNode
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let nodeType = CInt(obj.Item("nodeType"))

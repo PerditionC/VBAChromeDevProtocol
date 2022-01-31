@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Scope"
 ' Debugger.Scope
 ' Scope description.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -38,6 +39,7 @@ Public startLocation AS cdpDebuggerLocation
 Public endLocation AS cdpDebuggerLocation
 
 Public Function init(ByVal obj as Dictionary) As cdpDebuggerScope
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
     Set object = New cdpRuntimeRemoteObject

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CSSProperty"
 ' CSS.CSSProperty
 ' CSS property declaration data.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -51,6 +52,7 @@ Public disabled AS Variant ' boolean
 Public range AS cdpCSSSourceRange
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSCSSProperty
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     Let value = CStr(obj.Item("value"))

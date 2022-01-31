@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Credential"
 ' WebAuthn.Credential
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -49,6 +50,7 @@ Public signCount AS integer
 Public largeBlob AS String
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAuthnCredential
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let credentialId = CStr(obj.Item("credentialId"))
     Let isResidentCredential = CBool(obj.Item("isResidentCredential"))

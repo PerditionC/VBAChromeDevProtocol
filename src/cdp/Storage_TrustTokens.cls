@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "TrustTokens"
 ' Storage.TrustTokens
 ' Pair of issuer origin and number of available (signed, but not used) Trust
 '   Tokens from that issuer.
@@ -22,6 +23,7 @@ Public issuerOrigin AS string
 Public count AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpStorageTrustTokens
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let issuerOrigin = CStr(obj.Item("issuerOrigin"))
     Let count = CDbl(obj.Item("count"))

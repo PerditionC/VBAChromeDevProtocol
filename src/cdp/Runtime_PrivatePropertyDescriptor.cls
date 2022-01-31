@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PrivatePropertyDescriptor"
 ' Runtime.PrivatePropertyDescriptor
 ' Object private field descriptor.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -34,6 +35,7 @@ Public getObject AS cdpRuntimeRemoteObject
 Public setObject AS cdpRuntimeRemoteObject
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimePrivatePropertyDescri
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     If obj.Exists("value") Then

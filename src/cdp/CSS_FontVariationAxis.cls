@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "FontVariationAxis"
 ' CSS.FontVariationAxis
 ' Information about font variation axes for variable fonts
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -33,6 +34,7 @@ Public maxValue AS Double
 Public defaultValue AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSFontVariationAxis
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let tag = CStr(obj.Item("tag"))
     Let name = CStr(obj.Item("name"))

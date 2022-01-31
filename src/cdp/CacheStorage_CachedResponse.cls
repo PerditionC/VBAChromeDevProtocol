@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CachedResponse"
 ' CacheStorage.CachedResponse
 ' Cached response
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -17,6 +18,7 @@ Option Explicit
 Public body AS String
 
 Public Function init(ByVal obj as Dictionary) As cdpCacheStorageCachedResponse
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let body = CStr(obj.Item("body"))
 

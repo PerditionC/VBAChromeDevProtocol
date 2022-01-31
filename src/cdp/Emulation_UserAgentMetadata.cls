@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "UserAgentMetadata"
 ' Emulation.UserAgentMetadata
 ' Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
 '   Missing optional values will be filled in by the target with what it would normally use.
@@ -44,6 +45,7 @@ Public model AS string
 Public mobile AS boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpEmulationUserAgentMetadata
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("brands") Then

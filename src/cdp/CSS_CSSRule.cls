@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CSSRule"
 ' CSS.CSSRule
 ' CSS rule representation.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -43,6 +44,7 @@ Public media AS Collection
 Public containerQueries AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSCSSRule
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("styleSheetId") Then Let styleSheetId = CStr(obj.Item("styleSheetId"))

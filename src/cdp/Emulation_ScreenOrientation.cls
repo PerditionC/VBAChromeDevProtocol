@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ScreenOrientation"
 ' Emulation.ScreenOrientation
 ' Screen orientation.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public fieldType AS string
 Public angle AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpEmulationScreenOrientation
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
     Let angle = CInt(obj.Item("angle"))

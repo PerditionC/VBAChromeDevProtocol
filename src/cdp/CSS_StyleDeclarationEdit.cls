@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "StyleDeclarationEdit"
 ' CSS.StyleDeclarationEdit
 ' A descriptor of operation to mutate style declaration text.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public range AS cdpCSSSourceRange
 Public text AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSStyleDeclarationEdit
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let styleSheetId = CStr(obj.Item("styleSheetId"))
     Set range = New cdpCSSSourceRange

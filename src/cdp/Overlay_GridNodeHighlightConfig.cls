@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "GridNodeHighlightConfig"
 ' Overlay.GridNodeHighlightConfig
 ' Configurations for Persistent Grid Highlight
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public gridHighlightConfig AS cdpOverlayGridHighlightConfig
 Public nodeId AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayGridNodeHighlightConf
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set gridHighlightConfig = New cdpOverlayGridHighlightConfig
     gridHighlightConfig.init obj.Item("gridHighlightConfig")

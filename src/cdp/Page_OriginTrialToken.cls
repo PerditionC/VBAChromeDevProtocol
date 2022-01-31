@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "OriginTrialToken"
 ' Page.OriginTrialToken
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -37,6 +38,7 @@ Public isThirdParty AS boolean
 Public usageRestriction AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpPageOriginTrialToken
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let origin = CStr(obj.Item("origin"))
     Let matchSubDomains = CBool(obj.Item("matchSubDomains"))

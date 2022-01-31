@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ProfileNode"
 ' Profiler.ProfileNode
 ' Profile node. Holds callsite information, execution statistics and child nodes.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -42,6 +43,7 @@ Public deoptReason AS string
 Public positionTicks AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerProfileNode
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let id = CInt(obj.Item("id"))

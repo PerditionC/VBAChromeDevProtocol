@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Size"
 ' SystemInfo.Size
 ' Describes the width and height dimensions of an entity.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public width AS integer
 Public height AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpSystemInfoSize
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let width = CInt(obj.Item("width"))
     Let height = CInt(obj.Item("height"))

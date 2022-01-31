@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "StackTrace"
 ' Runtime.StackTrace
 ' Call frames for assertions or error messages.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -33,6 +34,7 @@ Public parent AS cdpRuntimeStackTrace
 Public parentId AS cdpRuntimeStackTraceId
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeStackTrace
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("description") Then Let description = CStr(obj.Item("description"))

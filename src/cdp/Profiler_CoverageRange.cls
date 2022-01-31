@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CoverageRange"
 ' Profiler.CoverageRange
 ' Coverage data for a source range.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public endOffset AS integer
 Public count AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerCoverageRange
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let startOffset = CInt(obj.Item("startOffset"))
     Let endOffset = CInt(obj.Item("endOffset"))

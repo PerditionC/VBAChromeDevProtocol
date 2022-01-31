@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "GridHighlightConfig"
 ' Overlay.GridHighlightConfig
 ' Configuration data for the highlighting of Grid elements.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -113,6 +114,7 @@ Public areaBorderColor AS cdpDOMRGBA
 Public gridBackgroundColor AS cdpDOMRGBA
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayGridHighlightConfig
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("showGridExtensionLines") Then Let showGridExtensionLines = CBool(obj.Item("showGridExtensionLines"))
     If obj.Exists("showPositiveLineNumbers") Then Let showPositiveLineNumbers = CBool(obj.Item("showPositiveLineNumbers"))

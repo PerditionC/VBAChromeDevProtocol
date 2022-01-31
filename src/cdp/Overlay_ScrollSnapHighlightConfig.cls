@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ScrollSnapHighlightConfig"
 ' Overlay.ScrollSnapHighlightConfig
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public scrollSnapContainerHighlightConfig AS cdpOverlayScrollSnapContainerHi
 Public nodeId AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayScrollSnapHighlightCo
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set scrollSnapContainerHighlightConfig = New cdpOverlayScrollSnapContainerHi
     scrollSnapContainerHighlightConfig.init obj.Item("scrollSnapContainerHighlightConfig")

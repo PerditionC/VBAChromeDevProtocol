@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Error"
 ' Database.Error
 ' Database error.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public message AS string
 Public code AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpDatabaseError
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let message = CStr(obj.Item("message"))
     Let code = CInt(obj.Item("code"))

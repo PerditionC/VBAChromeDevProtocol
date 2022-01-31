@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PseudoElementMatches"
 ' CSS.PseudoElementMatches
 ' CSS rule collection for a single pseudo style.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public pseudoType AS string
 Public matches AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSPseudoElementMatches
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let pseudoType = CStr(obj.Item("pseudoType"))

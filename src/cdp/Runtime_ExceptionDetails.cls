@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "ExceptionDetails"
 ' Runtime.ExceptionDetails
 ' Detailed information about exception (or error) that was thrown during script compilation or
 '   execution.
@@ -62,6 +63,7 @@ Public executionContextId AS integer
 Public exceptionMetaData AS Dictionary
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeExceptionDetails
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let exceptionId = CInt(obj.Item("exceptionId"))
     Let text = CStr(obj.Item("text"))

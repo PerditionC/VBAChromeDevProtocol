@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "DocumentSnapshot"
 ' DOMSnapshot.DocumentSnapshot
 ' Document snapshot.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -77,6 +78,7 @@ Public contentWidth AS Double
 Public contentHeight AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotDocumentSnapshot
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let documentURL = CInt(obj.Item("documentURL"))
     Let title = CInt(obj.Item("title"))

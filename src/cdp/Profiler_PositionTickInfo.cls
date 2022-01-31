@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PositionTickInfo"
 ' Profiler.PositionTickInfo
 ' Specifies a number of samples attributed to a certain source position.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public line AS integer
 Public ticks AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerPositionTickInfo
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let line = CInt(obj.Item("line"))
     Let ticks = CInt(obj.Item("ticks"))

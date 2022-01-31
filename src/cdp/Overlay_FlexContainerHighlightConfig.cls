@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "FlexContainerHighlightConfig"
 ' Overlay.FlexContainerHighlightConfig
 ' Configuration data for the highlighting of Flex container elements.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -53,6 +54,7 @@ Public columnGapSpace AS cdpOverlayBoxStyle
 Public crossAlignment AS cdpOverlayLineStyle
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayFlexContainerHighligh
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("containerBorder") Then
         Set containerBorder = New cdpOverlayLineStyle

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "KeyframesRule"
 ' Animation.KeyframesRule
 ' Keyframes Rule
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -22,6 +23,7 @@ Public name AS string
 Public keyframes AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpAnimationKeyframesRule
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("name") Then Let name = CStr(obj.Item("name"))

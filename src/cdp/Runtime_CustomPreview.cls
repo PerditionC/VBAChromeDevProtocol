@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CustomPreview"
 ' Runtime.CustomPreview
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public header AS string
 Public bodyGetterId AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeCustomPreview
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let header = CStr(obj.Item("header"))
     If obj.Exists("bodyGetterId") Then Let bodyGetterId = CStr(obj.Item("bodyGetterId"))

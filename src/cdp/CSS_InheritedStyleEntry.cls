@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "InheritedStyleEntry"
 ' CSS.InheritedStyleEntry
 ' Inherited CSS rule collection from ancestor node.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -22,6 +23,7 @@ Public inlineStyle AS cdpCSSCSSStyle
 Public matchedCSSRules AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSInheritedStyleEntry
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     If obj.Exists("inlineStyle") Then

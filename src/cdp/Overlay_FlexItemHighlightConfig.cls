@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "FlexItemHighlightConfig"
 ' Overlay.FlexItemHighlightConfig
 ' Configuration data for the highlighting of Flex item elements.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -28,6 +29,7 @@ Public baseSizeBorder AS cdpOverlayLineStyle
 Public flexibilityArrow AS cdpOverlayLineStyle
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayFlexItemHighlightConf
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("baseSizeBox") Then
         Set baseSizeBox = New cdpOverlayBoxStyle

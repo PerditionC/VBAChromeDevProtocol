@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "PermissionDescriptor"
 ' Browser.PermissionDescriptor
 ' Definition of PermissionDescriptor defined in the Permissions API:
 '   https://w3c.github.io/permissions/#dictdef-permissiondescriptor.
@@ -40,6 +41,7 @@ Public allowWithoutSanitization AS Variant ' boolean
 Public panTiltZoom AS Variant ' boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpBrowserPermissionDescriptor
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     If obj.Exists("sysex") Then Let sysex = CBool(obj.Item("sysex"))

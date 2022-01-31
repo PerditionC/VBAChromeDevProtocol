@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "TextBoxSnapshot"
 ' DOMSnapshot.TextBoxSnapshot
 ' Table of details of the post layout rendered text positions. The exact layout should not be regarded as
 '   stable and may change between versions.
@@ -32,6 +33,7 @@ Public start AS Collection
 Public length AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotTextBoxSnapshot
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     For each v in obj.Item("layoutIndex")

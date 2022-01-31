@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "OriginTrial"
 ' Page.OriginTrial
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public status AS string
 Public tokensWithStatus AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpPageOriginTrial
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let trialName = CStr(obj.Item("trialName"))

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AuthChallenge"
 ' Fetch.AuthChallenge
 ' Authorization challenge for HTTP status code 401 or 407.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -30,6 +31,7 @@ Public scheme AS string
 Public realm AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpFetchAuthChallenge
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("source") Then Let source = CStr(obj.Item("source"))
     Let origin = CStr(obj.Item("origin"))

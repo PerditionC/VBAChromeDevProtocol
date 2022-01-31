@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "DebugSymbols"
 ' Debugger.DebugSymbols
 ' Debug symbols available for a wasm script.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -22,6 +23,7 @@ Public fieldType AS string
 Public externalURL AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpDebuggerDebugSymbols
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
     If obj.Exists("externalURL") Then Let externalURL = CStr(obj.Item("externalURL"))

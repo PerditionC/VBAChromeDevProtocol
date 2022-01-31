@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "CompilationCacheParams"
 ' Page.CompilationCacheParams
 ' Per-script compilation cache parameters for `Page.produceCompilationCache`
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -23,6 +24,7 @@ Public url AS string
 Public eager AS Variant ' boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpPageCompilationCacheParams
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let url = CStr(obj.Item("url"))
     If obj.Exists("eager") Then Let eager = CBool(obj.Item("eager"))

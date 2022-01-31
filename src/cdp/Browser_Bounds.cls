@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Bounds"
 ' Browser.Bounds
 ' Browser window bounds information
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -38,6 +39,7 @@ Public height AS integer
 Public windowState AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpBrowserBounds
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("left") Then Let left = CInt(obj.Item("left"))
     If obj.Exists("top") Then Let top = CInt(obj.Item("top"))

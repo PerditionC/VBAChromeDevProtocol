@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "HingeConfig"
 ' Overlay.HingeConfig
 ' Configuration for dual screen hinge
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -27,6 +28,7 @@ Public contentColor AS cdpDOMRGBA
 Public outlineColor AS cdpDOMRGBA
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayHingeConfig
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set rect = New cdpDOMRect
     rect.init obj.Item("rect")

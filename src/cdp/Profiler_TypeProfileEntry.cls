@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "TypeProfileEntry"
 ' Profiler.TypeProfileEntry
 ' Source offset and types for a parameter or return value.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public offset AS integer
 Public types AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerTypeProfileEntry
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let offset = CInt(obj.Item("offset"))

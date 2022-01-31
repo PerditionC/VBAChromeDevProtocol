@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "KeyframeStyle"
 ' Animation.KeyframeStyle
 ' Keyframe Style
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public offset AS string
 Public easing AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpAnimationKeyframeStyle
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let offset = CStr(obj.Item("offset"))
     Let easing = CStr(obj.Item("easing"))

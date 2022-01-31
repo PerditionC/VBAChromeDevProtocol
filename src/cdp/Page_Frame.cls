@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Frame"
 ' Page.Frame
 ' Information about the Frame on the page.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -77,6 +78,7 @@ Public crossOriginIsolatedContextType AS string
 Public gatedAPIFeatures AS Collection
 
 Public Function init(ByVal obj as Dictionary) As cdpPageFrame
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     Let id = CStr(obj.Item("id"))

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Cache"
 ' CacheStorage.Cache
 ' Cache identifier.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -25,6 +26,7 @@ Public securityOrigin AS string
 Public cacheName AS string
 
 Public Function init(ByVal obj as Dictionary) As cdpCacheStorageCache
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let cacheId = CStr(obj.Item("cacheId"))
     Let securityOrigin = CStr(obj.Item("securityOrigin"))

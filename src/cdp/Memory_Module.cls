@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Module"
 ' Memory.Module
 ' Executable module information
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -30,6 +31,7 @@ Public baseAddress AS string
 Public size AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpMemoryModule
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let name = CStr(obj.Item("name"))
     Let uuid = CStr(obj.Item("uuid"))

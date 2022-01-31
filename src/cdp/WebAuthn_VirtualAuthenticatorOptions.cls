@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "VirtualAuthenticatorOptions"
 ' WebAuthn.VirtualAuthenticatorOptions
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -62,6 +63,7 @@ Public automaticPresenceSimulation AS Variant ' boolean
 Public isUserVerified AS Variant ' boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpWebAuthnVirtualAuthenticator
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let protocol = CStr(obj.Item("protocol"))
     If obj.Exists("ctap2Version") Then Let ctap2Version = CStr(obj.Item("ctap2Version"))

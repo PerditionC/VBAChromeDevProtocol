@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "VisualViewport"
 ' Page.VisualViewport
 ' Visual viewport position, dimensions, and scale.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -46,6 +47,7 @@ Public fieldScale AS Double
 Public zoom AS Double
 
 Public Function init(ByVal obj as Dictionary) As cdpPageVisualViewport
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let offsetX = CDbl(obj.Item("offsetX"))
     Let offsetY = CDbl(obj.Item("offsetY"))

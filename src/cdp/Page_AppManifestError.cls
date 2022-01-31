@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "AppManifestError"
 ' Page.AppManifestError
 ' Error while paring app manifest.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -29,6 +30,7 @@ Public line AS integer
 Public column AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpPageAppManifestError
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let message = CStr(obj.Item("message"))
     Let critical = CInt(obj.Item("critical"))

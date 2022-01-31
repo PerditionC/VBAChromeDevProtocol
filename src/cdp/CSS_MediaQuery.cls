@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "MediaQuery"
 ' CSS.MediaQuery
 ' Media query descriptor.
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -21,6 +22,7 @@ Public expressions AS Collection
 Public active AS boolean
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSMediaQuery
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
     For each v in obj.Item("expressions")

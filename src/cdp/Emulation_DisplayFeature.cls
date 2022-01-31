@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "DisplayFeature"
 ' Emulation.DisplayFeature
 ' 
 ' This class is automatically generated, please make changes to generator and not this class directly.
@@ -28,6 +29,7 @@ Public offset AS integer
 Public maskLength AS integer
 
 Public Function init(ByVal obj as Dictionary) As cdpEmulationDisplayFeature
+Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let orientation = CStr(obj.Item("orientation"))
     Let offset = CInt(obj.Item("offset"))
