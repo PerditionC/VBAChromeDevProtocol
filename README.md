@@ -24,3 +24,5 @@ see Example.xlsm - documentation to be added
 - WinHttpCommon / clsWebSocket : https://github.com/EagleAglow/vba-websocket-class - MIT copyright EagleAglow
 - ClipboardUtils : https://msdn.microsoft.com/en-us/library/office/ff192913.aspx?f=255&MSPPError=-2147217396
 - WinWindowStyle : https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
+
+Testing and enhancements by Jason Pullen and Kenneth J. Davis
