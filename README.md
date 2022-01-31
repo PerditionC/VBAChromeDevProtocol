@@ -5,6 +5,7 @@ Note: if you can use Puppeteer, Playright, Selenium, or some other tool - then u
 But if you can only use VBA, then this is meant to provide a means to automate Chrome or Edge based browsers.  (Possibly Firefox via its limited CDP support, though currently untested/nonfunctional). 
 
 See https://chromedevtools.github.io/devtools-protocol/ for overview of Chrome Devloper Protocol
+
 Initial work based on information and clsEdge from https://www.codeproject.com/Tips/5307593/Automate-Chrome-Edge-using-VBA
 
 ## TODO
