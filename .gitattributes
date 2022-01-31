@@ -1,0 +1,4 @@
+*.xls* -text -diff
+*.xla* -text -diff
+*.bas text diff
+*.cls text diff
