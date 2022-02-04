@@ -16,7 +16,7 @@ Private Declare PtrSafe Function SetClipboardData Lib "user32.dll" (ByVal wForma
 Private Declare PtrSafe Function GlobalAlloc Lib "kernel32.dll" (ByVal wFlags As Long, ByVal dwBytes As Long) As LongPtr
 Private Declare PtrSafe Function GlobalLock Lib "kernel32.dll" (ByVal hMem As LongPtr) As LongPtr
 Private Declare PtrSafe Function GlobalUnlock Lib "kernel32.dll" (ByVal hMem As LongPtr) As LongPtr
-Private Declare PtrSafe Function GlobalSize Lib "kernel32" (ByVal hMem As Long) As Long
+Private Declare PtrSafe Function GlobalSize Lib "kernel32" (ByVal hMem As LongPtr) As Long
 Private Declare PtrSafe Function lstrcpy Lib "kernel32.dll" Alias "lstrcpyW" (ByVal lpString1 As LongPtr, ByVal lpString2 As LongPtr) As Long
 
 Public Sub SetClipboard(sUniText As String)
