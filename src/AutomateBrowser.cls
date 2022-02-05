@@ -667,6 +667,20 @@ Public Sub getNodeCenter(ByRef x As Double, ByRef y As Double, Optional nodeId A
     End If
 End Sub
 
+' attempt to make node the currently focused (active) element
+Public Sub Focus(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional objectId As String = vbNullString)
+    If nodeId <> 0 Then
+        cdp.DOM.Focus nodeId:=nodeId
+        cdp.DOM.scrollIntoViewIfNeeded nodeId:=nodeId
+    ElseIf objectId <> vbNullString Then
+        cdp.DOM.Focus objectId:=objectId
+        cdp.DOM.scrollIntoViewIfNeeded objectId:=objectId
+    Else
+        cdp.DOM.Focus backendNodeId:=backendNodeId
+        cdp.DOM.scrollIntoViewIfNeeded backendNodeId:=backendNodeId
+    End If
+End Sub
+
 ' Simulates a user clicking a node
 ' Note: this follows same algorithm and Selenium and other similar tools as opposed to javascript .click() method that does not always work as expected
 ' Warning: if click opens a new window/tab as opposed to navigating within same page then may return before new page has finished loading - must switch to new session and then wait
@@ -675,13 +689,8 @@ Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integ
     If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
 
     ' first make sure node is visible to click
-    If nodeId <> 0 Then
-        cdp.DOM.focus nodeId:=nodeId
-        cdp.DOM.scrollIntoViewIfNeeded nodeId:=nodeId
-    Else
-        cdp.DOM.focus backendNodeId:=backendNodeId
-        cdp.DOM.scrollIntoViewIfNeeded backendNodeId:=backendNodeId
-    End If
+    Focus nodeId, backendNodeId
+    
     ' then get its center x,y to click
     Dim x As Double, y As Double
     getNodeCenter x, y, nodeId:=nodeId, backendNodeId:=backendNodeId

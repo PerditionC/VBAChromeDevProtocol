@@ -373,6 +373,10 @@ Public Sub click(Optional ByVal strategy As NavigationStrategy = NavigationStrat
     Browser.click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
 End Sub
 
+Public Sub focus()
+    Browser.focus nodeId:=nodeId, backendNodeId:=backendNodeId
+End Sub
+
 Public Sub getCenter(ByRef x As Double, ByRef y As Double)
     Browser.getNodeCenter x, y, nodeId:=nodeId, backendNodeId:=backendNodeId
 End Sub
@@ -499,7 +503,8 @@ Public Sub setValue(ByVal newValue As String, Optional mode As SetNodeValueMode 
             For ndx = 1 To Len(newValue)
                 c = Mid$(newValue, ndx, 1)
                 Browser.cdp.SimulateInput.dispatchKeyEvent "keyDown", Text:=c
-                Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
+                ' doing all three can cause duplicate characters input, char doesn't always work though, so use keyDown/keyUp
+                'Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
                 Browser.cdp.SimulateInput.dispatchKeyEvent "keyUp"
             Next ndx
     End Select
@@ -535,6 +540,11 @@ Public Property Let elementAttribute(ByVal name As String, ByVal value As String
     End If
 End Property
 
+
+' clears our cache so next call to getProperty (or related) retrieves [updated] property values
+Public Sub refreshProperties()
+    Set objectProperties = Nothing
+End Sub
 
 ' returns specified javascript property associated with this node
 ' see Runtime.getProperties
