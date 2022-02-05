@@ -454,6 +454,11 @@ End Function
 
 ' attaches to all children targets/windows not already attached to
 Public Sub attachToChildTargets(Optional waitStrategy As NavigationStrategy = NavigationStrategy.NetworkIdle)
+    ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
+    If waitStrategy = NavigationStrategy.Normal Or waitStrategy = NavigationStrategy.eager Then cdp.Page.enable
+    ' we need to ensure Network events are enabled so we can see when network activity has subsided
+    If waitStrategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
+    
     Dim children As Collection, v As Variant
     Set children = getChildTargets()
     For Each v In children
@@ -503,7 +508,14 @@ Private Function waitForPageToLoad(strategy As NavigationStrategy, Optional sess
                 Exit Do
             End If
         Loop While True
-        Debug.Print mainSession.pendingNetworkRequests()
+        'Debug.Print mainSession.pendingNetworkRequests()
+        
+        ' turn off events
+        ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
+        'If strategy = NavigationStrategy.Normal Or strategy = NavigationStrategy.eager Then cdp.Page.disable
+        ' we need to ensure Network events are enabled so we can see when network activity has subsided
+        If strategy = NavigationStrategy.NetworkIdle Then cdp.Network.disable
+        
         ' reset for next wait
         session.eventFrameStoppedLoading = False
         session.eventDomContentEventFired = False
@@ -520,10 +532,12 @@ Public Function navigate( _
     Optional ByVal referrerPolicy As Variant, _
     Optional strategy As NavigationStrategy = NavigationStrategy.Normal _
 ) As Dictionary
-    ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
-    If strategy = NavigationStrategy.Normal Or strategy = NavigationStrategy.eager Then cdp.Page.enable
     ' reset flag for window open event
     If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
+    ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
+    If strategy = NavigationStrategy.Normal Or strategy = NavigationStrategy.eager Then cdp.Page.enable
+    ' we need to ensure Network events are enabled so we can see when network activity has subsided
+    If strategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
     
     Set navigate = cdp.Page.navigate(url, referrer, transitionType, frameId, referrerPolicy)
     
@@ -656,7 +670,7 @@ End Sub
 ' Simulates a user clicking a node
 ' Note: this follows same algorithm and Selenium and other similar tools as opposed to javascript .click() method that does not always work as expected
 ' Warning: if click opens a new window/tab as opposed to navigating within same page then may return before new page has finished loading - must switch to new session and then wait
-Public Sub click(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None)
+Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None)
     ' reset flag for window open event
     If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
 
@@ -674,6 +688,8 @@ Public Sub click(Optional nodeId As Integer = 0, Optional backendNodeId As Integ
     If cdp.ErrorCode = 0 Then
         ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
         If strategy = NavigationStrategy.Normal Or strategy = NavigationStrategy.eager Then cdp.Page.enable
+        ' we need to ensure Network events are enabled so we can see when network activity has subsided
+        If strategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
     
         ' now simulate click via mouse button press down and up
         cdp.SimulateInput.dispatchMouseEvent "mousePressed", x, y, button:="left", clickCount:=1

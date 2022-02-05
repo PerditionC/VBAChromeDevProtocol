@@ -549,7 +549,8 @@ Private Sub enableSessionEvents(ByVal sessionId As String)
         
         ' used to track network connections
         ' must be enabled if wait for networkidle
-        Network.enable
+        ' this causes too many events to skip on websites that have background connections, so we enable/disable on navigate/click and waitForPageToLoad explicitly
+        'Network.enable
         
         ' automatically attach to related targets, avoids need to manually attach to target if new window opened
         ' can be enabled or disabled as desired, but if disabled then must manually attach to any new targets (new windows)
