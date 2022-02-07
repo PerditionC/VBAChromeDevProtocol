@@ -104,7 +104,7 @@ Public Function processEvent(ByVal eventName As String, ByVal eventData As Dicti
     Select Case eventName
         Case "Page.frameStartedLoading"
             session.eventFrameStoppedLoading = False
-            session.eventDomContentEventFired = False
+            'session.eventDomContentEventFired = False ' can arrive out of order, ie DomContentEventFired before frameStartLoading
             If params.Exists("frameId") Then
                 frameId = params("frameId")
                 session.framesLoading.Item(frameId) = "loading" ' add or replace, value is arbitrary and currently unused
@@ -454,11 +454,6 @@ End Function
 
 ' attaches to all children targets/windows not already attached to
 Public Sub attachToChildTargets(Optional waitStrategy As NavigationStrategy = NavigationStrategy.NetworkIdle)
-    ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
-    If waitStrategy = NavigationStrategy.Normal Or waitStrategy = NavigationStrategy.eager Then cdp.Page.enable
-    ' we need to ensure Network events are enabled so we can see when network activity has subsided
-    If waitStrategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
-    
     Dim children As Collection, v As Variant
     Set children = getChildTargets()
     For Each v In children
@@ -493,12 +488,18 @@ End Sub
 Private Function waitForPageToLoad(strategy As NavigationStrategy, Optional session As clsSessionInfo)
     If session Is Nothing Then Set session = curSession
     
+    ' ensure events are enabled on specified session so we can transition
+    Dim oldSessionId As String: oldSessionId = curSession.sessionId: curSession.sessionId = session.sessionId
+    If strategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
+    If strategy = NavigationStrategy.Normal Then cdp.Page.enable
+    If strategy = NavigationStrategy.eager Or strategy = NavigationStrategy.Normal Then cdp.DOM.enable
+    
     If strategy <> NavigationStrategy.None Then
         ' wait
         Dim maxWait As Date: maxWait = DateAdd("s", maxWaitSeconds, Now)
         Do
             cdp.peakMessage
-            If strategy = NavigationStrategy.NetworkIdle And (session.pendingNetworkRequests() < 2) Then Exit Do ' no recent network activity
+            If strategy = NavigationStrategy.NetworkIdle And (session.pendingNetworkRequests() < 1) Then Exit Do ' no recent network activity
             If strategy = NavigationStrategy.Normal And session.eventFrameStoppedLoading And session.eventDomContentEventFired Then Exit Do ' all frames stopped loading and domcontent done
             If strategy = NavigationStrategy.eager And session.eventDomContentEventFired Then Exit Do ' some frames may still be loading or additional resources, but domcontent done
             If strategy = NavigationStrategy.WindowOpen And session.windowOpenEventOccurred Then Exit Do
@@ -509,6 +510,9 @@ Private Function waitForPageToLoad(strategy As NavigationStrategy, Optional sess
             End If
         Loop While True
         'Debug.Print mainSession.pendingNetworkRequests()
+        
+        Sleep 0.5 ' give page a little bit longer to stabilize
+        cdp.peakMessage ' process any last minute messages
         
         ' turn off events
         ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
@@ -521,6 +525,9 @@ Private Function waitForPageToLoad(strategy As NavigationStrategy, Optional sess
         session.eventDomContentEventFired = False
         session.windowOpenEventOccurred = False
     End If
+    
+    ' restore sessionId
+    curSession.sessionId = oldSessionId
 End Function
 
 ' goto specified url
@@ -533,7 +540,11 @@ Public Function navigate( _
     Optional strategy As NavigationStrategy = NavigationStrategy.Normal _
 ) As Dictionary
     ' reset flag for window open event
-    If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
+    If Not curSession Is Nothing Then
+        'curSession.eventFrameStoppedLoading = False
+        curSession.eventDomContentEventFired = False
+        curSession.windowOpenEventOccurred = False
+    End If
     ' we need to ensure Page events are enabled so we can get notified of load complete or dom complete events
     If strategy = NavigationStrategy.Normal Or strategy = NavigationStrategy.eager Then cdp.Page.enable
     ' we need to ensure Network events are enabled so we can see when network activity has subsided
@@ -886,16 +897,23 @@ End Function
 ' if frameId = "" then assumes executing in main document context
 ' rootId is unused if frameId is specified
 Public Function querySelector(ByVal selector As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
-                              Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
-    Dim nodeId As Integer, dict As Dictionary
+                              Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
+    On Error GoTo errHandler
+    Dim maxRetries As Long: maxRetries = 60 * 5 ' we sleep for second after each retry, don't try longer than 5 minutes
+    
+    Do
+    Dim nodeId As Integer, docRootId As Integer, dict As Dictionary
     If frameId = vbNullString Then
         ' if no base element provided, use the document root of current target
+        ' Note: we store in docRootId instead of updating rootId as if we need to retry, document may not be fully loaded so we may need to reget Document()
         If rootId < 1 Then
-            rootId = Document().nodeId
+            docRootId = Document().nodeId
+        Else
+            docRootId = rootId
         End If
         ' using either provided nodeId or document nodeId, run querySelector; but return Nothing if no base element
-        If rootId > 0 Then
-            nodeId = cdp.DOM.querySelector(rootId, selector)
+        If docRootId > 0 Then
+            nodeId = cdp.DOM.querySelector(docRootId, selector)
             If nodeId > 0 Then Set querySelector = getDomNode(nodeId, depth:=depth, pierce:=pierce)
         End If
     Else
@@ -916,6 +934,17 @@ Public Function querySelector(ByVal selector As String, Optional ByVal rootId As
             End If
         End If
     End If
+    If waitUntilFound And (querySelector Is Nothing) Then
+        maxRetries = maxRetries - 1
+        Debug.Print "Try " & (60 * 5) - maxRetries
+        Sleep 1
+    End If
+    Loop While (querySelector Is Nothing) And waitUntilFound And (maxRetries > 0)
+    Exit Function
+errHandler:
+    Debug.Print "Browser.querySelector - " & Err.description
+    Stop
+    Resume Next
 End Function
 
 
