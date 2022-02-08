@@ -784,7 +784,7 @@ End Function
 
 ' takes a Collection of nodeIds and returns a Dictionary of cdpDomNode objetcs
 ' Note: resulting dictionary is keyed on id if node has one, else name if has one, else a unique numerical value
-Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal backendNodeIds As Collection, Optional objectIds As Collection, _
+Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal backendNodeIds As Collection, Optional objectIds As Collection, Optional ByVal remoteNodeList As cdpRuntimeRemoteObject, _
                             Optional depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary
     Dim nodes As Dictionary: Set nodes = New Dictionary
     Dim node As cdpDOMNode
@@ -796,6 +796,7 @@ Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal
             key = getNodeIdOrName(node)
             If key = vbNullString Or nodes.Exists(key) Then key = nodes.count
             Set nodes(key) = node
+            Set node = Nothing
         Next v
     ElseIf Not backendNodeIds Is Nothing Then
         For Each v In backendNodeIds
@@ -803,19 +804,45 @@ Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal
             key = getNodeIdOrName(node)
             If key = vbNullString Or nodes.Exists(key) Then key = nodes.count
             Set nodes(key) = node
+            Set node = Nothing
         Next v
-    Else ' assume nodeIds is valid
+    ElseIf Not nodeIds Is Nothing Then
         For Each v In nodeIds
             Set node = getDomNode(nodeId:=v, depth:=depth, pierce:=pierce)
             key = getNodeIdOrName(node)
             If key = vbNullString Or nodes.Exists(key) Then key = nodes.count
             Set nodes(key) = node
+            Set node = Nothing
         Next v
+    ElseIf remoteNodeList Is Nothing Then
+            ' using GetProperties we can actually retrieve the values in the NodeList
+            Dim nodeList As Dictionary, result As Collection
+            Set nodeList = cdp.Runtime.GetProperties(remoteNodeList.objectId, ownProperties:=True) ' we just want the nodes so skip all properties that are inherited
+            Set result = nodeList("result")
+            For Each v In result
+                Dim propDesc As cdpRuntimePropertyDescriptor
+                Set propDesc = New cdpRuntimePropertyDescriptor
+                propDesc.init v
+                If Not propDesc.Value Is Nothing Then
+                    If propDesc.Value.subtype = "node" Then
+                        Set node = getDomNode(objectId:=propDesc.Value.objectId, depth:=depth, pierce:=pierce)
+                        key = getNodeIdOrName(node)
+                        If key = vbNullString Or nodes.Exists(key) Then key = nodes.count
+                        Set nodes(key) = node
+                        Set node = Nothing
+                    End If
+                End If
+                Set propDesc = Nothing
+            Next v
+            Set result = Nothing
+            Set nodeList = Nothing
+    Else
+        Debug.Print "getDomNodes - No source of DOM nodes provided!"
+        Stop
     End If
     
     Set getDomNodes = nodes
 End Function
-
 
 ' converts a Runtime.RemoteObject into a DOM.Node
 Public Function RemoteObjectToDomNode(ByVal remoteObj As cdpRuntimeRemoteObject, Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
@@ -985,8 +1012,10 @@ End Function
 ' Note: resulting Dictionary will be empty (0 items) if an error or no matching elements found
 Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
                                  Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+    On Error GoTo errHandler
     Set querySelectorAll = New Dictionary
     Dim nodeIds As Collection, dict As Dictionary
+    Dim remoteObj As cdpRuntimeRemoteObject
     If frameId = vbNullString Then
         ' if no base element provided, use the document root of current target
         If rootId < 1 Then
@@ -998,20 +1027,24 @@ Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId
             If Not nodeIds Is Nothing Then Set querySelectorAll = getDomNodes(nodeIds, depth:=depth, pierce:=pierce)
         End If
     Else
-        ' TODO ***
         ' get unique(Excution)Id associated with frame
         If curSession.frameExecCtxMapping.Exists("$" & frameId) Then
             Dim contextId As String
             contextId = curSession.frameExecCtxMapping.Item("$" & frameId)
-            Set dict = jsEval("document.querySelectorAll('" & selector & "');", silent:=True, uniqueContextId:=contextId)
+            ' we need returnByValue to be unset or False to ensure we get the RemoteObject id not a bunch of empty objects
+            Set dict = jsEval("document.querySelectorAll('" & selector & "');", silent:=True, uniqueContextId:=contextId, returnByValue:=False)
             If cdp.ErrorCode = 0 Then
-                Dim remoteObj As cdpRuntimeRemoteObject
                 Set remoteObj = New cdpRuntimeRemoteObject
                 remoteObj.init dict
-                Set querySelectorAll = getDomNodes(objectIds:=remoteObj, depth:=depth, pierce:=pierce)
+                Set querySelectorAll = getDomNodes(remoteNodeList:=remoteObj, depth:=depth, pierce:=pierce)
             End If
         End If
     End If
+    Exit Function
+errHandler:
+    Debug.Print "AutomateBrowser.querySelectorAll - " & Err.description
+    Stop
+    Resume
 End Function
 
 ' returns document root and all child elements of main frame, optinally piercing frames and shadow DOMs
