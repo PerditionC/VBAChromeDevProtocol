@@ -2,13 +2,13 @@ Attribute VB_Name = "PrintDomTree"
 Option Explicit
 
 Public Sub PrintNode(ByVal node As cdpDOMNode, Optional ByVal pad As String = "")
-    Debug.Print pad & "<" & node.nodeName & "(" & node.nodeType & ") " & "name='" & node.localName & "' attributes:" & Concat(node.attributes) & IIf(node.childNodeCount > 0, "", " />")
+    Debug.Print pad & "<" & node.nodeName & "(" & node.nodeType & ") " & "name='" & node.localName & "' attributes:" & Concat(node.attributes) & IIf(node.childNodeCount > 0, ">", " />")
     If node.childNodeCount > 0 Then
         Dim v As Variant
         For Each v In node.children
             PrintNode v, pad & "  "
         Next v
-        Debug.Print pad & "/>"
+        Debug.Print pad & "</" & node.nodeName & ">"
     End If
 End Sub
 
