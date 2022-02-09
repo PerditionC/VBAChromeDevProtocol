@@ -77,6 +77,16 @@ Private Sub testNewWindows()
         Set td = td.NextSibling
     Loop
     
+    Dim nodes As Dictionary
+    Set nodes = browser.querySelectorAll("#VisibleReportContentMainRptViewerID_ctl09 table table table table > tbody > tr:nth-child(3) td")
+    Dim columnCount As Long
+    columnCount = 7
+    For Each v In nodes.Items
+        Set td = v
+        Debug.Print td.Value & " -- " & td.innerText
+        columnCount = columnCount - 1: If columnCount < 1 Then Exit For
+    Next v
+    
     ' return to original/main window
     browser.switchToMainWindow
     browser.cdp.Page.BringToFront
