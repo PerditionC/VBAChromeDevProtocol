@@ -762,10 +762,9 @@ Public Function getNodeIdOrName(ByVal node As cdpDOMNode) As String
     getNodeIdOrName = idOrName
 End Function
 
-
 ' takes a nodeId or backendNodeId (or RemoteObject.objectId) and returns cdpDOMNode object
 Public Function getDomNode(Optional ByVal nodeId As Integer = 0, Optional ByVal backendNodeId As Integer = 0, Optional ByVal objectId As String = vbNullString, _
-                           Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False)
+                           Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     Dim dict As Dictionary
     If objectId <> vbNullString Then
         Set dict = cdp.DOM.describeNode(objectId:=objectId, depth:=depth, pierce:=pierce)
@@ -780,6 +779,11 @@ Public Function getDomNode(Optional ByVal nodeId As Integer = 0, Optional ByVal 
         node.init dict, Me, nodeId
         Set getDomNode = node
     End If
+End Function
+
+' converts a Runtime.RemoteObject into a DOM.Node
+Public Function RemoteObjectToDomNode(ByVal remoteObj As cdpRuntimeRemoteObject, Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+    Set RemoteObjectToDomNode = getDomNode(objectId:=remoteObj.objectId, depth:=depth, pierce:=pierce)
 End Function
 
 ' takes a Collection of nodeIds and returns a Dictionary of cdpDomNode objetcs
@@ -842,11 +846,6 @@ Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal
     End If
     
     Set getDomNodes = nodes
-End Function
-
-' converts a Runtime.RemoteObject into a DOM.Node
-Public Function RemoteObjectToDomNode(ByVal remoteObj As cdpRuntimeRemoteObject, Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
-    Set RemoteObjectToDomNode = getDomNode(objectId:=remoteObj.objectId, depth:=depth, pierce:=pierce)
 End Function
 
 ' internally to support getting elements in iframes, we have to run
