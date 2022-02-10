@@ -977,6 +977,7 @@ End Function
 ' convenience function to convert "abc def" class list into CSS format compatible with querySelectorAll
 ' classList is a space separated list of class names e.g. "classname1 classname2"
 ' or optionally an element type with class list in in square brackets, e.g. "input[classname1 classname2]"
+' output format: element[class~='classname1'][class~='classname2'][...]
 Public Function getNodesByClassName(ByVal classList As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
                                  Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     Dim selector As String, ndx As Integer
@@ -1009,6 +1010,7 @@ End Function
 ' if frameId = "" then assumes executing in main document context
 ' returns a Dictionary of cdpDomNodes matching selector, see getDomNodes
 ' Note: resulting Dictionary will be empty (0 items) if an error or no matching elements found
+' see: https://www.w3.org/TR/CSS21/selector.html%23id-selectors for a quick overview of selector formatting
 Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
                                  Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     On Error GoTo errHandler
