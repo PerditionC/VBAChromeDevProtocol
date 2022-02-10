@@ -695,7 +695,7 @@ End Sub
 ' Simulates a user clicking a node
 ' Note: this follows same algorithm and Selenium and other similar tools as opposed to javascript .click() method that does not always work as expected
 ' Warning: if click opens a new window/tab as opposed to navigating within same page then may return before new page has finished loading - must switch to new session and then wait
-Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None)
+Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None, Optional button As String = "left", Optional clickCount As Integer = 1)
     ' reset flag for window open event
     If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
 
@@ -712,8 +712,8 @@ Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integ
         If strategy = NavigationStrategy.NetworkIdle Then cdp.Network.enable
     
         ' now simulate click via mouse button press down and up
-        cdp.SimulateInput.dispatchMouseEvent "mousePressed", x, y, button:="left", clickCount:=1
-        cdp.SimulateInput.dispatchMouseEvent "mouseReleased", x, y, button:="left", clickCount:=1
+        cdp.SimulateInput.dispatchMouseEvent "mousePressed", x, y, button:=button, clickCount:=clickCount
+        cdp.SimulateInput.dispatchMouseEvent "mouseReleased", x, y, button:=button, clickCount:=clickCount
 
         ' if click causes navigation, optionally wait for page loading event
         waitForPageToLoad strategy
