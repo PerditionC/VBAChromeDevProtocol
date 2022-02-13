@@ -180,6 +180,22 @@ Cleanup:
     TerminateProcess = TerminateProcess Or (Not processFound) ' successfully terminated process or no process found
 End Function
 
+' returns True if process found else False
+Function IsProcessRunning(ByVal ProcessName As String) As Boolean
+    On Error Resume Next ' for now ignore errors
+    Dim processes As Object, process As Object
+    Set processes = getObject("winmgmts:").ExecQuery("SELECT * FROM win32_process")
+    For Each process In processes
+        If process.name = ProcessName Then
+            IsProcessRunning = True
+            Exit For
+        End If
+    Next
+Cleanup:
+    Set processes = Nothing
+    Set process = Nothing
+End Function
+
 Public Function SpawnProcess(cmdLine As String) As Boolean
     Dim proc As PROCESS_INFORMATION
     Dim startupInfo As STARTUP_INFO

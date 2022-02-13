@@ -121,6 +121,7 @@ End Function
 ' clears any existing queued messages (events and responses)
 Public Sub clearMessageQueue()
     Set objAllMessages = New Dictionary
+    'strBuffer = vbNullString
 End Sub
 
 ' returns all currently queued messages
@@ -298,7 +299,7 @@ Private Function ProcessErrorMessage(result As Dictionary) As Boolean
         ProcessErrorMessage = True
     Else
         ErrorCode = 0
-        ErrorMessage = vbNullString
+        errorMessage = vbNullString
         ErrorData = vbEmpty
     End If
 End Function
@@ -431,12 +432,14 @@ Public Function launch( _
         Set objBrowser = Nothing
         Set wsBrowser = New clsWebSocket
         strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-port=9222 " & url
-        If Not useExistingBrowser Then
+        If (Not useExistingBrowser) Or (Not IsProcessRunning(ProcessName:="msedge.exe")) Then
             If Not SpawnProcess(strCall) Then Exit Function
         End If
         
         ' give it a bit to startup
-        Sleep 1
+        Do Until IsProcessRunning(ProcessName:="msedge.exe")
+            Sleep 1
+        Loop
         
         ' get the path to the browser target websocket - we hard code only connecting to localhost port 9222
         Dim wsPath As String
@@ -444,7 +447,6 @@ Public Function launch( _
         ' we get the path (really full link) by connecting via HTTP to http://localhost:9222/json/version - note 9222 is same as specified on cmdline
         ' and extracting the information from the webSocketDebuggerUrl field of the returned JSON
         ' eg. "ws://localhost:9222/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
-        wsPath = "/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
         wsPath = wsBrowser.HttpGetMessage("localhost", 9222, "/json/version")
         Dim versionInfo As Dictionary
         Set versionInfo = JsonConverter.ParseJson(wsPath)
