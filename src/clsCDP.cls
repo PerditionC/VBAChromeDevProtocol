@@ -39,8 +39,9 @@ Public sessionId As String
 ' which browser did we connect to
 Public browserProgram As browserType
 
-' link to browser for sending and receiving protocol messages
+' link to browser for sending and receiving protocol messages, only 1 of these (objBrowser, wsBrowser) should be valid
 Private objBrowser As clsProcess
+Private wsBrowser As clsWebSocket
 
 ' every message sent over Chrome Developer Protocol has an id, this is id of last message we sent
 Private lngLastID As Long
@@ -82,22 +83,24 @@ Private Function searchNull() As Long
 End Function
 
 
-' read in any pending data from connected browser pipe/soccket and append to buffer
+' read in any pending data from connected browser pipe/socket and append to buffer
 ' nonblocking, will return immediately if nothing new to add
 Private Sub readRawMessageData()
-    Dim intRes As Long
-    Dim strRes As String
-        
-    ' read in all data currently sent from browser to us
-    intRes = 1
-    Do Until intRes < 1
-        DoEvents
-        intRes = objBrowser.readProcCDP(strRes)
-            
-        If intRes > 0 Then
-            strBuffer = strBuffer & strRes
-        End If
-    Loop
+    Dim errorText As String, strResult As String
+    
+    If Not objBrowser Is Nothing Then
+        strResult = objBrowser.GetMessageData(errorText)
+    ElseIf Not wsBrowser Is Nothing Then
+        strResult = wsBrowser.GetMessageUTF8()
+        errorText = wsBrowser.errorText
+    Else
+        Debug.Print "readRawMessageData() - Error: no implementation to communicate with browser available!"
+        Stop
+    End If
+    
+    If errorText = "None" Then
+        strBuffer = strBuffer & strResult
+    End If
 End Sub
 
 ' store and retrieve messages from a queue event processing or delayed response handling
@@ -132,6 +135,7 @@ End Function
 ' event handlers are called and if returns true event not queued
 ' queues and returns any message found
 Public Function peakMessage() As Dictionary
+    On Error GoTo ErrHandler
     Dim lngNullCharPos As Long
     
     ' get any new data if available since last call
@@ -186,6 +190,11 @@ messageHandled:
     End If
 
     DoEvents
+    Exit Function
+ErrHandler:
+    Debug.Print "peakMessage() - Error: " & Err.description
+    Stop
+    Resume
 End Function
 
 ' sends a CDP message to browser
@@ -207,7 +216,7 @@ Private Function sendMessage(ByVal strMessage As String, Optional ByVal nowait A
     ' sometimes edge writes to stdout
     ' we clear stdout here, too.
     Dim ignored As String
-    objBrowser.readProcSTD ignored
+    'objBrowser.readProcSTD ignored
 
     ' We add the currentID and sessionID to the message (assume flat messages and sessionId required)
     strMessage = left(strMessage, Len(strMessage) - 1)
@@ -219,7 +228,16 @@ Private Function sendMessage(ByVal strMessage As String, Optional ByVal nowait A
     strMessage = strMessage & ", ""id"":" & lngLastID & "}" & vbNullChar
     
     ' write message to browser
-    If objBrowser.writeProc(strMessage) = 0 Then
+    Dim errorSending As Boolean
+    If Not objBrowser Is Nothing Then
+        errorSending = (objBrowser.writeProc(strMessage) = 0)
+    ElseIf Not wsBrowser Is Nothing Then
+        errorSending = Not wsBrowser.SendMessageUTF8(strMessage)
+    Else
+        errorSending = True
+        Debug.Print "Warning objBrowser and wsBrowser are both nothing, unable to communicate with browser!"
+    End If
+    If errorSending Then
         Debug.Print "-----"
         Debug.Print "Failed to write CDP message!"
         Debug.Print strMessage
@@ -381,17 +399,25 @@ End Function
 ' This method starts up the browser
 ' It will attempt to terminate the browser if found to already be running (user is prompted prior to abort)
 ' If autoAttach is True then after connection to browser established will initiate attach call automatically
+' if useWebSocket is True then will connect to browser websocket on localhost port 9222, otherwise connects directly via a pipe
+' if useWebSocket is True and useExistingBrowser then does not (kill and) spawn browser before connecting, ignored if useWebSocket is false
 ' Warning! if autoAttach is True then the url must exactly match and may fail if browser changes expected url unless partialMatch is True
 ' Returns True if successfully initialized browser, False otherwise
-Public Function launch(Optional url As String = vbNullString, Optional autoAttach As Boolean = True, Optional partialMatch As Boolean = True) As Boolean
+Public Function launch( _
+    Optional url As String = vbNullString, _
+    Optional autoAttach As Boolean = True, _
+    Optional partialMatch As Boolean = True, _
+    Optional useWebSocket As Boolean = False, _
+    Optional useExistingBrowser As Boolean = False _
+    ) As Boolean
     ' ensure browser is not already running (kill it if it is)
-    If Not TerminateProcess(ProcessName:="msedge.exe", PromptBefore:=True) Then
-        ' abort if browser is already running and failed to kill it or user elected not to terminate
-        Exit Function
+    If Not (useWebSocket And useExistingBrowser) Then
+        If Not TerminateProcess(ProcessName:="msedge.exe", PromptBefore:=True) Then
+            ' abort if browser is already running and failed to kill it or user elected not to terminate
+            Exit Function
+        End If
     End If
 
-    Set objBrowser = New clsProcess
-    
     Dim strCall As String
     ' --remote-debugging-pipe allow communicating with Edge
     ' --remote-debugging-port=9222 alternative for communication via TCP
@@ -399,29 +425,70 @@ Public Function launch(Optional url As String = vbNullString, Optional autoAttac
     ' --disable-infobars removes messages such as "being controlled by automation" banners, ignored by Edge, used by Chrome
     ' --enable-logging allows viewing additional connection details, but causes opening of console windows
     ' --user-data-dir=c:\temp\fakeEdgeUser to open in different profile, and therefore session than current user, but screws up because Admin managed user so don't use
-    strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-pipe " & url
+
+    ' only one of objBrowser or wsBrowser can be valid, depending how we are connecting initialize the correct one
+    If useWebSocket Then
+        Set objBrowser = Nothing
+        Set wsBrowser = New clsWebSocket
+        strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-port=9222 " & url
+        If Not useExistingBrowser Then
+            If Not SpawnProcess(strCall) Then Exit Function
+        End If
+        
+        ' give it a bit to startup
+        Sleep 1
+        
+        ' get the path to the browser target websocket - we hard code only connecting to localhost port 9222
+        Dim wsPath As String
+        
+        ' we get the path (really full link) by connecting via HTTP to http://localhost:9222/json/version - note 9222 is same as specified on cmdline
+        ' and extracting the information from the webSocketDebuggerUrl field of the returned JSON
+        ' eg. "ws://localhost:9222/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
+        wsPath = "/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
+        wsPath = wsBrowser.HttpGetMessage("localhost", 9222, "/json/version")
+        Dim versionInfo As Dictionary
+        Set versionInfo = JsonConverter.ParseJson(wsPath)
+        wsPath = versionInfo("webSocketDebuggerUrl")
+        wsPath = Right(wsPath, Len(wsPath) - Len("ws://localhost:9222"))
+    
+        ' connect to the browser target websocket
+        With wsBrowser
+            .protocol = "ws://"
+            .server = "localhost"
+            .port = 9222
+            .path = wsPath   ' this one changes with each time browser is started
+            If Not .Connect() Then Exit Function ' False
+        End With
+    Else
+        Set objBrowser = New clsProcess
+        Set wsBrowser = Nothing
+        strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-pipe " & url
+        
+        Dim intRes As Integer
+        intRes = objBrowser.init(strCall)
+        If intRes <> 0 Then
+           'Call Err.Raise(-99, , "error start browser")
+        Exit Function ' False
+        End If
+        
+        ' give it a bit to startup
+        Sleep 1
+    End If
+        
+    ' for now we only support Edge, but eventually we will add the logic to spawn/recognize Chrome and FireFox along with Edge
     browserProgram = browserType.Edge
     
-    Dim intRes As Integer
-    
-    intRes = objBrowser.init(strCall)
-    
-    If intRes <> 0 Then
-       'Call Err.Raise(-99, , "error start browser")
-       Exit Function ' False
-    End If
-
-    Call Sleep
+    ' initialize message id used to track message responses
     lngLastID = 1
     
+    ' if connected via pipe we need to clear pipe from any data written during startup
     Dim strRes As String
-    
     intRes = 0
     
     Dim intCounter As Integer
     intCounter = 0
     
-    Do Until intRes > 0 Or intCounter > 1000
+    Do Until intRes > 0 Or intCounter > 1000 Or useWebSocket
         intRes = objBrowser.readProcSTD(strRes)
         DoEvents
         Call Sleep(0.1)
@@ -429,8 +496,12 @@ Public Function launch(Optional url As String = vbNullString, Optional autoAttac
     Loop
     
     ' automatically attach to requested page or any page if no specific one requested
+    ' WARNING if we didn't spawn browser then url may not match any page Target!
     If autoAttach Then
-        If Me.attach(url, partialMatch:=partialMatch) = vbNullString Then Exit Function ' failed to attach on launch
+        If Me.attach(url, partialMatch:=partialMatch) = vbNullString Then
+            If useWebSocket Then wsBrowser.Disconnect
+            Exit Function ' failed to attach on launch
+        End If
     End If
     
     ' assume success

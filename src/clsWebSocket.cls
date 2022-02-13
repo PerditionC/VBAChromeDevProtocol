@@ -127,6 +127,86 @@ Public Property Get SCC() As Boolean
 SCC = pSCC
 End Property
 
+' connects to HTTP server an issues GET request, returns results
+Public Function HttpGetMessage(ByVal pServer As String, ByVal port As Long, ByVal path As String) As String
+    On Error GoTo ErrHandler
+    Dim hSessionHandle As LongPtr
+    Dim hConnectionHandle As LongPtr
+    Dim hRequestHandle As LongPtr
+    pErrorText = "None"
+
+    ' Create session handle
+    hSessionHandle = WinHttpOpen(StrPtr(AgentHeader), WINHTTPxACCESSxTYPExDEFAULTxPROXY, 0, 0, WINHTTPxFLAGxSYNC)
+    If hSessionHandle = 0 Then
+        pErrorText = "Could not create WinHttp session handle"
+        Exit Function
+    End If
+
+    ' Create connection handle
+    hConnectionHandle = WinHttpConnect(hSessionHandle, StrPtr(pServer), port, 0)
+    If hConnectionHandle = 0 Then
+        pErrorText = "Failed to reach server:port at: " & pServer & ":" & port
+        GoTo cleanupSession
+    End If
+
+    ' Create request handle - use 0 for null pointer to empty strings: Version, Referrer, AcceptTypes
+    Dim method As String: method = "GET" ' always
+    hRequestHandle = WinHttpOpenRequest(hConnectionHandle, StrPtr(method), StrPtr(path), 0, 0, 0, 0)
+    If hRequestHandle = 0 Then
+        pErrorText = "Request failed for path: " & path
+        GoTo cleanupConnection
+    End If
+
+    ' actually send it
+    If WinHttpSendRequest(hRequestHandle, 0, 0, 0, 0, 0, 0) = 0 Then
+        pErrorText = "Sending request failed for path: " & path
+        GoTo cleanupConnection
+    End If
+
+    ' wait for a response
+    If WinHttpReceiveResponse(hRequestHandle, 0) = 0 Then
+        pErrorText = "Error waiting for response"
+        GoTo cleanupConnection
+    End If
+    
+    ' and read the response
+    Dim receiveBuffer() As Byte
+    ReDim receiveBuffer(1023) As Byte
+    Dim dwBufferLength As LongPtr
+    dwBufferLength = (UBound(receiveBuffer) - LBound(receiveBuffer) + 1)
+    ReDim receiveBuffer(4096) As Byte
+    dwBufferLength = (UBound(receiveBuffer) - LBound(receiveBuffer) + 1)
+    Dim dwBytesTransferred As LongPtr
+    dwBytesTransferred = 0
+    If WinHttpReadData(hRequestHandle, receiveBuffer(0), CLng(dwBufferLength), dwBytesTransferred) = 0 Then
+        pErrorText = "Error reading data"
+        GoTo cleanupConnection
+    End If
+    
+    ' and return it
+    ' resize buffer to dwBytesTransferred, then convert buffer into VBA string
+    ReDim Preserve receiveBuffer(CInt(dwBytesTransferred))
+    HttpGetMessage = Utf8BytesToString(receiveBuffer)
+
+cleanupConnection:
+    If (hConnectionHandle <> 0) Then
+        WinHttpCloseHandle (hConnectionHandle)
+        hConnectionHandle = 0
+    End If
+
+cleanupSession:
+    If (hSessionHandle <> 0) Then
+        WinHttpCloseHandle (hSessionHandle)
+        hSessionHandle = 0
+    End If
+    
+    Exit Function
+ErrHandler:
+    Debug.Print "HttpGetMessage() - Error: " & Err.description
+    Stop
+    Resume
+End Function
+
 Public Function Connect()
 If pState <> 1 Then ' only run this while not connected
   pErrorText = "Must be disconnected before attempting to connect"
@@ -490,7 +570,8 @@ End Function
 
 
 Public Function GetMessageUTF8() As String
-GetMessageUTF8 = ""  ' default return
+On Error GoTo ErrHandler
+GetMessageUTF8 = vbNullString  ' default return
 pErrorText = "None"
 If pState <> 3 Then
   pErrorText = "Must be connected to receive"
@@ -516,6 +597,7 @@ usStatus = 0
 
 ' if we get a message fragment packet, loop until we get a complete packet
 Dim dwError As Long
+
 Dim MessageComplete As Boolean
 MessageComplete = False
 Do Until (MessageComplete)
@@ -524,11 +606,12 @@ Do Until (MessageComplete)
     pErrorText = "Need a bigger buffer!"
     Exit Function
   End If
+  
   ' receive - will hang if no server response
   dwError = WinHttpWebSocketReceive(hWebSocketHandle, rgbBuffer(0), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
   If (dwError <> ERRORxSUCCESS) Then
-    pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
-    Exit Function
+      pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
+      Exit Function
   End If
   
   ' check for close message
@@ -553,9 +636,16 @@ If (eBufferType <> WINHTTPxWEBxSOCKETxUTF8xMESSAGExBUFFERxTYPE) Then
   Exit Function
 End If
 
+
 ' resize buffer to dwBytesTransferred, then convert buffer into VBA string
-ReDim Preserve rgbBuffer(CByte(dwBytesTransferred))
+ReDim Preserve rgbBuffer(CInt(dwBytesTransferred))
 GetMessageUTF8 = Utf8BytesToString(rgbBuffer)
+
+Exit Function
+ErrHandler:
+    Debug.Print "GetMessageUTF8() - Error: " & Err.description
+    Stop
+    'Resume
 End Function
 
 
@@ -640,7 +730,7 @@ If (eBufferType <> WINHTTPxWEBxSOCKETxBINARYxMESSAGExBUFFERxTYPE) Then
 End If
 
 ' resize buffer to dwBytesTransferred, then return
-ReDim Preserve otherBuffer(CByte(dwBytesTransferred) - 1)
+ReDim Preserve otherBuffer(CInt(dwBytesTransferred) - 1)
 GetMessageBinary = otherBuffer
 End Function
 

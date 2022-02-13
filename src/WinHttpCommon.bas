@@ -209,6 +209,18 @@ Public Declare PtrSafe Function WinHttpSendRequest Lib "winhttp" ( _
    ByVal dwTotalLength As Long, _
    ByVal dwContext As Long _
    ) As Long
+   
+Public Declare PtrSafe Function WinHttpQueryDataAvailable Lib "winhttp" ( _
+   ByVal hRequest As LongPtr, _
+   ByVal lpdwNumberOfBytesAvailable As LongPtr _
+   ) As Long
+
+Public Declare PtrSafe Function WinHttpReadData Lib "winhttp" ( _
+   ByVal hRequest As LongPtr, _
+   ByRef pvBuffer As Any, _
+   ByVal dwBufferLength As Long, _
+   ByRef pdwBytesRead As LongPtr _
+   ) As Long
 
 Public Declare PtrSafe Function WinHttpReceiveResponse Lib "winhttp" ( _
    ByVal hRequest As LongPtr, _

@@ -10,6 +10,14 @@ Sub test1a()
     cdp.browser.closeBrowser
 End Sub
 
+Sub test1a2()
+    Dim cdp As clsCDP
+    Set cdp = New_clsCDP
+    cdp.launch "http://www.google.com/", useWebSocket:=True, useExistingBrowser:=False
+    Debug.Print JsonConverter.ConvertToJson(cdp.browser.getWindowForTarget)
+    cdp.browser.closeBrowser
+End Sub
+
 
 Sub test1b()
     Dim browser As AutomateBrowser

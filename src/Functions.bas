@@ -56,7 +56,7 @@ Public Type SECURITY_ATTRIBUTES
 End Type
 
 
-Public Type STARTUPINFO
+Public Type STARTUP_INFO
     cb As Long
     lpReserved As LongPtr
     lpDesktop As LongPtr
@@ -180,4 +180,49 @@ Cleanup:
     TerminateProcess = TerminateProcess Or (Not processFound) ' successfully terminated process or no process found
 End Function
 
+Public Function SpawnProcess(cmdLine As String) As Boolean
+    Dim proc As PROCESS_INFORMATION
+    Dim startupInfo As STARTUP_INFO
+    Dim sa As SECURITY_ATTRIBUTES
+    Dim hStdOutRd As LongPtr, hStdOutWr As LongPtr
+    Dim hStdInRd As LongPtr, hStdInWr As LongPtr
 
+    ' initialize to default security attributes
+    sa.nLength = Len(sa)
+    sa.bInheritHandle = 1&
+    sa.lpSecurityDescriptor = 0&
+
+    ' First we create all 3 default pipes, stdin, stdout, stderr (we reuse stdout for stderr)
+    If CreatePipe(hStdInRd, hStdInWr, sa, 0) = 0 Then
+        Debug.Print "Error creating pipe for stdin"
+        Exit Function
+    End If
+    If CreatePipe(hStdOutRd, hStdOutWr, sa, 0) = 0 Then
+        Debug.Print "Error creating pipe for stdout/stderr"
+        Exit Function
+    End If
+       
+    
+    With startupInfo
+        .cb = Len(startupInfo)
+        .dwFlags = STARTF_USESTDHANDLES Or STARTF_USESHOWWINDOW
+        .hStdOutput = hStdOutWr
+        .hStdInput = hStdInRd
+        .hStdError = hStdOutWr
+        .wShowWindow = vbNormal
+        .cbReserved2 = 0&
+        .lpReserved2 = 0&
+    End With
+    
+
+    If CreateProcessA(0&, cmdLine, sa, sa, 1&, NORMAL_PRIORITY_CLASS, 0&, 0&, startupInfo, proc) = 0 Then
+        Debug.Print "Error spawning " & cmdLine
+    End If
+    
+    ' We close the sides of the handles that we dont need anymore (child process side of pipes)
+    Call CloseHandle(hStdOutWr)
+    Call CloseHandle(hStdInRd)
+    
+    ' assume success
+    SpawnProcess = True
+End Function

@@ -24,11 +24,11 @@ Private hCDPInRd As LongPtr
 
 Public Function init(strExec As String) As Integer
     Dim proc As PROCESS_INFORMATION
-    Dim start As STARTUPINFO
+    Dim start As STARTUP_INFO
     Dim sa As SECURITY_ATTRIBUTES
     Dim hReadPipe As LongPtr, hWritePipe As LongPtr
     Dim L As Long, result As Long, bSuccess As Long
-    Dim Buffer As String
+    Dim buffer As String
     Dim k As Long
     
     Dim pipes As STDIO_BUFFER
@@ -190,6 +190,34 @@ Public Function readProcSTD(ByRef strData As String) As Integer
     End If
 
 End Function
+
+' reads all pending data from connected browser pipe and returns
+' nonblocking, will return immediately if nothing new to add
+' On success (no error) then errorText will set to "None"
+' returns "" if error or no data available
+' otherwise will return all data currently available to be read (full message)
+Public Function GetMessageData(ByRef errorText As String) As String
+    Dim intRes As Long, strRes As String
+        
+    ' read in all data currently sent from browser to us
+    intRes = 1
+    Do Until intRes < 1
+        DoEvents
+        intRes = readProcCDP(strRes)
+            
+        If intRes > 0 Then
+            GetMessageData = GetMessageData & strRes
+        End If
+    Loop
+    
+    If intRes >= -1 Then
+        errorText = "None"
+    Else
+        errorText = "Error reading from pipe"
+        GetMessageData = vbNullString
+    End If
+End Function
+
 
 ' This functions sends a CDP message to edge
 Public Function writeProc(ByVal strData As String) As Integer
