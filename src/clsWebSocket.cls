@@ -579,13 +579,12 @@ If pState <> 3 Then
 End If
 
 Dim rgbBuffer() As Byte  ' do it this way, so we can redim it later
-ReDim rgbBuffer(1023) As Byte
+ReDim rgbBuffer(4096) As Byte
 Dim dwBufferLength As LongPtr
 ' get correct value in case of change to buffer size
-dwBufferLength = (UBound(rgbBuffer) - LBound(rgbBuffer) + 1)
-
-Dim pbCurrentBufferPointer As LongPtr
-pbCurrentBufferPointer = VarPtr(rgbBuffer(0))
+dwBufferLength = (UBound(rgbBuffer) - LBound(rgbBuffer))
+Dim dwTotalBytesTransferred As Long
+dwTotalBytesTransferred = 0
 Dim dwBytesTransferred As LongPtr
 dwBytesTransferred = 0
 Dim eBufferType As LongPtr
@@ -608,7 +607,7 @@ Do Until (MessageComplete)
   End If
   
   ' receive - will hang if no server response
-  dwError = WinHttpWebSocketReceive(hWebSocketHandle, rgbBuffer(0), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
+  dwError = WinHttpWebSocketReceive(hWebSocketHandle, rgbBuffer(dwTotalBytesTransferred), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
   If (dwError <> ERRORxSUCCESS) Then
       pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
       Exit Function
@@ -622,25 +621,18 @@ Do Until (MessageComplete)
   End If
   
 ' If we receive just part of the message repeat the receive operation.
-  pbCurrentBufferPointer = pbCurrentBufferPointer + dwBytesTransferred
+  dwTotalBytesTransferred = dwTotalBytesTransferred + CLng(dwBytesTransferred)
   dwBufferLength = dwBufferLength - dwBytesTransferred
   If Not (eBufferType = WINHTTPxWEBxSOCKETxUTF8xFRAGMENTxBUFFERxTYPE) Then
     MessageComplete = True
   End If
 Loop
 
-' Expected server to just echo UTF8 message - complain if different
-If (eBufferType <> WINHTTPxWEBxSOCKETxUTF8xMESSAGExBUFFERxTYPE) Then
-  dwError = 87 ' ERRORxINVALIDxPARAMETER
-  pErrorText = "Unexpected buffer type: " & eBufferType
-  Exit Function
-End If
-
-
 ' resize buffer to dwBytesTransferred, then convert buffer into VBA string
-ReDim Preserve rgbBuffer(CInt(dwBytesTransferred))
+ReDim Preserve rgbBuffer(CInt(dwTotalBytesTransferred))
 GetMessageUTF8 = Utf8BytesToString(rgbBuffer)
 
+If left(GetMessageUTF8, 1) <> "{" Then Stop
 Exit Function
 ErrHandler:
     Debug.Print "GetMessageUTF8() - Error: " & Err.description
@@ -674,13 +666,13 @@ If pState <> 3 Then
 End If
 
 Dim otherBuffer() As Byte  ' do it this way, so we can redim it later
-ReDim otherBuffer(1023) As Byte
+ReDim otherBuffer(4096) As Byte
 Dim dwBufferLength As LongPtr
 ' get correct value in case of change to buffer size
-dwBufferLength = (UBound(otherBuffer) - LBound(otherBuffer) + 1)
+dwBufferLength = (UBound(otherBuffer) - LBound(otherBuffer))
 
-Dim pbCurrentBufferPointer As LongPtr
-pbCurrentBufferPointer = VarPtr(otherBuffer(0))
+Dim dwTotalBytesTransferred As Long
+dwTotalBytesTransferred = 0
 Dim dwBytesTransferred As LongPtr
 dwBytesTransferred = 0
 Dim eBufferType As LongPtr
@@ -701,7 +693,7 @@ Do Until (MessageComplete)
     Exit Function
   End If
   ' receive - will hang if no server response
-  dwError = WinHttpWebSocketReceive(hWebSocketHandle, otherBuffer(0), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
+  dwError = WinHttpWebSocketReceive(hWebSocketHandle, otherBuffer(dwTotalBytesTransferred), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
   If (dwError <> ERRORxSUCCESS) Then
     pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
     Exit Function
@@ -715,22 +707,15 @@ Do Until (MessageComplete)
   End If
   
 ' If we receive just part of the message repeat the receive operation.
-  pbCurrentBufferPointer = pbCurrentBufferPointer + dwBytesTransferred
+  dwTotalBytesTransferred = dwTotalBytesTransferred + dwBytesTransferred
   dwBufferLength = dwBufferLength - dwBytesTransferred
   If Not (eBufferType = WINHTTPxWEBxSOCKETxBINARYxFRAGMENTxBUFFERxTYPE) Then
     MessageComplete = True
   End If
 Loop
 
-' Expected server to just echo single binary message - complain if different
-If (eBufferType <> WINHTTPxWEBxSOCKETxBINARYxMESSAGExBUFFERxTYPE) Then
-  dwError = 87 ' ERRORxINVALIDxPARAMETER
-  pErrorText = "Unexpected buffer type: " & eBufferType
-  Exit Function
-End If
-
 ' resize buffer to dwBytesTransferred, then return
-ReDim Preserve otherBuffer(CInt(dwBytesTransferred) - 1)
+ReDim Preserve otherBuffer(CInt(dwTotalBytesTransferred) - 1)
 GetMessageBinary = otherBuffer
 End Function
 
