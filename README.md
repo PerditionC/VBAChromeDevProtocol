@@ -8,8 +8,10 @@ See https://chromedevtools.github.io/devtools-protocol/ for overview of Chrome D
 
 Initial work based on information and clsEdge from https://www.codeproject.com/Tips/5307593/Automate-Chrome-Edge-using-VBA
 
+Primarily connects directly to browser using Chrome/Edge's ability to use the CDP via pipes when started, however, now also has basic support for connecting to browser through standard websocket interface so can reuse already open browser if started with CDP port 9222 listening.
+
 ## TODO
-- this currently relies on Chrome/Edge's ability to do the CDP via pipes when started, a future version will connect to the websocket to allow connecting to existing browsers.
+- currently only tested with and assumes working with Edge; future versions will detect and support spawning Chrome and possibly FireFox
 - improve/add usage documentation
 - generator needs some more work (still has some class names too long/clash, still has some clashes with reserved words, incorrectly assumes class for unspecified _object_)
 
