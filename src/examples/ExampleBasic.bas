@@ -5,7 +5,7 @@ Option Explicit
 Sub test1a()
     Dim cdp As clsCDP
     Set cdp = New_clsCDP
-    cdp.launch "http://www.google.com/"
+    cdp.launch "https://www.google.com/"
     Debug.Print JsonConverter.ConvertToJson(cdp.browser.getWindowForTarget)
     cdp.browser.closeBrowser
 End Sub
@@ -13,7 +13,7 @@ End Sub
 Sub test1a2()
     Dim cdp As clsCDP
     Set cdp = New_clsCDP
-    cdp.launch "http://www.google.com/", useWebSocket:=True, useExistingBrowser:=False
+    cdp.launch "https://www.google.com/", useWebSocket:=True, useExistingBrowser:=False
     Debug.Print JsonConverter.ConvertToJson(cdp.browser.getWindowForTarget)
     cdp.browser.closeBrowser
 End Sub
@@ -22,7 +22,7 @@ End Sub
 Sub test1b()
     Dim browser As AutomateBrowser
     Set browser = new_automateBrowser
-    browser.launch "http://www.google.com/"
+    browser.launch "https://www.google.com/"
     Debug.Print JsonConverter.ConvertToJson(browser.cdp.browser.getWindowForTarget)
     browser.Quit
 End Sub
@@ -32,7 +32,7 @@ Sub test2()
     Dim browser As AutomateBrowser
     Set browser = new_automateBrowser
     browser.launch
-    browser.navigate "http://www.google.com/"
+    browser.navigate "https://www.google.com/"
     Debug.Print JsonConverter.ConvertToJson(browser.cdp.browser.getWindowForTarget)
     browser.resizeWindow , , , , , WindowState.WS_maximized
     Stop
