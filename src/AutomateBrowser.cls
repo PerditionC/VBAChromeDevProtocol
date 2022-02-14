@@ -818,7 +818,7 @@ Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal
             Set nodes(key) = node
             Set node = Nothing
         Next v
-    ElseIf remoteNodeList Is Nothing Then
+    ElseIf Not remoteNodeList Is Nothing Then
             ' using GetProperties we can actually retrieve the values in the NodeList
             Dim nodeList As Dictionary, result As Collection
             Set nodeList = cdp.Runtime.GetProperties(remoteNodeList.objectId, ownProperties:=True) ' we just want the nodes so skip all properties that are inherited
@@ -882,7 +882,36 @@ Private Function compileSupportRoutines() As Dictionary
     Set compileSupportRoutines = compiledScripts
 End Function
 
+' returns the frameId matching a corresponding url [fragment] that can be passed to QuerySelector and QuerySelectorAll
+Public Function GetFrameIdByUrl(ByVal url As String) As String
+    ' attempt to find frame with matching partial url
+    Dim v As Variant, frameId As String, frame As cdpPageFrame
+    
+    ' 1st cycle through looking for an exact match
+    For Each v In curSession.frames.items
+        Set frame = v
+        If frame.url = url Then
+            frameId = frame.id
+            Exit For
+        End If
+    Next v
+    
+    ' if no match found, then look for partial match
+    If frameId = vbNullString Then
+        For Each v In curSession.frames.items
+            Set frame = v
+            If InStr(1, frame.url, url, vbTextCompare) > 0 Then
+                frameId = frame.id
+                Exit For
+            End If
+        Next v
+    End If
+
+    GetFrameIdByUrl = frameId
+End Function
+
 ' convenience function that maps frame name to id and then calls QuerySelector with frameId
+' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
 Public Function QuerySelectorOnFrame(ByVal selector As String, ByVal frameName As String, Optional ByVal rootId As Integer = 0, Optional ByVal url As String = vbNullString, _
                                      Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     If curSession.frameNames.Exists(frameName) Then
@@ -893,26 +922,8 @@ Public Function QuerySelectorOnFrame(ByVal selector As String, ByVal frameName A
         Set node = getDomNode(nodeId:=rootId)
         Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=node.frameId, depth:=depth, pierce:=pierce)
     ElseIf url <> vbNullString Then
-        ' attempt to find frame with matching partial url
-        Dim v As Variant, frameId As String, frame As cdpPageFrame
-        ' 1st cycle through looking for an exact match
-        For Each v In curSession.frames.items
-            Set frame = v
-            If frame.url = url Then
-                frameId = frame.id
-                Exit For
-            End If
-        Next v
-        ' if no match found, then look for partial match
-        If frameId = vbNullString Then
-            For Each v In curSession.frames.items
-                Set frame = v
-                If InStr(1, frame.url, url, vbTextCompare) > 0 Then
-                    frameId = frame.id
-                    Exit For
-                End If
-            Next v
-        End If
+        Dim frameId As String
+        frameId = GetFrameIdByUrl(url)
         ' if we found a matching frame, then run query
         If frameId <> vbNullString Then
             Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=frameId, depth:=depth, pierce:=pierce)
@@ -933,7 +944,9 @@ Public Function querySelector(ByVal selector As String, Optional ByVal rootId As
         ' if no base element provided, use the document root of current target
         ' Note: we store in docRootId instead of updating rootId as if we need to retry, document may not be fully loaded so we may need to reget Document()
         If rootId < 1 Then
-            docRootId = Document().nodeId
+            Dim doc As cdpDOMNode
+            Set doc = Document()
+            docRootId = doc.nodeId
         Else
             docRootId = rootId
         End If
@@ -970,14 +983,14 @@ Public Function querySelector(ByVal selector As String, Optional ByVal rootId As
 errHandler:
     Debug.Print "Browser.querySelector - " & Err.description
     Stop
-    Resume Next
+    'Resume
 End Function
 
 
 ' convenience function to convert "abc def" class list into CSS format compatible with querySelectorAll
 ' classList is a space separated list of class names e.g. "classname1 classname2"
 ' or optionally an element type with class list in in square brackets, e.g. "input[classname1 classname2]"
-' output format: element[class~='classname1'][class~='classname2'][...]
+' output format: element[class~='classname1'][class~='classname2'][...] (which is equivalent to element.classname1.classname2....)
 Public Function getNodesByClassName(ByVal classList As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
                                  Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     Dim selector As String, ndx As Integer
@@ -1006,6 +1019,26 @@ Public Function getNodesByClassName(ByVal classList As String, Optional ByVal ro
     Set getNodesByClassName = querySelectorAll(selector, rootId, frameId, depth, pierce)
 End Function
 
+' convenience function that maps frame name to id and then calls QuerySelectorAll with frameId
+' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
+Public Function QuerySelectorAllOnFrame(ByVal selector As String, ByVal frameName As String, Optional ByVal rootId As Integer = 0, Optional ByVal url As String = vbNullString, _
+                                     Optional ByVal Depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+    If curSession.frameNames.Exists(frameName) Then
+        Set QuerySelectorAllOnFrame = querySelectorAll(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), Depth:=Depth, pierce:=pierce)
+    ElseIf rootId <> 0 Then
+        ' use frame associated with rootId object
+        Dim node As cdpDOMNode
+        Set node = getDomNode(nodeId:=rootId)
+        Set QuerySelectorAllOnFrame = querySelectorAll(selector, rootId:=rootId, frameId:=node.frameId, Depth:=Depth, pierce:=pierce)
+    ElseIf url <> vbNullString Then
+        Dim frameId As String
+        frameId = GetFrameIdByUrl(url)
+        ' if we found a matching frame, then run query
+        If frameId <> vbNullString Then
+            Set QuerySelectorAllOnFrame = querySelectorAll(selector, rootId:=rootId, frameId:=frameId, Depth:=Depth, pierce:=pierce)
+        End If
+    End If
+End Function
 
 ' if frameId = "" then assumes executing in main document context
 ' returns a Dictionary of cdpDomNodes matching selector, see getDomNodes
@@ -1020,7 +1053,9 @@ Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId
     If frameId = vbNullString Then
         ' if no base element provided, use the document root of current target
         If rootId < 1 Then
-            rootId = Document().nodeId
+            Dim doc As cdpDOMNode
+            Set doc = Document()
+            rootId = doc.nodeId
         End If
         ' using either provided nodeId or document nodeId, run querySelectorAll; but return default empty Dictionary if no base element
         If rootId > 0 Then
@@ -1048,11 +1083,33 @@ errHandler:
     Resume
 End Function
 
+' given a set of nodes (Dictionary of cdpDOMNode objects), returns first node found with matching elementValue
+' returns Nothing if no matching node found
+Public Function GetNodeWithValue(ByRef nodes As Dictionary, ByVal value As String) As cdpDOMNode
+    On Error GoTo ErrHandler
+    Dim v As Variant, node As cdpDOMNode
+    For Each v In nodes.items
+        Set node = v
+        If node.elementValue = value Then
+            Set GetNodeWithValue = node
+            Exit For
+        End If
+    Next v
+    Exit Function
+ErrHandler:
+    Debug.Print "GetNodeWithValue() - Error: " & Err.description
+    Stop
+End Function
+
 ' returns document root and all child elements of main frame, optinally piercing frames and shadow DOMs
-Public Function Document(Optional ByVal pierce As Boolean = False) As cdpDOMNode
+Public Function Document(Optional ByVal Depth As Integer = 0, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     If curSession.rootNode Is Nothing Then
-        Set curSession.rootNode = New cdpDOMNode
-        curSession.rootNode.init cdp.DOM.getDocument(-1, pierce), Me
+        Dim dict As Dictionary
+        Set dict = cdp.DOM.getDocument(Depth, pierce)
+        If Not dict Is Nothing Then
+            Set curSession.rootNode = New cdpDOMNode
+            curSession.rootNode.init dict, Me
+        End If
     End If
     Set Document = curSession.rootNode
 End Function
