@@ -410,8 +410,13 @@ End Sub
 ' This method starts (and attaches) up the browser, see cdp.launch
 ' Returns True if successfully initialized browser, False otherwise
 ' Warning! the url must exactly match and may fail if browser changes expected url unless partialMatch is True
-Public Function launch(Optional url As String = "about:blank", Optional partialMatch As Boolean = True) As Boolean
-    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch) Then
+Public Function launch( _
+    Optional url As String = "about:blank", _
+    Optional partialMatch As Boolean = True, _
+    Optional useWebSocket As Boolean = False, _
+    Optional useExistingBrowser As Boolean = False _
+    ) As Boolean
+    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch, useWebSocket:=useWebSocket, useExistingBrowser:=useExistingBrowser) Then
         ' initialize our original session
         If cdp.sessionId = vbNullString Then Stop
         Set mainSession = sessions(cdp.sessionId)
@@ -846,6 +851,10 @@ Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal
     End If
     
     Set getDomNodes = nodes
+    Exit Function
+ErrHandler:
+    Debug.Print "getDomNodes() - " & Err.description
+    Stop
 End Function
 
 ' internally to support getting elements in iframes, we have to run
@@ -913,20 +922,20 @@ End Function
 ' convenience function that maps frame name to id and then calls QuerySelector with frameId
 ' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
 Public Function QuerySelectorOnFrame(ByVal selector As String, ByVal frameName As String, Optional ByVal rootId As Integer = 0, Optional ByVal url As String = vbNullString, _
-                                     Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+                                     Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
     If curSession.frameNames.Exists(frameName) Then
-        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), depth:=depth, pierce:=pierce)
+        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
     ElseIf rootId <> 0 Then
         ' use frame associated with rootId object
         Dim node As cdpDOMNode
         Set node = getDomNode(nodeId:=rootId)
-        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=node.frameId, depth:=depth, pierce:=pierce)
+        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=node.frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
     ElseIf url <> vbNullString Then
         Dim frameId As String
         frameId = GetFrameIdByUrl(url)
         ' if we found a matching frame, then run query
         If frameId <> vbNullString Then
-            Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=frameId, depth:=depth, pierce:=pierce)
+            Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
         End If
     End If
 End Function
@@ -965,10 +974,14 @@ Public Function querySelector(ByVal selector As String, Optional ByVal rootId As
                 Dim remoteObj As cdpRuntimeRemoteObject
                 Set remoteObj = New cdpRuntimeRemoteObject
                 remoteObj.init dict
-                Set querySelector = getDomNode(objectId:=remoteObj.objectId, depth:=depth, pierce:=pierce)
-                'Set QuerySelector = getDomNode(objectId:=dict("objectId"), depth:=depth, pierce:=pierce)
-                If querySelector.nodeId = 0 Then
-                    querySelector.nodeId = cdp.DOM.requestNode(remoteObj.objectId)
+                If remoteObj.objectId <> vbNullString Then
+                    Set querySelector = getDomNode(objectId:=remoteObj.objectId, depth:=depth, pierce:=pierce)
+                    'Set QuerySelector = getDomNode(objectId:=dict("objectId"), depth:=depth, pierce:=pierce)
+                    If querySelector.nodeId = 0 Then
+                        querySelector.nodeId = cdp.DOM.requestNode(remoteObj.objectId)
+                    End If
+                Else
+                    If IsNull(remoteObj.value) And (Not waitUntilFound) Then Debug.Print "Selector '" & selector & "' di not match any elements!"
                 End If
             End If
         End If
