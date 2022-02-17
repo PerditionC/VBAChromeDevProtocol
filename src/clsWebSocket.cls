@@ -127,7 +127,7 @@ Public Property Get SCC() As Boolean
 SCC = pSCC
 End Property
 
-' connects to HTTP server an issues GET request, returns results
+' connects to HTTP server and issues GET request, returns results
 Public Function HttpGetMessage(ByVal pServer As String, ByVal port As Long, ByVal path As String) As String
     On Error GoTo ErrHandler
     Dim hSessionHandle As LongPtr
@@ -171,10 +171,8 @@ Public Function HttpGetMessage(ByVal pServer As String, ByVal port As Long, ByVa
     
     ' and read the response
     Dim receiveBuffer() As Byte
-    ReDim receiveBuffer(1023) As Byte
-    Dim dwBufferLength As LongPtr
-    dwBufferLength = (UBound(receiveBuffer) - LBound(receiveBuffer) + 1)
     ReDim receiveBuffer(4096) As Byte
+    Dim dwBufferLength As LongPtr
     dwBufferLength = (UBound(receiveBuffer) - LBound(receiveBuffer) + 1)
     Dim dwBytesTransferred As LongPtr
     dwBytesTransferred = 0
@@ -570,70 +568,101 @@ End Function
 
 
 Public Function GetMessageUTF8() As String
-On Error GoTo ErrHandler
-GetMessageUTF8 = vbNullString  ' default return
-pErrorText = "None"
-If pState <> 3 Then
-  pErrorText = "Must be connected to receive"
-  Exit Function
-End If
+    On Error GoTo ErrHandler
+    GetMessageUTF8 = vbNullString  ' default return
+    pErrorText = "None"
+    
+    If pState <> 3 Then
+        pErrorText = "Must be connected to receive"
+        Exit Function
+    End If
+    
+    If pSCC Then
+        pErrorText = "Server requested to close connection"
+        Exit Function
+    End If
 
-Dim rgbBuffer() As Byte  ' do it this way, so we can redim it later
-ReDim rgbBuffer(4096) As Byte
-Dim dwBufferLength As LongPtr
-' get correct value in case of change to buffer size
-dwBufferLength = (UBound(rgbBuffer) - LBound(rgbBuffer))
-Dim dwTotalBytesTransferred As Long
-dwTotalBytesTransferred = 0
-Dim dwBytesTransferred As LongPtr
-dwBytesTransferred = 0
-Dim eBufferType As LongPtr
-eBufferType = 0
-Dim dwCloseReasonLength As Long
-dwCloseReasonLength = 0
-Dim usStatus As Integer
-usStatus = 0
+    Dim rgbBuffer() As Byte  ' do it this way, so we can redim it later
+    ReDim rgbBuffer(4096) As Byte
+    Dim dwBufferLength As LongPtr
+    dwBufferLength = (UBound(rgbBuffer) - LBound(rgbBuffer)) ' get correct value in case of change to buffer size
+    Dim dwBytesTransferred As LongPtr
+    dwBytesTransferred = 0
+    Dim residueBuffer(4) As Byte ' at most only 3 bytes possible, e.g. 4 byte utf8 character with only 1 byte sent
+    Dim dwBytesResidue As Long
+    dwBytesResidue = 0
+    Dim eBufferType As LongPtr
+    eBufferType = -1
+    Dim dwError As Long
 
-' if we get a message fragment packet, loop until we get a complete packet
-Dim dwError As Long
+    ' If we receive just part of the message repeat the receive operation.
+    Do While (eBufferType <> WINHTTPxWEBxSOCKETxUTF8xMESSAGExBUFFERxTYPE) ' either a full packet or last packet received for UTF8 message type
+        DoEvents ' allow Window messages to be processed
+    
+        ' we calculate the size of buffer here as may be residue (partial utf8 bytes) from a previous recieve
+        dwBufferLength = (UBound(rgbBuffer) - LBound(rgbBuffer)) ' full buffer size, calculated so we can change buffer size above without concern
+        dwBufferLength = dwBufferLength - dwBytesResidue
+    
+        ' receive - will hang if no server response
+        dwError = WinHttpWebSocketReceive(hWebSocketHandle, rgbBuffer(dwBytesResidue), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
+        DoEvents ' the WinHttpWebSocketReceive call will make the VBA Application unresponsive until it returns, give slice back
+        If (dwError <> ERRORxSUCCESS) Then
+            pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
+            Exit Function
+        End If
+  
+        ' check for close message
+        If (eBufferType = WINHTTPxWEBxSOCKETxCLOSExBUFFERxTYPE) Then ' server wants to quit
+            pSCC = True
+            pErrorText = "Server Closed Connection"
+            Exit Function
+        End If
+  
+        ' determine if buffer ends on a complete utf8 character or if we need to keep some residue, but only if fragmented
+        dwBytesResidue = 0 ' ensure reset regardless if fragment or not
+        If eBufferType = WINHTTPxWEBxSOCKETxUTF8xFRAGMENTxBUFFERxTYPE Then
+            Dim b As Byte
+            b = rgbBuffer(CLng(dwBytesTransferred) - 1) ' get last byte
+            ' if high bit is 0 then character is a single byte and so complete
+            If (b And &H80) <> 0 Then ' 2,3, or 4 byte sequence, so we need to see how many of those bytes we need vs have
+                Dim byteNdx As Integer
+                For byteNdx = 1 To 4 ' Note: if we don't find our lead byte then allow garbage through
+                    b = rgbBuffer(CLng(dwBytesTransferred) - byteNdx) ' work backwards to find lead byte
+                    ' if high 2 bits are 1 then we found start byte of sequence
+                    If (b And &HC0) = &HC0 Then
+                        ' now we need to see how many bytes in this sequence
+                        'b = b And &H38 ' get just the 3 bits that mark sequence length
+                        Dim sequenceLen As Long
+                        If (b And &H20) = 0 Then ' 2 bytes, 110xxxxx
+                            sequenceLen = 2
+                        ElseIf (b And &H10) = 0 Then ' 3 bytes, 1110xxxx
+                            sequenceLen = 3
+                        Else ' assume 4 bytes, 11110xxx
+                            sequenceLen = 4
+                        End If
+                        ' calculate residue, how many bytes to leave in buffer
+                        dwBytesResidue = sequenceLen - byteNdx
+                        Exit For
+                    End If
+                Next
+            End If
+        End If
+        
+        ' instead of resizing buffer, we pass length of bytes to use, ignoring residue bytes to convert buffer into VBA string
+        GetMessageUTF8 = GetMessageUTF8 & Utf8BytesToString(rgbBuffer, (CLng(dwBytesTransferred) - dwBytesResidue)) ' by leaving residue off, we ensure only full utf8 sequences are converted if partial message, bad data can still cause problems
+        
+        ' copy residue bytes to beginning of receive buffer
+        For byteNdx = 0 To (dwBytesResidue - 1) ' buffer is 0 based, so start ndx at 0 to avoid -1 for each index access, for loop skipped if no residue
+            rgbBuffer(byteNdx) = rgbBuffer(CLng(dwBytesTransferred) - dwBytesResidue + byteNdx)
+        Next
+    Loop
+    ' Note: previously we resized rgbBuffer to dwBytesTransferred, which includes 1 extra byte, which usually was a 0 value to terminate
+    ' but since we are doing the conversion in a loop that would embed 0s in the middle of the message, we explicitly append the terminating '\0' character
+    GetMessageUTF8 = GetMessageUTF8 & Chr(0)
 
-Dim MessageComplete As Boolean
-MessageComplete = False
-Do Until (MessageComplete)
-  If (dwBufferLength = 0) Then
-    dwError = ERRORxNOTxENOUGHxMEMORY  ' note - not using underscores, can confuse class compilation
-    pErrorText = "Need a bigger buffer!"
+    If left(GetMessageUTF8, 1) <> "{" Then Stop
+    If Len(GetMessageUTF8) > 4096 Then Stop
     Exit Function
-  End If
-  
-  ' receive - will hang if no server response
-  dwError = WinHttpWebSocketReceive(hWebSocketHandle, rgbBuffer(dwTotalBytesTransferred), CLng(dwBufferLength), dwBytesTransferred, eBufferType)
-  If (dwError <> ERRORxSUCCESS) Then
-      pErrorText = "GetMessageUTF8 Error: " & dwError & "/" & GetLastError
-      Exit Function
-  End If
-  
-  ' check for close message
-  If (eBufferType = WINHTTPxWEBxSOCKETxCLOSExBUFFERxTYPE) Then ' server wants to quit
-    pSCC = True
-    pErrorText = "Server Closed Connection"
-    Exit Function
-  End If
-  
-' If we receive just part of the message repeat the receive operation.
-  dwTotalBytesTransferred = dwTotalBytesTransferred + CLng(dwBytesTransferred)
-  dwBufferLength = dwBufferLength - dwBytesTransferred
-  If Not (eBufferType = WINHTTPxWEBxSOCKETxUTF8xFRAGMENTxBUFFERxTYPE) Then
-    MessageComplete = True
-  End If
-Loop
-
-' resize buffer to dwBytesTransferred, then convert buffer into VBA string
-ReDim Preserve rgbBuffer(CInt(dwTotalBytesTransferred))
-GetMessageUTF8 = Utf8BytesToString(rgbBuffer)
-
-If left(GetMessageUTF8, 1) <> "{" Then Stop
-Exit Function
 ErrHandler:
     Debug.Print "GetMessageUTF8() - Error: " & Err.description
     Stop
