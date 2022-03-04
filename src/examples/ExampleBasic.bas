@@ -113,7 +113,7 @@ Private Sub test4()
     ' set search value
     browser.cdp.DOM.setAttributeValue nodeId, "value", "happy kitten"
     ' get search button
-    Dim btnId As Integer
+    Dim btnId As Long
     btnId = browser.cdp.DOM.querySelector(rootId, "body > div.L3eUgb > div.o3j99.ikrT4e.om7nvf > form > div:nth-child(1) > div.A8SBwf > div.FPdoLc.lJ9FBc > center > input.gNO89b")
     ' and do the search
     'cdp.DOM.focus nodeId:=btnId
