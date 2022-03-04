@@ -247,8 +247,8 @@ Public Declare PtrSafe Function WinHttpWebSocketReceive Lib "winhttp" ( _
    ByVal hWebSocket As LongPtr, _
    ByRef pvBuffer As Any, _
    ByVal dwBufferLength As Long, _
-   ByRef pdwBytesRead As LongPtr, _
-   ByRef peBufferType As LongPtr _
+   ByRef pdwBytesRead As Long, _
+   ByRef peBufferType As Long _
    ) As Long
 
 Public Declare PtrSafe Function WinHttpWebSocketClose Lib "winhttp" ( _
