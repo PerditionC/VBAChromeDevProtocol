@@ -16,6 +16,7 @@ Option Explicit
 ' !!! Edge returns tip of tree protocol JSON but claims only support for version 1.3, refer to documentation an limit to 1.3 compatible commands for best compatibility
 Public Accessibility As cdpAccessibility
 Public Browser As cdpBrowser
+Public CSS As cdpCSS
 Public DOM As cdpDOM
 Public SimulateInput As cdpInput
 Public Network As cdpNetwork
@@ -329,6 +330,8 @@ Private Sub Class_Initialize()
     Accessibility.init Me
     Set Browser = New cdpBrowser
     Browser.init Me
+    Set CSS = New cdpCSS
+    CSS.init Me
     Set DOM = New cdpDOM
     DOM.init Me
     Set SimulateInput = New cdpInput
@@ -354,6 +357,7 @@ Private Sub Class_Terminate()
     ' ensure we don't have cyclic dependencies
     Set Accessibility = Nothing
     Set Browser = Nothing
+    Set CSS = Nothing
     Set DOM = Nothing
     Set SimulateInput = Nothing
     Set Network = Nothing
@@ -364,7 +368,6 @@ Private Sub Class_Terminate()
 End Sub
 
 
-#If False Then
 ' internal event handler
 ' Note: if registering any event handled here, caller must be sure to call to our event handler!
 Public Function processEvent(ByVal eventName As String, ByVal eventData As Dictionary) As Boolean
@@ -374,7 +377,6 @@ Public Function processEvent(ByVal eventName As String, ByVal eventData As Dicti
         Case Else
     End Select
 End Function
-#End If
 
 
 ' ********* Public interface of clsCDP **********************
