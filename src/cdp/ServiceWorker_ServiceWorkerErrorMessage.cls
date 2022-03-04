@@ -31,11 +31,11 @@ Public sourceURL AS string
 
 ' lineNumber : integer
 ' 
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' columnNumber : integer
 ' 
-Public columnNumber AS integer
+Public columnNumber AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpServiceWorkerServiceWorkerEr
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -44,8 +44,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let registrationId = CStr(obj.Item("registrationId"))
     Let versionId = CStr(obj.Item("versionId"))
     Let sourceURL = CStr(obj.Item("sourceURL"))
-    Let lineNumber = CInt(obj.Item("lineNumber"))
-    Let columnNumber = CInt(obj.Item("columnNumber"))
+    Let lineNumber = CLng(obj.Item("lineNumber"))
+    Let columnNumber = CLng(obj.Item("columnNumber"))
 
     Set init = Me
 End Function

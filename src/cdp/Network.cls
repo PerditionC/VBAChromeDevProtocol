@@ -1696,9 +1696,9 @@ Public Sub enable( _
     ' maxPostDataSize: integer(optional) Longest post body size (in bytes) that would be included in requestWillBeSent notification
 
     Dim params As New Dictionary
-    If Not IsMissing(maxTotalBufferSize) Then params("maxTotalBufferSize") = CInt(maxTotalBufferSize)
-    If Not IsMissing(maxResourceBufferSize) Then params("maxResourceBufferSize") = CInt(maxResourceBufferSize)
-    If Not IsMissing(maxPostDataSize) Then params("maxPostDataSize") = CInt(maxPostDataSize)
+    If Not IsMissing(maxTotalBufferSize) Then params("maxTotalBufferSize") = CLng(maxTotalBufferSize)
+    If Not IsMissing(maxResourceBufferSize) Then params("maxResourceBufferSize") = CLng(maxResourceBufferSize)
+    If Not IsMissing(maxPostDataSize) Then params("maxPostDataSize") = CLng(maxPostDataSize)
 
     cdp.InvokeMethod "Network.enable", params
 End Sub
@@ -1953,7 +1953,7 @@ Public Function setCookie( _
     If Not IsMissing(priority) Then params("priority") = CStr(priority)
     If Not IsMissing(sameParty) Then params("sameParty") = CBool(sameParty)
     If Not IsMissing(sourceScheme) Then params("sourceScheme") = CStr(sourceScheme)
-    If Not IsMissing(sourcePort) Then params("sourcePort") = CInt(sourcePort)
+    If Not IsMissing(sourcePort) Then params("sourcePort") = CLng(sourcePort)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Network.setCookie", params)

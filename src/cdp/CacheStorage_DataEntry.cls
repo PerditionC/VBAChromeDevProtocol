@@ -31,7 +31,7 @@ Public responseTime AS Double
 
 ' responseStatus : integer
 ' HTTP response status code.
-Public responseStatus AS integer
+Public responseStatus AS Long
 
 ' responseStatusText : string
 ' HTTP response status text.
@@ -58,7 +58,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
         Set obj_requestHeaders = Nothing
     Next v
     Let responseTime = CDbl(obj.Item("responseTime"))
-    Let responseStatus = CInt(obj.Item("responseStatus"))
+    Let responseStatus = CLng(obj.Item("responseStatus"))
     Let responseStatusText = CStr(obj.Item("responseStatusText"))
     Let responseType = CStr(obj.Item("responseType"))
     For each v in obj.Item("responseHeaders")

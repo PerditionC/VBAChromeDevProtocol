@@ -19,14 +19,14 @@ Public containerQueryContainerHighlightConfig AS cdpOverlayContainerQueryContain
 
 ' nodeId : DOM.NodeId
 ' Identifier of the container node to highlight.
-Public nodeId AS integer
+Public nodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayContainerQueryHighlig
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set containerQueryContainerHighlightConfig = New cdpOverlayContainerQueryContain
     containerQueryContainerHighlightConfig.init obj.Item("containerQueryContainerHighlightConfig")
-    Let nodeId = CInt(obj.Item("nodeId"))
+    Let nodeId = CLng(obj.Item("nodeId"))
 
     Set init = Me
 End Function

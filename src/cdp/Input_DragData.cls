@@ -24,7 +24,7 @@ Public files AS Collection
 
 ' dragOperationsMask : integer
 ' Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
-Public dragOperationsMask AS integer
+Public dragOperationsMask AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpInputDragData
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -41,7 +41,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
             files.Add v
         Next v
     End If
-    Let dragOperationsMask = CInt(obj.Item("dragOperationsMask"))
+    Let dragOperationsMask = CLng(obj.Item("dragOperationsMask"))
 
     Set init = Me
 End Function

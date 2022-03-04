@@ -19,13 +19,13 @@ Public fieldType AS string
 
 ' angle : integer
 ' Orientation angle.
-Public angle AS integer
+Public angle AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpEmulationScreenOrientation
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
-    Let angle = CInt(obj.Item("angle"))
+    Let angle = CLng(obj.Item("angle"))
 
     Set init = Me
 End Function

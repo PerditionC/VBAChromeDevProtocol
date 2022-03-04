@@ -15,7 +15,7 @@ Option Explicit
 
 ' id : integer
 ' Unique id of the node.
-Public id AS integer
+Public id AS Long
 
 ' callFrame : Runtime.CallFrame
 ' Function location.
@@ -24,7 +24,7 @@ Public callFrame AS cdpRuntimeCallFrame
 ' hitCount : integer
 ' Optional
 ' Number of samples where this node was on top of the call stack.
-Public hitCount AS integer
+Public hitCount AS Long
 
 ' children : array of integer
 ' Optional
@@ -46,10 +46,10 @@ Public Function init(ByVal obj as Dictionary) As cdpProfilerProfileNode
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
-    Let id = CInt(obj.Item("id"))
+    Let id = CLng(obj.Item("id"))
     Set callFrame = New cdpRuntimeCallFrame
     callFrame.init obj.Item("callFrame")
-    If obj.Exists("hitCount") Then Let hitCount = CInt(obj.Item("hitCount"))
+    If obj.Exists("hitCount") Then Let hitCount = CLng(obj.Item("hitCount"))
     If obj.Exists("children") Then
         For each v in obj.Item("children")
             children.Add v

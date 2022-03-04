@@ -16,18 +16,18 @@ Option Explicit
 ' standard : integer
 ' Optional
 ' Default standard font size.
-Public standard AS integer
+Public standard AS Long
 
 ' fixed : integer
 ' Optional
 ' Default fixed font size.
-Public fixed AS integer
+Public fixed AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpPageFontSizes
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    If obj.Exists("standard") Then Let standard = CInt(obj.Item("standard"))
-    If obj.Exists("fixed") Then Let fixed = CInt(obj.Item("fixed"))
+    If obj.Exists("standard") Then Let standard = CLng(obj.Item("standard"))
+    If obj.Exists("fixed") Then Let fixed = CLng(obj.Item("fixed"))
 
     Set init = Me
 End Function

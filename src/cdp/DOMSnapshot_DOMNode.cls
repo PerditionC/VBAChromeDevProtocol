@@ -15,7 +15,7 @@ Option Explicit
 
 ' nodeType : integer
 ' `Node`'s nodeType.
-Public nodeType AS integer
+Public nodeType AS Long
 
 ' nodeName : string
 ' `Node`'s nodeName.
@@ -47,7 +47,7 @@ Public optionSelected AS Variant ' boolean
 
 ' backendNodeId : DOM.BackendNodeId
 ' `Node`'s id, corresponds to DOM.Node.backendNodeId.
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 ' childNodeIndexes : array of integer
 ' Optional
@@ -70,7 +70,7 @@ Public pseudoElementIndexes AS Collection
 ' Optional
 ' The index of the node's related layout tree node in the `layoutTreeNodes` array returned by
     '   `getSnapshot`, if any.
-Public layoutNodeIndex AS integer
+Public layoutNodeIndex AS Long
 
 ' documentURL : string
 ' Optional
@@ -111,7 +111,7 @@ Public frameId AS string
 ' Optional
 ' The index of a frame owner element's content document in the `domNodes` array returned by
     '   `getSnapshot`, if any.
-Public contentDocumentIndex AS integer
+Public contentDocumentIndex AS Long
 
 ' pseudoType : DOM.PseudoType
 ' Optional
@@ -159,14 +159,14 @@ Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotDOMNode
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
-    Let nodeType = CInt(obj.Item("nodeType"))
+    Let nodeType = CLng(obj.Item("nodeType"))
     Let nodeName = CStr(obj.Item("nodeName"))
     Let nodeValue = CStr(obj.Item("nodeValue"))
     If obj.Exists("textValue") Then Let textValue = CStr(obj.Item("textValue"))
     If obj.Exists("inputValue") Then Let inputValue = CStr(obj.Item("inputValue"))
     If obj.Exists("inputChecked") Then Let inputChecked = CBool(obj.Item("inputChecked"))
     If obj.Exists("optionSelected") Then Let optionSelected = CBool(obj.Item("optionSelected"))
-    Let backendNodeId = CInt(obj.Item("backendNodeId"))
+    Let backendNodeId = CLng(obj.Item("backendNodeId"))
     If obj.Exists("childNodeIndexes") Then
         For each v in obj.Item("childNodeIndexes")
             childNodeIndexes.Add v
@@ -185,7 +185,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
             pseudoElementIndexes.Add v
         Next v
     End If
-    If obj.Exists("layoutNodeIndex") Then Let layoutNodeIndex = CInt(obj.Item("layoutNodeIndex"))
+    If obj.Exists("layoutNodeIndex") Then Let layoutNodeIndex = CLng(obj.Item("layoutNodeIndex"))
     If obj.Exists("documentURL") Then Let documentURL = CStr(obj.Item("documentURL"))
     If obj.Exists("baseURL") Then Let baseURL = CStr(obj.Item("baseURL"))
     If obj.Exists("contentLanguage") Then Let contentLanguage = CStr(obj.Item("contentLanguage"))
@@ -193,7 +193,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("publicId") Then Let publicId = CStr(obj.Item("publicId"))
     If obj.Exists("systemId") Then Let systemId = CStr(obj.Item("systemId"))
     If obj.Exists("frameId") Then Let frameId = CStr(obj.Item("frameId"))
-    If obj.Exists("contentDocumentIndex") Then Let contentDocumentIndex = CInt(obj.Item("contentDocumentIndex"))
+    If obj.Exists("contentDocumentIndex") Then Let contentDocumentIndex = CLng(obj.Item("contentDocumentIndex"))
     If obj.Exists("pseudoType") Then Let pseudoType = CStr(obj.Item("pseudoType"))
     If obj.Exists("shadowRootType") Then Let shadowRootType = CStr(obj.Item("shadowRootType"))
     If obj.Exists("isClickable") Then Let isClickable = CBool(obj.Item("isClickable"))

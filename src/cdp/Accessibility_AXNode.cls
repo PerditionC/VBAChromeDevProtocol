@@ -59,7 +59,7 @@ Public childIds AS Collection
 ' backendDOMNodeId : DOM.BackendNodeId
 ' Optional
 ' The backend ID for the associated DOM node, if any.
-Public backendDOMNodeId AS integer
+Public backendDOMNodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpAccessibilityAXNode
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -104,7 +104,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
             childIds.Add v
         Next v
     End If
-    If obj.Exists("backendDOMNodeId") Then Let backendDOMNodeId = CInt(obj.Item("backendDOMNodeId"))
+    If obj.Exists("backendDOMNodeId") Then Let backendDOMNodeId = CLng(obj.Item("backendDOMNodeId"))
 
     Set init = Me
 End Function

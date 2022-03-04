@@ -31,11 +31,11 @@ Public margin AS Collection
 
 ' width : integer
 ' Node width
-Public width AS integer
+Public width AS Long
 
 ' height : integer
 ' Node height
-Public height AS integer
+Public height AS Long
 
 ' shapeOutside : ShapeOutsideInfo
 ' Optional
@@ -58,8 +58,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     For each v in obj.Item("margin")
         margin.Add v
     Next v
-    Let width = CInt(obj.Item("width"))
-    Let height = CInt(obj.Item("height"))
+    Let width = CLng(obj.Item("width"))
+    Let height = CLng(obj.Item("height"))
     If obj.Exists("shapeOutside") Then
         Set shapeOutside = New cdpDOMShapeOutsideInfo
         shapeOutside.init obj.Item("shapeOutside")

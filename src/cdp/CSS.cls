@@ -227,14 +227,14 @@ End Sub
 ' Ensures that the given node will have specified pseudo-classes whenever its style is computed by
 ' the browser.
 Public Sub forcePseudoState( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal forcedPseudoClasses AS Collection _
 )
     ' nodeId: DOM.NodeId The element id for which to force the pseudo state.
     ' forcedPseudoClasses: array Element pseudo classes to force when computing the element's style.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     Set params("forcedPseudoClasses") = forcedPseudoClasses
 
     cdp.InvokeMethod "CSS.forcePseudoState", params
@@ -243,12 +243,12 @@ End Sub
 ' 
 ' Returns:  - 
 Public Function getBackgroundColors( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Dictionary
     ' nodeId: DOM.NodeId Id of the node to get background colors for.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("CSS.getBackgroundColors", params)
@@ -260,12 +260,12 @@ End Function
 ' Returns the computed style for a DOM node identified by `nodeId`.
 ' Returns: computedStyle - Computed style for the specified DOM node.
 Public Function getComputedStyleForNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Collection
     ' nodeId: DOM.NodeId 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("CSS.getComputedStyleForNode", params)
@@ -278,12 +278,12 @@ End Function
 ' attributes) for a DOM node identified by `nodeId`.
 ' Returns:  - 
 Public Function getInlineStylesForNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Dictionary
     ' nodeId: DOM.NodeId 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("CSS.getInlineStylesForNode", params)
@@ -295,12 +295,12 @@ End Function
 ' Returns requested styles for a DOM node identified by `nodeId`.
 ' Returns:  - 
 Public Function getMatchedStylesForNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Dictionary
     ' nodeId: DOM.NodeId 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("CSS.getMatchedStylesForNode", params)
@@ -324,12 +324,12 @@ End Function
 ' node.
 ' Returns: fonts - Usage statistics for every employed platform font.
 Public Function getPlatformFontsForNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Collection
     ' nodeId: DOM.NodeId 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("CSS.getPlatformFontsForNode", params)
@@ -388,7 +388,7 @@ End Function
 ' Find a rule with the given active property for the given node and set the new value for this
 ' property
 Public Sub setEffectivePropertyValueForNode( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal propertyName AS string, _
     ByVal value AS string _
 )
@@ -397,7 +397,7 @@ Public Sub setEffectivePropertyValueForNode( _
     ' value: string 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("propertyName") = CStr(propertyName)
     params("value") = CStr(value)
 

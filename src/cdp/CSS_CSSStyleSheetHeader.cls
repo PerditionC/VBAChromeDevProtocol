@@ -43,7 +43,7 @@ Public title AS string
 ' ownerNode : DOM.BackendNodeId
 ' Optional
 ' The backend id for the owner node of the stylesheet.
-Public ownerNode AS integer
+Public ownerNode AS Long
 
 ' disabled : boolean
 ' Denotes whether the stylesheet is disabled.
@@ -100,7 +100,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("sourceMapURL") Then Let sourceMapURL = CStr(obj.Item("sourceMapURL"))
     Let origin = CStr(obj.Item("origin"))
     Let title = CStr(obj.Item("title"))
-    If obj.Exists("ownerNode") Then Let ownerNode = CInt(obj.Item("ownerNode"))
+    If obj.Exists("ownerNode") Then Let ownerNode = CLng(obj.Item("ownerNode"))
     Let disabled = CBool(obj.Item("disabled"))
     If obj.Exists("hasSourceURL") Then Let hasSourceURL = CBool(obj.Item("hasSourceURL"))
     Let isInline = CBool(obj.Item("isInline"))

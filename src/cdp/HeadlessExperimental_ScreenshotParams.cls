@@ -21,13 +21,13 @@ Public format AS string
 ' quality : integer
 ' Optional
 ' Compression quality from range [0..100] (jpeg only).
-Public quality AS integer
+Public quality AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpHeadlessExperimentalScreensh
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     If obj.Exists("format") Then Let format = CStr(obj.Item("format"))
-    If obj.Exists("quality") Then Let quality = CInt(obj.Item("quality"))
+    If obj.Exists("quality") Then Let quality = CLng(obj.Item("quality"))
 
     Set init = Me
 End Function

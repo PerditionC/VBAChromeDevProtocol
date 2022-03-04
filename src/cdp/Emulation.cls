@@ -219,8 +219,8 @@ End Sub
 ' window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
 ' query results).
 Public Sub setDeviceMetricsOverride( _
-    ByVal width AS integer, _
-    ByVal height AS integer, _
+    ByVal width AS Long, _
+    ByVal height AS Long, _
     ByVal deviceScaleFactor AS Double, _
     ByVal mobile AS boolean, _
     Optional ByVal pScale AS Variant, _
@@ -251,15 +251,15 @@ Public Sub setDeviceMetricsOverride( _
     '   is turned-off.
 
     Dim params As New Dictionary
-    params("width") = CInt(width)
-    params("height") = CInt(height)
+    params("width") = CLng(width)
+    params("height") = CLng(height)
     params("deviceScaleFactor") = CDbl(deviceScaleFactor)
     params("mobile") = CBool(mobile)
     If Not IsMissing(pScale) Then params("scale") = CDbl(pScale)
-    If Not IsMissing(screenWidth) Then params("screenWidth") = CInt(screenWidth)
-    If Not IsMissing(screenHeight) Then params("screenHeight") = CInt(screenHeight)
-    If Not IsMissing(positionX) Then params("positionX") = CInt(positionX)
-    If Not IsMissing(positionY) Then params("positionY") = CInt(positionY)
+    If Not IsMissing(screenWidth) Then params("screenWidth") = CLng(screenWidth)
+    If Not IsMissing(screenHeight) Then params("screenHeight") = CLng(screenHeight)
+    If Not IsMissing(positionX) Then params("positionX") = CLng(positionX)
+    If Not IsMissing(positionY) Then params("positionY") = CLng(positionY)
     If Not IsMissing(dontSetVisibleSize) Then params("dontSetVisibleSize") = CBool(dontSetVisibleSize)
     If Not IsMissing(screenOrientation) Then Set params("screenOrientation") = screenOrientation
     If Not IsMissing(viewport) Then Set params("viewport") = viewport
@@ -428,7 +428,7 @@ Public Sub setTouchEmulationEnabled( _
 
     Dim params As New Dictionary
     params("enabled") = CBool(enabled)
-    If Not IsMissing(maxTouchPoints) Then params("maxTouchPoints") = CInt(maxTouchPoints)
+    If Not IsMissing(maxTouchPoints) Then params("maxTouchPoints") = CLng(maxTouchPoints)
 
     cdp.InvokeMethod "Emulation.setTouchEmulationEnabled", params
 End Sub
@@ -456,7 +456,7 @@ Public Function setVirtualTimePolicy( _
     Dim params As New Dictionary
     params("policy") = CStr(policy)
     If Not IsMissing(budget) Then params("budget") = CDbl(budget)
-    If Not IsMissing(maxVirtualTimeTaskStarvationCount) Then params("maxVirtualTimeTaskStarvationCount") = CInt(maxVirtualTimeTaskStarvationCount)
+    If Not IsMissing(maxVirtualTimeTaskStarvationCount) Then params("maxVirtualTimeTaskStarvationCount") = CLng(maxVirtualTimeTaskStarvationCount)
     If Not IsMissing(waitForNavigation) Then params("waitForNavigation") = CBool(waitForNavigation)
     If Not IsMissing(initialVirtualTime) Then params("initialVirtualTime") = CDbl(initialVirtualTime)
 
@@ -500,15 +500,15 @@ End Sub
 ' on Android.
 ' Experimental
 Public Sub setVisibleSize( _
-    ByVal width AS integer, _
-    ByVal height AS integer _
+    ByVal width AS Long, _
+    ByVal height AS Long _
 )
     ' width: integer Frame width (DIP).
     ' height: integer Frame height (DIP).
 
     Dim params As New Dictionary
-    params("width") = CInt(width)
-    params("height") = CInt(height)
+    params("width") = CLng(width)
+    params("height") = CLng(height)
 
     cdp.InvokeMethod "Emulation.setVisibleSize", params
 End Sub

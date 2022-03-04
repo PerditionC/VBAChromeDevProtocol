@@ -27,11 +27,11 @@ Public url AS string
 
 ' lineNumber : integer
 ' JavaScript script line number (0-based).
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' columnNumber : integer
 ' JavaScript script column number (0-based).
-Public columnNumber AS integer
+Public columnNumber AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeCallFrame
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -39,8 +39,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let functionName = CStr(obj.Item("functionName"))
     Let scriptId = CStr(obj.Item("scriptId"))
     Let url = CStr(obj.Item("url"))
-    Let lineNumber = CInt(obj.Item("lineNumber"))
-    Let columnNumber = CInt(obj.Item("columnNumber"))
+    Let lineNumber = CLng(obj.Item("lineNumber"))
+    Let columnNumber = CLng(obj.Item("columnNumber"))
 
     Set init = Me
 End Function

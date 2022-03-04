@@ -15,27 +15,27 @@ Option Explicit
 
 ' pageX : integer
 ' Horizontal offset relative to the document (CSS pixels).
-Public pageX AS integer
+Public pageX AS Long
 
 ' pageY : integer
 ' Vertical offset relative to the document (CSS pixels).
-Public pageY AS integer
+Public pageY AS Long
 
 ' clientWidth : integer
 ' Width (CSS pixels), excludes scrollbar if present.
-Public clientWidth AS integer
+Public clientWidth AS Long
 
 ' clientHeight : integer
 ' Height (CSS pixels), excludes scrollbar if present.
-Public clientHeight AS integer
+Public clientHeight AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpPageLayoutViewport
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let pageX = CInt(obj.Item("pageX"))
-    Let pageY = CInt(obj.Item("pageY"))
-    Let clientWidth = CInt(obj.Item("clientWidth"))
-    Let clientHeight = CInt(obj.Item("clientHeight"))
+    Let pageX = CLng(obj.Item("pageX"))
+    Let pageY = CLng(obj.Item("pageY"))
+    Let clientWidth = CLng(obj.Item("clientWidth"))
+    Let clientHeight = CLng(obj.Item("clientHeight"))
 
     Set init = Me
 End Function

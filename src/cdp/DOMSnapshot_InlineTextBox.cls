@@ -21,20 +21,20 @@ Public boundingBox AS cdpDOMRect
 ' startCharacterIndex : integer
 ' The starting index in characters, for this post layout textbox substring. Characters that
     '   would be represented as a surrogate pair in UTF-16 have length 2.
-Public startCharacterIndex AS integer
+Public startCharacterIndex AS Long
 
 ' numCharacters : integer
 ' The number of characters in this post layout textbox substring. Characters that would be
     '   represented as a surrogate pair in UTF-16 have length 2.
-Public numCharacters AS integer
+Public numCharacters AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotInlineTextBox
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set boundingBox = New cdpDOMRect
     boundingBox.init obj.Item("boundingBox")
-    Let startCharacterIndex = CInt(obj.Item("startCharacterIndex"))
-    Let numCharacters = CInt(obj.Item("numCharacters"))
+    Let startCharacterIndex = CLng(obj.Item("startCharacterIndex"))
+    Let numCharacters = CLng(obj.Item("numCharacters"))
 
     Set init = Me
 End Function

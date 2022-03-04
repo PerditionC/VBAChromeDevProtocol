@@ -19,14 +19,14 @@ Public isolationModeHighlightConfig AS cdpOverlayIsolationModeHighligh
 
 ' nodeId : DOM.NodeId
 ' Identifier of the isolated element to highlight.
-Public nodeId AS integer
+Public nodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayIsolatedElementHighli
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set isolationModeHighlightConfig = New cdpOverlayIsolationModeHighligh
     isolationModeHighlightConfig.init obj.Item("isolationModeHighlightConfig")
-    Let nodeId = CInt(obj.Item("nodeId"))
+    Let nodeId = CLng(obj.Item("nodeId"))
 
     Set init = Me
 End Function

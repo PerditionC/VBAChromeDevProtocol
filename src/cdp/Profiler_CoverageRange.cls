@@ -15,22 +15,22 @@ Option Explicit
 
 ' startOffset : integer
 ' JavaScript script source offset for the range start.
-Public startOffset AS integer
+Public startOffset AS Long
 
 ' endOffset : integer
 ' JavaScript script source offset for the range end.
-Public endOffset AS integer
+Public endOffset AS Long
 
 ' count : integer
 ' Collected execution count of the source range.
-Public count AS integer
+Public count AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerCoverageRange
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let startOffset = CInt(obj.Item("startOffset"))
-    Let endOffset = CInt(obj.Item("endOffset"))
-    Let count = CInt(obj.Item("count"))
+    Let startOffset = CLng(obj.Item("startOffset"))
+    Let endOffset = CLng(obj.Item("endOffset"))
+    Let count = CLng(obj.Item("count"))
 
     Set init = Me
 End Function

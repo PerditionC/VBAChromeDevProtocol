@@ -15,7 +15,7 @@ Option Explicit
 
 ' backendDOMNodeId : DOM.BackendNodeId
 ' The BackendNodeId of the related DOM node.
-Public backendDOMNodeId AS integer
+Public backendDOMNodeId AS Long
 
 ' idref : string
 ' Optional
@@ -30,7 +30,7 @@ Public text AS string
 Public Function init(ByVal obj as Dictionary) As cdpAccessibilityAXRelatedNode
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let backendDOMNodeId = CInt(obj.Item("backendDOMNodeId"))
+    Let backendDOMNodeId = CLng(obj.Item("backendDOMNodeId"))
     If obj.Exists("idref") Then Let idref = CStr(obj.Item("idref"))
     If obj.Exists("text") Then Let text = CStr(obj.Item("text"))
 

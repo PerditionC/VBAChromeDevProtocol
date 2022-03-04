@@ -185,8 +185,8 @@ Public Function requestEntries( _
 
     Dim params As New Dictionary
     params("cacheId") = CStr(cacheId)
-    If Not IsMissing(skipCount) Then params("skipCount") = CInt(skipCount)
-    If Not IsMissing(pageSize) Then params("pageSize") = CInt(pageSize)
+    If Not IsMissing(skipCount) Then params("skipCount") = CLng(skipCount)
+    If Not IsMissing(pageSize) Then params("pageSize") = CLng(pageSize)
     If Not IsMissing(pathFilter) Then params("pathFilter") = CStr(pathFilter)
 
     Dim results as Dictionary

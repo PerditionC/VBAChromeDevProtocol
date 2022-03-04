@@ -15,7 +15,7 @@ Option Explicit
 
 ' nodeType : integer
 ' `Node`'s nodeType.
-Public nodeType AS integer
+Public nodeType AS Long
 
 ' nodeName : string
 ' `Node`'s nodeName.
@@ -23,14 +23,14 @@ Public nodeName AS string
 
 ' backendNodeId : BackendNodeId
 ' 
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMBackendNode
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let nodeType = CInt(obj.Item("nodeType"))
+    Let nodeType = CLng(obj.Item("nodeType"))
     Let nodeName = CStr(obj.Item("nodeName"))
-    Let backendNodeId = CInt(obj.Item("backendNodeId"))
+    Let backendNodeId = CLng(obj.Item("backendNodeId"))
 
     Set init = Me
 End Function

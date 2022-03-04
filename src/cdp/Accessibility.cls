@@ -537,8 +537,8 @@ Public Function getPartialAXTree( _
     ' fetchRelatives: boolean(optional) Whether to fetch this nodes ancestors, siblings and children. Defaults to true.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
     If Not IsMissing(fetchRelatives) Then params("fetchRelatives") = CBool(fetchRelatives)
 
@@ -564,8 +564,8 @@ Public Function getFullAXTree( _
     '   If omited, the root frame is used.
 
     Dim params As New Dictionary
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
-    If Not IsMissing(max_depth) Then params("max_depth") = CInt(max_depth)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
+    If Not IsMissing(max_depth) Then params("max_depth") = CLng(max_depth)
     If Not IsMissing(frameId) Then params("frameId") = CStr(frameId)
 
     Dim results as Dictionary
@@ -620,8 +620,8 @@ Public Function queryAXTree( _
     ' role: string(optional) Find nodes with this computed role.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
     If Not IsMissing(accessibleName) Then params("accessibleName") = CStr(accessibleName)
     If Not IsMissing(role) Then params("role") = CStr(role)

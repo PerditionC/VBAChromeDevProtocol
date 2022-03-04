@@ -447,9 +447,17 @@ Public Function launch( _
         ' we get the path (really full link) by connecting via HTTP to http://localhost:9222/json/version - note 9222 is same as specified on cmdline
         ' and extracting the information from the webSocketDebuggerUrl field of the returned JSON
         ' eg. "ws://localhost:9222/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
+GetWebSocketEndPoint:
         wsPath = wsBrowser.HttpGetMessage("localhost", 9222, "/json/version")
         Dim versionInfo As Dictionary
+        On Error Resume Next
         Set versionInfo = JsonConverter.ParseJson(wsPath)
+        If Err.Number <> 0 Then
+            Debug.Print "Retrying attempt to determine websocket endpoint"
+            GoTo GetWebSocketEndPoint
+        Else
+            On Error GoTo 0
+        End If
         wsPath = versionInfo("webSocketDebuggerUrl")
         wsPath = Right(wsPath, Len(wsPath) - Len("ws://localhost:9222"))
     

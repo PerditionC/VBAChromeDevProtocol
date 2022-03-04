@@ -128,7 +128,7 @@ End Sub
 ' Provides response to the request.
 Public Sub fulfillRequest( _
     ByVal requestId AS string, _
-    ByVal responseCode AS integer, _
+    ByVal responseCode AS Long, _
     Optional ByVal responseHeaders AS Variant, _
     Optional ByVal binaryResponseHeaders AS Variant, _
     Optional ByVal body AS Variant, _
@@ -149,7 +149,7 @@ Public Sub fulfillRequest( _
 
     Dim params As New Dictionary
     params("requestId") = CStr(requestId)
-    params("responseCode") = CInt(responseCode)
+    params("responseCode") = CLng(responseCode)
     If Not IsMissing(responseHeaders) Then Set params("responseHeaders") = responseHeaders
     If Not IsMissing(binaryResponseHeaders) Then params("binaryResponseHeaders") = CStr(binaryResponseHeaders)
     If Not IsMissing(body) Then params("body") = CStr(body)
@@ -223,7 +223,7 @@ Public Sub continueResponse( _
 
     Dim params As New Dictionary
     params("requestId") = CStr(requestId)
-    If Not IsMissing(responseCode) Then params("responseCode") = CInt(responseCode)
+    If Not IsMissing(responseCode) Then params("responseCode") = CLng(responseCode)
     If Not IsMissing(responsePhrase) Then params("responsePhrase") = CStr(responsePhrase)
     If Not IsMissing(responseHeaders) Then Set params("responseHeaders") = responseHeaders
     If Not IsMissing(binaryResponseHeaders) Then params("binaryResponseHeaders") = CStr(binaryResponseHeaders)

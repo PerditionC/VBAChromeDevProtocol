@@ -65,8 +65,8 @@ Public Function read( _
 
     Dim params As New Dictionary
     params("handle") = CStr(handle)
-    If Not IsMissing(offset) Then params("offset") = CInt(offset)
-    If Not IsMissing(size) Then params("size") = CInt(size)
+    If Not IsMissing(offset) Then params("offset") = CLng(offset)
+    If Not IsMissing(size) Then params("size") = CLng(size)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("IO.read", params)

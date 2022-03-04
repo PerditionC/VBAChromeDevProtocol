@@ -19,19 +19,19 @@ Public scriptId AS string
 
 ' lineNumber : integer
 ' Line number in the script (0-based).
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' columnNumber : integer
 ' Optional
 ' Column number in the script (0-based).
-Public columnNumber AS integer
+Public columnNumber AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDebuggerLocation
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let scriptId = CStr(obj.Item("scriptId"))
-    Let lineNumber = CInt(obj.Item("lineNumber"))
-    If obj.Exists("columnNumber") Then Let columnNumber = CInt(obj.Item("columnNumber"))
+    Let lineNumber = CLng(obj.Item("lineNumber"))
+    If obj.Exists("columnNumber") Then Let columnNumber = CLng(obj.Item("columnNumber"))
 
     Set init = Me
 End Function

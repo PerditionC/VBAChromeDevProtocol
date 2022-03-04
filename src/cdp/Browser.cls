@@ -502,12 +502,12 @@ End Function
  '   position and size are returned.
 ' Experimental
 Public Function getWindowBounds( _
-    ByVal windowId AS integer _
+    ByVal windowId AS Long _
 ) AS Dictionary
     ' windowId: WindowID Browser window id.
 
     Dim params As New Dictionary
-    params("windowId") = CInt(windowId)
+    params("windowId") = CLng(windowId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Browser.getWindowBounds", params)
@@ -537,7 +537,7 @@ End Function
 ' Set position and/or size of the browser window.
 ' Experimental
 Public Sub setWindowBounds( _
-    ByVal windowId AS integer, _
+    ByVal windowId AS Long, _
     ByVal bounds AS Dictionary _
 )
     ' windowId: WindowID Browser window id.
@@ -545,7 +545,7 @@ Public Sub setWindowBounds( _
     '   with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
 
     Dim params As New Dictionary
-    params("windowId") = CInt(windowId)
+    params("windowId") = CLng(windowId)
     Set params("bounds") = bounds
 
     cdp.InvokeMethod "Browser.setWindowBounds", params

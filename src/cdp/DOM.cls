@@ -272,12 +272,12 @@ End Sub
 ' Returns: classNames - Class name list.
 ' Experimental
 Public Function collectClassNamesFromSubtree( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Collection
     ' nodeId: NodeId Id of the node to collect class names.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.collectClassNamesFromSubtree", params)
@@ -291,19 +291,19 @@ End Function
 ' Returns: nodeId - Id of the node clone.
 ' Experimental
 Public Function copyTo( _
-    ByVal nodeId AS integer, _
-    ByVal targetNodeId AS integer, _
+    ByVal nodeId AS Long, _
+    ByVal targetNodeId AS Long, _
     Optional ByVal insertBeforeNodeId AS Variant _
-) AS integer
+) AS Long
     ' nodeId: NodeId Id of the node to copy.
     ' targetNodeId: NodeId Id of the element to drop the copy into.
     ' insertBeforeNodeId: NodeId(optional) Drop the copy before this node (if absent, the copy becomes the last child of
     '   `targetNodeId`).
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
-    params("targetNodeId") = CInt(targetNodeId)
-    If Not IsMissing(insertBeforeNodeId) Then params("insertBeforeNodeId") = CInt(insertBeforeNodeId)
+    params("nodeId") = CLng(nodeId)
+    params("targetNodeId") = CLng(targetNodeId)
+    If Not IsMissing(insertBeforeNodeId) Then params("insertBeforeNodeId") = CLng(insertBeforeNodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.copyTo", params)
@@ -331,10 +331,10 @@ Public Function describeNode( _
     '   (default is false).
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
     Dim results as Dictionary
@@ -361,8 +361,8 @@ Public Sub scrollIntoViewIfNeeded( _
     '   When omitted, center of the node will be used, similar to Element.scrollIntoView.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
     If Not IsMissing(rect) Then Set params("rect") = rect
 
@@ -406,8 +406,8 @@ Public Sub focus( _
     ' objectId: Runtime.RemoteObjectId(optional) JavaScript object id of the node wrapper.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     cdp.InvokeMethod "DOM.focus", params
@@ -416,12 +416,12 @@ End Sub
 ' Returns attributes for the specified node.
 ' Returns: attributes - An interleaved array of node attribute names and values.
 Public Function getAttributes( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Collection
     ' nodeId: NodeId Id of the node to retrieve attibutes for.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.getAttributes", params)
@@ -442,8 +442,8 @@ Public Function getBoxModel( _
     ' objectId: Runtime.RemoteObjectId(optional) JavaScript object id of the node wrapper.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     Dim results as Dictionary
@@ -467,8 +467,8 @@ Public Function getContentQuads( _
     ' objectId: Runtime.RemoteObjectId(optional) JavaScript object id of the node wrapper.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     Dim results as Dictionary
@@ -490,7 +490,7 @@ Public Function getDocument( _
     '   (default is false).
 
     Dim params As New Dictionary
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
     Dim results as Dictionary
@@ -514,7 +514,7 @@ Public Function getFlattenedDocument( _
     '   (default is false).
 
     Dim params As New Dictionary
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
     Dim results as Dictionary
@@ -528,7 +528,7 @@ End Function
 ' Returns: nodeIds - Resulting nodes.
 ' Experimental
 Public Function getNodesForSubtreeByStyle( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal computedStyles AS Collection, _
     Optional ByVal pierce AS Variant _
 ) AS Collection
@@ -538,7 +538,7 @@ Public Function getNodesForSubtreeByStyle( _
     '   results (default is false).
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     Set params("computedStyles") = computedStyles
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
@@ -553,8 +553,8 @@ End Function
 ' either returned or not.
 ' Returns:  - 
 Public Function getNodeForLocation( _
-    ByVal x AS integer, _
-    ByVal y AS integer, _
+    ByVal x AS Long, _
+    ByVal y AS Long, _
     Optional ByVal includeUserAgentShadowDOM AS Variant, _
     Optional ByVal ignorePointerEventsNone AS Variant _
 ) AS Dictionary
@@ -564,8 +564,8 @@ Public Function getNodeForLocation( _
     ' ignorePointerEventsNone: boolean(optional) Whether to ignore pointer-events: none on elements and hit test them.
 
     Dim params As New Dictionary
-    params("x") = CInt(x)
-    params("y") = CInt(y)
+    params("x") = CLng(x)
+    params("y") = CLng(y)
     If Not IsMissing(includeUserAgentShadowDOM) Then params("includeUserAgentShadowDOM") = CBool(includeUserAgentShadowDOM)
     If Not IsMissing(ignorePointerEventsNone) Then params("ignorePointerEventsNone") = CBool(ignorePointerEventsNone)
 
@@ -588,8 +588,8 @@ Public Function getOuterHTML( _
     ' objectId: Runtime.RemoteObjectId(optional) JavaScript object id of the node wrapper.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     Dim results as Dictionary
@@ -603,12 +603,12 @@ End Function
 ' Returns: nodeId - Relayout boundary node id for the given node.
 ' Experimental
 Public Function getRelayoutBoundary( _
-    ByVal nodeId AS integer _
-) AS integer
+    ByVal nodeId AS Long _
+) AS Long
     ' nodeId: NodeId Id of the node.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.getRelayoutBoundary", params)
@@ -623,8 +623,8 @@ End Function
 ' Experimental
 Public Function getSearchResults( _
     ByVal searchId AS string, _
-    ByVal fromIndex AS integer, _
-    ByVal toIndex AS integer _
+    ByVal fromIndex AS Long, _
+    ByVal toIndex AS Long _
 ) AS Collection
     ' searchId: string Unique search session identifier.
     ' fromIndex: integer Start index of the search result to be returned.
@@ -632,8 +632,8 @@ Public Function getSearchResults( _
 
     Dim params As New Dictionary
     params("searchId") = CStr(searchId)
-    params("fromIndex") = CInt(fromIndex)
-    params("toIndex") = CInt(toIndex)
+    params("fromIndex") = CLng(fromIndex)
+    params("toIndex") = CLng(toIndex)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.getSearchResults", params)
@@ -670,19 +670,19 @@ End Sub
 ' Moves node into the new container, places it before the given anchor.
 ' Returns: nodeId - New id of the moved node.
 Public Function moveTo( _
-    ByVal nodeId AS integer, _
-    ByVal targetNodeId AS integer, _
+    ByVal nodeId AS Long, _
+    ByVal targetNodeId AS Long, _
     Optional ByVal insertBeforeNodeId AS Variant _
-) AS integer
+) AS Long
     ' nodeId: NodeId Id of the node to move.
     ' targetNodeId: NodeId Id of the element to drop the moved node into.
     ' insertBeforeNodeId: NodeId(optional) Drop node before this one (if absent, the moved node becomes the last child of
     '   `targetNodeId`).
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
-    params("targetNodeId") = CInt(targetNodeId)
-    If Not IsMissing(insertBeforeNodeId) Then params("insertBeforeNodeId") = CInt(insertBeforeNodeId)
+    params("nodeId") = CLng(nodeId)
+    params("targetNodeId") = CLng(targetNodeId)
+    If Not IsMissing(insertBeforeNodeId) Then params("insertBeforeNodeId") = CLng(insertBeforeNodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.moveTo", params)
@@ -718,7 +718,7 @@ End Function
 ' Experimental
 Public Function pushNodeByPathToFrontend( _
     ByVal path AS string _
-) AS integer
+) AS Long
     ' path: string Path to node in the proprietary format.
 
     Dim params As New Dictionary
@@ -753,14 +753,14 @@ End Function
 ' Executes `querySelector` on a given node.
 ' Returns: nodeId - Query selector result.
 Public Function querySelector( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal selector AS string _
-) AS integer
+) AS Long
     ' nodeId: NodeId Id of the node to query upon.
     ' selector: string Selector string.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("selector") = CStr(selector)
 
     Dim results as Dictionary
@@ -773,14 +773,14 @@ End Function
 ' Executes `querySelectorAll` on a given node.
 ' Returns: nodeIds - Query selector result.
 Public Function querySelectorAll( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal selector AS string _
 ) AS Collection
     ' nodeId: NodeId Id of the node to query upon.
     ' selector: string Selector string.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("selector") = CStr(selector)
 
     Dim results as Dictionary
@@ -799,14 +799,14 @@ End Sub
 
 ' Removes attribute with given name from an element with given id.
 Public Sub removeAttribute( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal name AS string _
 )
     ' nodeId: NodeId Id of the element to remove attribute from.
     ' name: string Name of the attribute to remove.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("name") = CStr(name)
 
     cdp.InvokeMethod "DOM.removeAttribute", params
@@ -814,12 +814,12 @@ End Sub
 
 ' Removes node with given id.
 Public Sub removeNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 )
     ' nodeId: NodeId Id of the node to remove.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     cdp.InvokeMethod "DOM.removeNode", params
 End Sub
@@ -828,7 +828,7 @@ End Sub
 ' `setChildNodes` events where not only immediate children are retrieved, but all children down to
 ' the specified depth.
 Public Sub requestChildNodes( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     Optional ByVal depth AS Variant, _
     Optional ByVal pierce AS Variant _
 )
@@ -839,8 +839,8 @@ Public Sub requestChildNodes( _
     '   (default is false).
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
+    params("nodeId") = CLng(nodeId)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
     cdp.InvokeMethod "DOM.requestChildNodes", params
@@ -852,7 +852,7 @@ End Sub
 ' Returns: nodeId - Node id for given object.
 Public Function requestNode( _
     ByVal objectId AS string _
-) AS integer
+) AS Long
     ' objectId: Runtime.RemoteObjectId JavaScript object id to convert into node.
 
     Dim params As New Dictionary
@@ -879,10 +879,10 @@ Public Function resolveNode( _
     ' executionContextId: Runtime.ExecutionContextId(optional) Execution context in which to resolve the node.
 
     Dim params As New Dictionary
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectGroup) Then params("objectGroup") = CStr(objectGroup)
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.resolveNode", params)
@@ -893,7 +893,7 @@ End Function
 
 ' Sets attribute for an element with given id.
 Public Sub setAttributeValue( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal name AS string, _
     ByVal value AS string _
 )
@@ -902,7 +902,7 @@ Public Sub setAttributeValue( _
     ' value: string Attribute value.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("name") = CStr(name)
     params("value") = CStr(value)
 
@@ -912,7 +912,7 @@ End Sub
 ' Sets attributes on element with given id. This method is useful when user edits some existing
 ' attribute value and types in several attribute name/value pairs.
 Public Sub setAttributesAsText( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal text AS string, _
     Optional ByVal name AS Variant _
 )
@@ -922,7 +922,7 @@ Public Sub setAttributesAsText( _
     '   successfully.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("text") = CStr(text)
     If Not IsMissing(name) Then params("name") = CStr(name)
 
@@ -943,8 +943,8 @@ Public Sub setFileInputFiles( _
 
     Dim params As New Dictionary
     Set params("files") = files
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     cdp.InvokeMethod "DOM.setFileInputFiles", params
@@ -967,12 +967,12 @@ End Sub
 ' Returns: creation - Creation stack trace, if available.
 ' Experimental
 Public Function getNodeStackTraces( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Dictionary
     ' nodeId: NodeId Id of the node to get stack traces for.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.getNodeStackTraces", params)
@@ -1004,12 +1004,12 @@ End Function
 ' $x functions).
 ' Experimental
 Public Sub setInspectedNode( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 )
     ' nodeId: NodeId DOM node id to be accessible by means of $x command line API.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     cdp.InvokeMethod "DOM.setInspectedNode", params
 End Sub
@@ -1017,14 +1017,14 @@ End Sub
 ' Sets node name for a node with given id.
 ' Returns: nodeId - New node's id.
 Public Function setNodeName( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal name AS string _
-) AS integer
+) AS Long
     ' nodeId: NodeId Id of the node to set name for.
     ' name: string New node's name.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("name") = CStr(name)
 
     Dim results as Dictionary
@@ -1036,14 +1036,14 @@ End Function
 
 ' Sets node value for a node with given id.
 Public Sub setNodeValue( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal value AS string _
 )
     ' nodeId: NodeId Id of the node to set value for.
     ' value: string New node's value.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("value") = CStr(value)
 
     cdp.InvokeMethod "DOM.setNodeValue", params
@@ -1051,14 +1051,14 @@ End Sub
 
 ' Sets node HTML markup, returns new node id.
 Public Sub setOuterHTML( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal outerHTML AS string _
 )
     ' nodeId: NodeId Id of the node to set markup for.
     ' outerHTML: string Outer HTML markup to set.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("outerHTML") = CStr(outerHTML)
 
     cdp.InvokeMethod "DOM.setOuterHTML", params
@@ -1095,14 +1095,14 @@ End Function
 ' Returns: nodeId - The container node for the given node, or null if not found.
 ' Experimental
 Public Function getContainerForNode( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     Optional ByVal containerName AS Variant _
-) AS integer
+) AS Long
     ' nodeId: NodeId 
     ' containerName: string(optional) 
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     If Not IsMissing(containerName) Then params("containerName") = CStr(containerName)
 
     Dim results as Dictionary
@@ -1117,12 +1117,12 @@ End Function
 ' Returns: nodeIds - Descendant nodes with container queries against the given container.
 ' Experimental
 Public Function getQueryingDescendantsForContainer( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Collection
     ' nodeId: NodeId Id of the container node to find querying descendants from.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("DOM.getQueryingDescendantsForContainer", params)

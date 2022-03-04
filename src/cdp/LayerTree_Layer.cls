@@ -25,7 +25,7 @@ Public parentLayerId AS string
 ' backendNodeId : DOM.BackendNodeId
 ' Optional
 ' The backend id for the node associated with this layer.
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 ' offsetX : number
 ' Offset from parent layer, X coordinate.
@@ -65,7 +65,7 @@ Public anchorZ AS Double
 
 ' paintCount : integer
 ' Indicates how many time this layer has painted.
-Public paintCount AS integer
+Public paintCount AS Long
 
 ' drawsContent : boolean
 ' Indicates whether this layer hosts any content, rather than being used for
@@ -93,7 +93,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
 
     Let layerId = CStr(obj.Item("layerId"))
     If obj.Exists("parentLayerId") Then Let parentLayerId = CStr(obj.Item("parentLayerId"))
-    If obj.Exists("backendNodeId") Then Let backendNodeId = CInt(obj.Item("backendNodeId"))
+    If obj.Exists("backendNodeId") Then Let backendNodeId = CLng(obj.Item("backendNodeId"))
     Let offsetX = CDbl(obj.Item("offsetX"))
     Let offsetY = CDbl(obj.Item("offsetY"))
     Let width = CDbl(obj.Item("width"))
@@ -106,7 +106,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("anchorX") Then Let anchorX = CDbl(obj.Item("anchorX"))
     If obj.Exists("anchorY") Then Let anchorY = CDbl(obj.Item("anchorY"))
     If obj.Exists("anchorZ") Then Let anchorZ = CDbl(obj.Item("anchorZ"))
-    Let paintCount = CInt(obj.Item("paintCount"))
+    Let paintCount = CLng(obj.Item("paintCount"))
     Let drawsContent = CBool(obj.Item("drawsContent"))
     If obj.Exists("invisible") Then Let invisible = CBool(obj.Item("invisible"))
     If obj.Exists("scrollRects") Then

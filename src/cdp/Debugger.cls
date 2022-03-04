@@ -308,7 +308,7 @@ Public Function restartFrame( _
 End Function
 
 ' Resumes JavaScript execution.
-Public Sub resume( _
+Public Sub resumeDebugger( _
     Optional ByVal terminateOnResume AS Variant _
 )
     ' terminateOnResume: boolean(optional) Set to true to terminate execution upon resuming execution. In contrast
@@ -351,13 +351,13 @@ End Function
 
 ' Enables or disables async call stacks tracking.
 Public Sub setAsyncCallStackDepth( _
-    ByVal maxDepth AS integer _
+    ByVal maxDepth AS Long _
 )
     ' maxDepth: integer Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
     '   call stacks (default).
 
     Dim params As New Dictionary
-    params("maxDepth") = CInt(maxDepth)
+    params("maxDepth") = CLng(maxDepth)
 
     cdp.InvokeMethod "Debugger.setAsyncCallStackDepth", params
 End Sub
@@ -440,7 +440,7 @@ End Function
 ' `breakpointResolved` events issued. This logical breakpoint will survive page reloads.
 ' Returns:  - 
 Public Function setBreakpointByUrl( _
-    ByVal lineNumber AS integer, _
+    ByVal lineNumber AS Long, _
     Optional ByVal url AS Variant, _
     Optional ByVal urlRegex AS Variant, _
     Optional ByVal scriptHash AS Variant, _
@@ -457,11 +457,11 @@ Public Function setBreakpointByUrl( _
     '   breakpoint if this expression evaluates to true.
 
     Dim params As New Dictionary
-    params("lineNumber") = CInt(lineNumber)
+    params("lineNumber") = CLng(lineNumber)
     If Not IsMissing(url) Then params("url") = CStr(url)
     If Not IsMissing(urlRegex) Then params("urlRegex") = CStr(urlRegex)
     If Not IsMissing(scriptHash) Then params("scriptHash") = CStr(scriptHash)
-    If Not IsMissing(columnNumber) Then params("columnNumber") = CInt(columnNumber)
+    If Not IsMissing(columnNumber) Then params("columnNumber") = CLng(columnNumber)
     If Not IsMissing(condition) Then params("condition") = CStr(condition)
 
     Dim results as Dictionary
@@ -572,7 +572,7 @@ End Sub
 ' Changes value of variable in a callframe. Object-based scopes are not supported and must be
 ' mutated manually.
 Public Sub setVariableValue( _
-    ByVal scopeNumber AS integer, _
+    ByVal scopeNumber AS Long, _
     ByVal variableName AS string, _
     ByVal newValue AS Dictionary, _
     ByVal callFrameId AS string _
@@ -584,7 +584,7 @@ Public Sub setVariableValue( _
     ' callFrameId: CallFrameId Id of callframe that holds variable.
 
     Dim params As New Dictionary
-    params("scopeNumber") = CInt(scopeNumber)
+    params("scopeNumber") = CLng(scopeNumber)
     params("variableName") = CStr(variableName)
     Set params("newValue") = newValue
     params("callFrameId") = CStr(callFrameId)

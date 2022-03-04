@@ -26,11 +26,11 @@ Public maxResolution AS cdpSystemInfoSize
 ' Maximum encoding framerate in frames per second supported for this
     '   |profile|, as fraction's numerator and denominator, e.g. 24/1 fps,
     '   24000/1001 fps, etc.
-Public maxFramerateNumerator AS integer
+Public maxFramerateNumerator AS Long
 
 ' maxFramerateDenominator : integer
 ' 
-Public maxFramerateDenominator AS integer
+Public maxFramerateDenominator AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpSystemInfoVideoEncodeAcceler
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -38,8 +38,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let profile = CStr(obj.Item("profile"))
     Set maxResolution = New cdpSystemInfoSize
     maxResolution.init obj.Item("maxResolution")
-    Let maxFramerateNumerator = CInt(obj.Item("maxFramerateNumerator"))
-    Let maxFramerateDenominator = CInt(obj.Item("maxFramerateDenominator"))
+    Let maxFramerateNumerator = CLng(obj.Item("maxFramerateNumerator"))
+    Let maxFramerateDenominator = CLng(obj.Item("maxFramerateDenominator"))
 
     Set init = Me
 End Function

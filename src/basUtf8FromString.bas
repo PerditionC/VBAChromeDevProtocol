@@ -87,13 +87,14 @@ End Function
 
 
 ''' Return VBA "Unicode" string from byte array encoded in UTF-8
-Public Function Utf8BytesToString(abUtf8Array() As Byte) As String
-    Dim nBytes As Long
+Public Function Utf8BytesToString(abUtf8Array() As Byte, Optional ByVal nBytes As Long = 0) As String
+    Dim maxBytes As Long
     Dim nChars As Long
     Dim strOut As String
     Utf8BytesToString = ""
     ' Catch uninitialized input array
-    nBytes = BytesLength(abUtf8Array)
+    maxBytes = BytesLength(abUtf8Array)
+    If nBytes = 0 Then nBytes = maxBytes ' use calculated value if not specified
     If nBytes <= 0 Then Exit Function
     ' Get number of characters in output string
     nChars = MultiByteToWideChar(CP_UTF8, 0&, VarPtr(abUtf8Array(0)), nBytes, 0&, 0&)

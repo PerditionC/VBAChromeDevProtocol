@@ -20,20 +20,20 @@ Public orientation AS string
 ' offset : integer
 ' The offset from the screen origin in either the x (for vertical
     '   orientation) or y (for horizontal orientation) direction.
-Public offset AS integer
+Public offset AS Long
 
 ' maskLength : integer
 ' A display feature may mask content such that it is not physically
     '   displayed - this length along with the offset describes this area.
     '   A display feature that only splits content will have a 0 mask_length.
-Public maskLength AS integer
+Public maskLength AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpEmulationDisplayFeature
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let orientation = CStr(obj.Item("orientation"))
-    Let offset = CInt(obj.Item("offset"))
-    Let maskLength = CInt(obj.Item("maskLength"))
+    Let offset = CLng(obj.Item("offset"))
+    Let maskLength = CLng(obj.Item("maskLength"))
 
     Set init = Me
 End Function

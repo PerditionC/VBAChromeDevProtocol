@@ -15,7 +15,7 @@ Option Explicit
 
 ' offset : integer
 ' Source offset of the parameter or end of function for return values.
-Public offset AS integer
+Public offset AS Long
 
 ' types : array of cdpProfilerTypeObject
 ' The types for this parameter or return value.
@@ -25,7 +25,7 @@ Public Function init(ByVal obj as Dictionary) As cdpProfilerTypeProfileEntry
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
-    Let offset = CInt(obj.Item("offset"))
+    Let offset = CLng(obj.Item("offset"))
     For each v in obj.Item("types")
         Dim obj_types As cdpProfilerTypeObject: Set obj_types = New cdpProfilerTypeObject
         obj_types.init v

@@ -44,7 +44,7 @@ Public fill AS string
 ' backendNodeId : DOM.BackendNodeId
 ' Optional
 ' `AnimationEffect`'s target node.
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 ' keyframesRule : KeyframesRule
 ' Optional
@@ -65,7 +65,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let duration = CDbl(obj.Item("duration"))
     Let direction = CStr(obj.Item("direction"))
     Let fill = CStr(obj.Item("fill"))
-    If obj.Exists("backendNodeId") Then Let backendNodeId = CInt(obj.Item("backendNodeId"))
+    If obj.Exists("backendNodeId") Then Let backendNodeId = CLng(obj.Item("backendNodeId"))
     If obj.Exists("keyframesRule") Then
         Set keyframesRule = New cdpAnimationKeyframesRule
         keyframesRule.init obj.Item("keyframesRule")

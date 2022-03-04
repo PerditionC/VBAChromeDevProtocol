@@ -168,7 +168,7 @@ Public Function callFunctionOn( _
     If Not IsMissing(generatePreview) Then params("generatePreview") = CBool(generatePreview)
     If Not IsMissing(userGesture) Then params("userGesture") = CBool(userGesture)
     If Not IsMissing(awaitPromise) Then params("awaitPromise") = CBool(awaitPromise)
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
     If Not IsMissing(objectGroup) Then params("objectGroup") = CStr(objectGroup)
     If Not IsMissing(throwOnSideEffect) Then params("throwOnSideEffect") = CBool(throwOnSideEffect)
 
@@ -197,7 +197,7 @@ Public Function compileScript( _
     params("expression") = CStr(expression)
     params("sourceURL") = CStr(sourceURL)
     params("persistScript") = CBool(persistScript)
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Runtime.compileScript", params)
@@ -283,7 +283,7 @@ Public Function evaluate( _
     If Not IsMissing(objectGroup) Then params("objectGroup") = CStr(objectGroup)
     If Not IsMissing(includeCommandLineAPI) Then params("includeCommandLineAPI") = CBool(includeCommandLineAPI)
     If Not IsMissing(silent) Then params("silent") = CBool(silent)
-    If Not IsMissing(contextId) Then params("contextId") = CInt(contextId)
+    If Not IsMissing(contextId) Then params("contextId") = CLng(contextId)
     If Not IsMissing(returnByValue) Then params("returnByValue") = CBool(returnByValue)
     If Not IsMissing(generatePreview) Then params("generatePreview") = CBool(generatePreview)
     If Not IsMissing(userGesture) Then params("userGesture") = CBool(userGesture)
@@ -367,7 +367,7 @@ Public Function globalLexicalScopeNames( _
     ' executionContextId: ExecutionContextId(optional) Specifies in which execution context to lookup global scope variables.
 
     Dim params As New Dictionary
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Runtime.globalLexicalScopeNames", params)
@@ -452,7 +452,7 @@ Public Function runScript( _
 
     Dim params As New Dictionary
     params("scriptId") = CStr(scriptId)
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
     If Not IsMissing(objectGroup) Then params("objectGroup") = CStr(objectGroup)
     If Not IsMissing(silent) Then params("silent") = CBool(silent)
     If Not IsMissing(includeCommandLineAPI) Then params("includeCommandLineAPI") = CBool(includeCommandLineAPI)
@@ -469,13 +469,13 @@ End Function
 
 ' Enables or disables async call stacks tracking.
 Public Sub setAsyncCallStackDepth( _
-    ByVal maxDepth AS integer _
+    ByVal maxDepth AS Long _
 )
     ' maxDepth: integer Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
     '   call stacks (default).
 
     Dim params As New Dictionary
-    params("maxDepth") = CInt(maxDepth)
+    params("maxDepth") = CLng(maxDepth)
 
     cdp.InvokeMethod "Runtime.setAsyncCallStackDepth", params
 End Sub
@@ -496,12 +496,12 @@ End Sub
 ' 
 ' Experimental
 Public Sub setMaxCallStackSizeToCapture( _
-    ByVal size AS integer _
+    ByVal size AS Long _
 )
     ' size: integer 
 
     Dim params As New Dictionary
-    params("size") = CInt(size)
+    params("size") = CLng(size)
 
     cdp.InvokeMethod "Runtime.setMaxCallStackSizeToCapture", params
 End Sub
@@ -542,7 +542,7 @@ Public Sub addBinding( _
 
     Dim params As New Dictionary
     params("name") = CStr(name)
-    If Not IsMissing(executionContextId) Then params("executionContextId") = CInt(executionContextId)
+    If Not IsMissing(executionContextId) Then params("executionContextId") = CLng(executionContextId)
     If Not IsMissing(executionContextName) Then params("executionContextName") = CStr(executionContextName)
 
     cdp.InvokeMethod "Runtime.addBinding", params

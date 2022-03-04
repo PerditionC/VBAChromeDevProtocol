@@ -1915,7 +1915,7 @@ Public Function captureScreenshot( _
 
     Dim params As New Dictionary
     If Not IsMissing(format) Then params("format") = CStr(format)
-    If Not IsMissing(quality) Then params("quality") = CInt(quality)
+    If Not IsMissing(quality) Then params("quality") = CLng(quality)
     If Not IsMissing(clip) Then Set params("clip") = clip
     If Not IsMissing(fromSurface) Then params("fromSurface") = CBool(fromSurface)
     If Not IsMissing(captureBeyondViewport) Then params("captureBeyondViewport") = CBool(captureBeyondViewport)
@@ -1972,7 +1972,7 @@ Public Function createIsolatedWorld( _
     ByVal frameId AS string, _
     Optional ByVal worldName AS Variant, _
     Optional ByVal grantUniveralAccess AS Variant _
-) AS integer
+) AS Long
     ' frameId: FrameId Id of the frame in which the isolated world should be created.
     ' worldName: string(optional) An optional name which is reported in the Execution Context.
     ' grantUniveralAccess: boolean(optional) Whether or not universal access should be granted to the isolated world. This is a powerful
@@ -2198,12 +2198,12 @@ End Function
 
 ' Navigates current page to the given history entry.
 Public Sub navigateToHistoryEntry( _
-    ByVal entryId AS integer _
+    ByVal entryId AS Long _
 )
     ' entryId: integer Unique id of the entry to navigate to.
 
     Dim params As New Dictionary
-    params("entryId") = CInt(entryId)
+    params("entryId") = CLng(entryId)
 
     cdp.InvokeMethod "Page.navigateToHistoryEntry", params
 End Sub
@@ -2325,12 +2325,12 @@ End Sub
 ' Acknowledges that a screencast frame has been received by the frontend.
 ' Experimental
 Public Sub screencastFrameAck( _
-    ByVal sessionId AS integer _
+    ByVal sessionId AS Long _
 )
     ' sessionId: integer Frame number.
 
     Dim params As New Dictionary
-    params("sessionId") = CInt(sessionId)
+    params("sessionId") = CLng(sessionId)
 
     cdp.InvokeMethod "Page.screencastFrameAck", params
 End Sub
@@ -2432,8 +2432,8 @@ End Function
 ' query results).
 ' Experimental
 Public Sub setDeviceMetricsOverride( _
-    ByVal width AS integer, _
-    ByVal height AS integer, _
+    ByVal width AS Long, _
+    ByVal height AS Long, _
     ByVal deviceScaleFactor AS Double, _
     ByVal mobile AS boolean, _
     Optional ByVal pScale AS Variant, _
@@ -2460,15 +2460,15 @@ Public Sub setDeviceMetricsOverride( _
     ' viewport: Viewport(optional) The viewport dimensions and scale. If not set, the override is cleared.
 
     Dim params As New Dictionary
-    params("width") = CInt(width)
-    params("height") = CInt(height)
+    params("width") = CLng(width)
+    params("height") = CLng(height)
     params("deviceScaleFactor") = CDbl(deviceScaleFactor)
     params("mobile") = CBool(mobile)
     If Not IsMissing(pScale) Then params("scale") = CDbl(pScale)
-    If Not IsMissing(screenWidth) Then params("screenWidth") = CInt(screenWidth)
-    If Not IsMissing(screenHeight) Then params("screenHeight") = CInt(screenHeight)
-    If Not IsMissing(positionX) Then params("positionX") = CInt(positionX)
-    If Not IsMissing(positionY) Then params("positionY") = CInt(positionY)
+    If Not IsMissing(screenWidth) Then params("screenWidth") = CLng(screenWidth)
+    If Not IsMissing(screenHeight) Then params("screenHeight") = CLng(screenHeight)
+    If Not IsMissing(positionX) Then params("positionX") = CLng(positionX)
+    If Not IsMissing(positionY) Then params("positionY") = CLng(positionY)
     If Not IsMissing(dontSetVisibleSize) Then params("dontSetVisibleSize") = CBool(dontSetVisibleSize)
     If Not IsMissing(screenOrientation) Then Set params("screenOrientation") = screenOrientation
     If Not IsMissing(viewport) Then Set params("viewport") = viewport
@@ -2618,10 +2618,10 @@ Public Sub startScreencast( _
 
     Dim params As New Dictionary
     If Not IsMissing(format) Then params("format") = CStr(format)
-    If Not IsMissing(quality) Then params("quality") = CInt(quality)
-    If Not IsMissing(maxWidth) Then params("maxWidth") = CInt(maxWidth)
-    If Not IsMissing(maxHeight) Then params("maxHeight") = CInt(maxHeight)
-    If Not IsMissing(everyNthFrame) Then params("everyNthFrame") = CInt(everyNthFrame)
+    If Not IsMissing(quality) Then params("quality") = CLng(quality)
+    If Not IsMissing(maxWidth) Then params("maxWidth") = CLng(maxWidth)
+    If Not IsMissing(maxHeight) Then params("maxHeight") = CLng(maxHeight)
+    If Not IsMissing(everyNthFrame) Then params("everyNthFrame") = CLng(everyNthFrame)
 
     cdp.InvokeMethod "Page.startScreencast", params
 End Sub

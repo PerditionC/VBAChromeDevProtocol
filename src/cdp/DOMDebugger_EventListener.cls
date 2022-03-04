@@ -35,11 +35,11 @@ Public scriptId AS string
 
 ' lineNumber : integer
 ' Line number in the script (0-based).
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' columnNumber : integer
 ' Column number in the script (0-based).
-Public columnNumber AS integer
+Public columnNumber AS Long
 
 ' handler : Runtime.RemoteObject
 ' Optional
@@ -54,7 +54,7 @@ Public originalHandler AS cdpRuntimeRemoteObject
 ' backendNodeId : DOM.BackendNodeId
 ' Optional
 ' Node the listener is added to (if any).
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDOMDebuggerEventListener
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -64,8 +64,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let passive = CBool(obj.Item("passive"))
     Let once = CBool(obj.Item("once"))
     Let scriptId = CStr(obj.Item("scriptId"))
-    Let lineNumber = CInt(obj.Item("lineNumber"))
-    Let columnNumber = CInt(obj.Item("columnNumber"))
+    Let lineNumber = CLng(obj.Item("lineNumber"))
+    Let columnNumber = CLng(obj.Item("columnNumber"))
     If obj.Exists("handler") Then
         Set handler = New cdpRuntimeRemoteObject
         handler.init obj.Item("handler")
@@ -74,7 +74,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
         Set originalHandler = New cdpRuntimeRemoteObject
         originalHandler.init obj.Item("originalHandler")
     End If
-    If obj.Exists("backendNodeId") Then Let backendNodeId = CInt(obj.Item("backendNodeId"))
+    If obj.Exists("backendNodeId") Then Let backendNodeId = CLng(obj.Item("backendNodeId"))
 
     Set init = Me
 End Function

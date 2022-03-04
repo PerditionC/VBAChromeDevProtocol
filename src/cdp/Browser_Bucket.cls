@@ -15,22 +15,22 @@ Option Explicit
 
 ' low : integer
 ' Minimum value (inclusive).
-Public low AS integer
+Public low AS Long
 
 ' high : integer
 ' Maximum value (exclusive).
-Public high AS integer
+Public high AS Long
 
 ' count : integer
 ' Number of samples.
-Public count AS integer
+Public count AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpBrowserBucket
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let low = CInt(obj.Item("low"))
-    Let high = CInt(obj.Item("high"))
-    Let count = CInt(obj.Item("count"))
+    Let low = CLng(obj.Item("low"))
+    Let high = CLng(obj.Item("high"))
+    Let count = CLng(obj.Item("count"))
 
     Set init = Me
 End Function

@@ -116,12 +116,12 @@ Private Function OutputTypeInitializers(opt As Boolean, rawName As String, name 
                     initFromDictStatements.Add CStr(initFromDictStatements.Count), "    Let " & name & " = CBool(obj.Item(""" & rawName & """))"
                     initToDictStatements.Add CStr(initToDictStatements.Count), "    dict(""" & rawName & """) = " & name
                 End If
-            Case "integer"
+            Case "Long"
                 If opt Then
-                    initFromDictStatements.Add CStr(initFromDictStatements.Count), "    If obj.Exists(""" & rawName & """) Then Let " & name & " = CInt(obj.Item(""" & rawName & """))"
+                    initFromDictStatements.Add CStr(initFromDictStatements.Count), "    If obj.Exists(""" & rawName & """) Then Let " & name & " = CLng(obj.Item(""" & rawName & """))"
                     initToDictStatements.Add CStr(initToDictStatements.Count), "    dict(""" & rawName & """) = " & name
                 Else
-                    initFromDictStatements.Add CStr(initFromDictStatements.Count), "    Let " & name & " = CInt(obj.Item(""" & rawName & """))"
+                    initFromDictStatements.Add CStr(initFromDictStatements.Count), "    Let " & name & " = CLng(obj.Item(""" & rawName & """))"
                     initToDictStatements.Add CStr(initToDictStatements.Count), "    dict(""" & rawName & """) = " & name
                 End If
             Case "Double"
@@ -439,6 +439,7 @@ Private Function getType(paramObj As Variant, domainName As String) As String
     If ref = "number" Then ref = "Double"
     If ref = "binary" Then ref = "String" ' base64 encoded data
     If ref = "any" Then ref = "Variant"
+    If ref = "integer" Then ref = "Long" ' we need to support 32bit numbers not 16bit
     
     getType = ref
 End Function
@@ -806,8 +807,8 @@ Sub convert()
                             WriteStr (setParam(paramObj.Item("name"), pName, "CStr", opt))
                         Case "String" ' note this is binary value encoded as base64, not a plain 'string'
                             WriteStr (setParam(paramObj.Item("name"), pName, "CStr", opt))
-                        Case "integer"
-                            WriteStr (setParam(paramObj.Item("name"), pName, "CInt", opt))
+                        Case "Long"
+                            WriteStr (setParam(paramObj.Item("name"), pName, "CLng", opt))
                         Case "Double"
                             WriteStr (setParam(paramObj.Item("name"), pName, "CDbl", opt))
                         Case "boolean"

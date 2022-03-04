@@ -15,17 +15,17 @@ Option Explicit
 
 ' lineNumber : integer
 ' 
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' columnNumber : integer
 ' 
-Public columnNumber AS integer
+Public columnNumber AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDebuggerScriptPosition
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let lineNumber = CInt(obj.Item("lineNumber"))
-    Let columnNumber = CInt(obj.Item("columnNumber"))
+    Let lineNumber = CLng(obj.Item("lineNumber"))
+    Let columnNumber = CLng(obj.Item("columnNumber"))
 
     Set init = Me
 End Function

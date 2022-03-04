@@ -133,7 +133,7 @@ Public Sub startSampling( _
     ' suppressRandomness: boolean(optional) Do not randomize intervals between samples.
 
     Dim params As New Dictionary
-    If Not IsMissing(samplingInterval) Then params("samplingInterval") = CInt(samplingInterval)
+    If Not IsMissing(samplingInterval) Then params("samplingInterval") = CLng(samplingInterval)
     If Not IsMissing(suppressRandomness) Then params("suppressRandomness") = CBool(suppressRandomness)
 
     cdp.InvokeMethod "Memory.startSampling", params

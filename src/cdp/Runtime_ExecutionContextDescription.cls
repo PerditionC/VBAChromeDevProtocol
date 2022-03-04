@@ -16,7 +16,7 @@ Option Explicit
 ' id : ExecutionContextId
 ' Unique id of the execution context. It can be used to specify in which execution context
     '   script evaluation should be performed.
-Public id AS integer
+Public id AS Long
 
 ' origin : string
 ' Execution context origin.
@@ -40,7 +40,7 @@ Public auxData AS Dictionary
 Public Function init(ByVal obj as Dictionary) As cdpRuntimeExecutionContextDescr
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let id = CInt(obj.Item("id"))
+    Let id = CLng(obj.Item("id"))
     Let origin = CStr(obj.Item("origin"))
     Let name = CStr(obj.Item("name"))
     Let uniqueId = CStr(obj.Item("uniqueId"))

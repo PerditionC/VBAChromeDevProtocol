@@ -125,7 +125,7 @@ Public Function getEventListeners( _
 
     Dim params As New Dictionary
     params("objectId") = CStr(objectId)
-    If Not IsMissing(depth) Then params("depth") = CInt(depth)
+    If Not IsMissing(depth) Then params("depth") = CLng(depth)
     If Not IsMissing(pierce) Then params("pierce") = CBool(pierce)
 
     Dim results as Dictionary
@@ -137,14 +137,14 @@ End Function
 
 ' Removes DOM breakpoint that was set using `setDOMBreakpoint`.
 Public Sub removeDOMBreakpoint( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal pType AS string _
 )
     ' nodeId: DOM.NodeId Identifier of the node to remove breakpoint from.
     ' pType: DOMBreakpointType Type of the breakpoint to remove.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("type") = CStr(pType)
 
     cdp.InvokeMethod "DOMDebugger.removeDOMBreakpoint", params
@@ -205,14 +205,14 @@ End Sub
 
 ' Sets breakpoint on particular operation with DOM.
 Public Sub setDOMBreakpoint( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     ByVal pType AS string _
 )
     ' nodeId: DOM.NodeId Identifier of the node to set breakpoint on.
     ' pType: DOMBreakpointType Type of the operation to stop upon.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     params("type") = CStr(pType)
 
     cdp.InvokeMethod "DOMDebugger.setDOMBreakpoint", params

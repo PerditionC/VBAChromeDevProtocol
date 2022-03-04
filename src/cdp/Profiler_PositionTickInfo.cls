@@ -15,17 +15,17 @@ Option Explicit
 
 ' line : integer
 ' Source line number (1-based).
-Public line AS integer
+Public line AS Long
 
 ' ticks : integer
 ' Number of samples attributed to the source line.
-Public ticks AS integer
+Public ticks AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpProfilerPositionTickInfo
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let line = CInt(obj.Item("line"))
-    Let ticks = CInt(obj.Item("ticks"))
+    Let line = CLng(obj.Item("line"))
+    Let ticks = CLng(obj.Item("ticks"))
 
     Set init = Me
 End Function

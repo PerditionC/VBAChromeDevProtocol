@@ -224,7 +224,7 @@ End Sub
 ' For testing.
 ' Returns: highlight - Highlight data for the node.
 Public Function getHighlightObjectForTest( _
-    ByVal nodeId AS integer, _
+    ByVal nodeId AS Long, _
     Optional ByVal includeDistance AS Variant, _
     Optional ByVal includeStyle AS Variant, _
     Optional ByVal colorFormat AS Variant, _
@@ -237,7 +237,7 @@ Public Function getHighlightObjectForTest( _
     ' showAccessibilityInfo: boolean(optional) Whether to show accessibility info (default: true).
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
     If Not IsMissing(includeDistance) Then params("includeDistance") = CBool(includeDistance)
     If Not IsMissing(includeStyle) Then params("includeStyle") = CBool(includeStyle)
     If Not IsMissing(colorFormat) Then params("colorFormat") = CStr(colorFormat)
@@ -270,12 +270,12 @@ End Function
 ' For Source Order Viewer testing.
 ' Returns: highlight - Source order highlight data for the node id provided.
 Public Function getSourceOrderHighlightObjectForTest( _
-    ByVal nodeId AS integer _
+    ByVal nodeId AS Long _
 ) AS Dictionary
     ' nodeId: DOM.NodeId Id of the node to highlight.
 
     Dim params As New Dictionary
-    params("nodeId") = CInt(nodeId)
+    params("nodeId") = CLng(nodeId)
 
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Overlay.getSourceOrderHighlightObjectForTest", params)
@@ -328,8 +328,8 @@ Public Sub highlightNode( _
 
     Dim params As New Dictionary
     Set params("highlightConfig") = highlightConfig
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
     If Not IsMissing(selector) Then params("selector") = CStr(selector)
 
@@ -356,10 +356,10 @@ End Sub
 
 ' Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 Public Sub highlightRect( _
-    ByVal x AS integer, _
-    ByVal y AS integer, _
-    ByVal width AS integer, _
-    ByVal height AS integer, _
+    ByVal x AS Long, _
+    ByVal y AS Long, _
+    ByVal width AS Long, _
+    ByVal height AS Long, _
     Optional ByVal color AS Variant, _
     Optional ByVal outlineColor AS Variant _
 )
@@ -371,10 +371,10 @@ Public Sub highlightRect( _
     ' outlineColor: DOM.RGBA(optional) The highlight outline color (default: transparent).
 
     Dim params As New Dictionary
-    params("x") = CInt(x)
-    params("y") = CInt(y)
-    params("width") = CInt(width)
-    params("height") = CInt(height)
+    params("x") = CLng(x)
+    params("y") = CLng(y)
+    params("width") = CLng(width)
+    params("height") = CLng(height)
     If Not IsMissing(color) Then Set params("color") = color
     If Not IsMissing(outlineColor) Then Set params("outlineColor") = outlineColor
 
@@ -396,8 +396,8 @@ Public Sub highlightSourceOrder( _
 
     Dim params As New Dictionary
     Set params("sourceOrderConfig") = sourceOrderConfig
-    If Not IsMissing(nodeId) Then params("nodeId") = CInt(nodeId)
-    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CInt(backendNodeId)
+    If Not IsMissing(nodeId) Then params("nodeId") = CLng(nodeId)
+    If Not IsMissing(backendNodeId) Then params("backendNodeId") = CLng(backendNodeId)
     If Not IsMissing(objectId) Then params("objectId") = CStr(objectId)
 
     cdp.InvokeMethod "Overlay.highlightSourceOrder", params

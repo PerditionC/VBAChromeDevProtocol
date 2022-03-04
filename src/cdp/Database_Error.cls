@@ -19,13 +19,13 @@ Public message AS string
 
 ' code : integer
 ' Error code.
-Public code AS integer
+Public code AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpDatabaseError
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let message = CStr(obj.Item("message"))
-    Let code = CInt(obj.Item("code"))
+    Let code = CLng(obj.Item("code"))
 
     Set init = Me
 End Function

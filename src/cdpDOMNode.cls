@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Attribute VB_Description = "Node"
 ' DOM.Node
 ' DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
 '   DOMNode is a base node mirror type.
@@ -63,20 +64,20 @@ End Enum
 ' Node identifier that is passed into the rest of the DOM messages as the `nodeId`. Backend
     '   will only push node with given `id` once. It is aware of all requested nodes and will only
     '   fire DOM events for nodes known to the client.
-Public nodeId As Integer
+Public nodeId As Long
 
 ' parentId : NodeId
 ' Optional
 ' The id of the parent node if any.
-Public parentId As Integer
+Public parentId As Long
 
 ' backendNodeId : BackendNodeId
 ' The BackendNodeId for this node.
-Public backendNodeId As Integer
+Public backendNodeId As Long
 
 ' nodeType : integer
 ' `Node`'s nodeType.
-Public nodeType As Integer
+Public nodeType As Long
 
 ' nodeName : string
 ' `Node`'s nodeName.
@@ -93,7 +94,7 @@ Public nodeValue As String
 ' childNodeCount : integer
 ' Optional
 ' Child count for `Container` nodes.
-Public childNodeCount As Integer
+Public childNodeCount As Long
 
 ' children : array of cdpDOMNode
 ' Optional
@@ -203,18 +204,19 @@ Public isSVG As Variant ' boolean
 Public compatibilityMode As String
 
 Public Function init(ByVal obj As Dictionary, Optional ByVal b As AutomateBrowser, Optional ByVal expectedNodeId As Integer, Optional ByVal parent As cdpDOMNode = Nothing) As cdpDOMNode
-    On Error GoTo errHandler
+Attribute init.VB_Description = "Initialize class from Dictionary returned by CDP method."
+    On Error GoTo ErrHandler
     Dim v As Variant
 
-    Let nodeId = CInt(obj.Item("nodeId"))
-
-    If obj.Exists("parentId") Then Let parentId = CInt(obj.Item("parentId"))
-    Let backendNodeId = CInt(obj.Item("backendNodeId"))
-    Let nodeType = CInt(obj.Item("nodeType"))
+    Let nodeId = CLng(obj.Item("nodeId"))
+    
+    If obj.Exists("parentId") Then Let parentId = CLng(obj.Item("parentId"))
+    Let backendNodeId = CLng(obj.Item("backendNodeId"))
+    Let nodeType = CLng(obj.Item("nodeType"))
     Let nodeName = CStr(obj.Item("nodeName"))
     Let localName = CStr(obj.Item("localName"))
     Let nodeValue = CStr(obj.Item("nodeValue"))
-    If obj.Exists("childNodeCount") Then Let childNodeCount = CInt(obj.Item("childNodeCount"))
+    If obj.Exists("childNodeCount") Then Let childNodeCount = CLng(obj.Item("childNodeCount"))
     If obj.Exists("children") Then
         Set children = New Collection
         For Each v In obj.Item("children")
@@ -304,7 +306,7 @@ Public Function init(ByVal obj As Dictionary, Optional ByVal b As AutomateBrowse
 
     Set init = Me
     Exit Function
-errHandler:
+ErrHandler:
     Stop
     Resume Next
 End Function
@@ -369,8 +371,8 @@ Private Sub Class_Terminate()
 End Sub
 
 ' ************* Convenience functions *********************
-Public Sub click(Optional ByVal strategy As NavigationStrategy = NavigationStrategy.None)
-    Browser.click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
+Public Sub Click(Optional ByVal strategy As NavigationStrategy = NavigationStrategy.None)
+    Browser.Click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
 End Sub
 
 Public Sub focus()
@@ -553,7 +555,7 @@ Public Function getProperty(ByVal propertyName As String) As cdpRuntimePropertyD
     Dim index As Integer
     Dim objectProperty As Dictionary
     
-    If objectProperties Is Nothing Then Set objectProperties = Browser.GetProperties(Me)
+    If objectProperties Is Nothing Then Set objectProperties = Browser.getProperties(Me)
     If Not objectProperties Is Nothing Then
         If objectProperties.Exists(propertyName) Then
             Dim prop As cdpRuntimePropertyDescriptor
@@ -570,7 +572,7 @@ Public Function getPropertyValue(ByVal propertyName As String) As String
     Dim index As Integer
     Dim objectProperty As Dictionary
     
-    If objectProperties Is Nothing Then Set objectProperties = Browser.GetProperties(Me)
+    If objectProperties Is Nothing Then Set objectProperties = Browser.getProperties(Me)
     If Not objectProperties Is Nothing Then
         If objectProperties.Exists(propertyName) Then
             Dim prop As cdpRuntimePropertyDescriptor
@@ -612,8 +614,8 @@ Public Property Get outerText() As String
     outerText = getPropertyValue("outerText")
 End Property
 
-Public Property Get innerText() As String
-    innerText = getPropertyValue("innerText")
+Public Property Get InnerText() As String
+    InnerText = getPropertyValue("innerText")
 End Property
 
 Public Property Get innerHTML() As String
@@ -662,4 +664,3 @@ Public Function PrevSibling() As cdpDOMNode
         Next v
     End If
 End Function
-

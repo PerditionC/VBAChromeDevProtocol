@@ -33,12 +33,12 @@ Public url AS string
 ' line : integer
 ' Optional
 ' Line number in the resource that generated this message (1-based).
-Public line AS integer
+Public line AS Long
 
 ' column : integer
 ' Optional
 ' Column number in the resource that generated this message (1-based).
-Public column AS integer
+Public column AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpConsoleConsoleMessage
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
@@ -47,8 +47,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let level = CStr(obj.Item("level"))
     Let text = CStr(obj.Item("text"))
     If obj.Exists("url") Then Let url = CStr(obj.Item("url"))
-    If obj.Exists("line") Then Let line = CInt(obj.Item("line"))
-    If obj.Exists("column") Then Let column = CInt(obj.Item("column"))
+    If obj.Exists("line") Then Let line = CLng(obj.Item("line"))
+    If obj.Exists("column") Then Let column = CLng(obj.Item("column"))
 
     Set init = Me
 End Function

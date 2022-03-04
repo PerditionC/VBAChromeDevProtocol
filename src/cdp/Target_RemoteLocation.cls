@@ -19,13 +19,13 @@ Public host AS string
 
 ' port : integer
 ' 
-Public port AS integer
+Public port AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpTargetRemoteLocation
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let host = CStr(obj.Item("host"))
-    Let port = CInt(obj.Item("port"))
+    Let port = CLng(obj.Item("port"))
 
     Set init = Me
 End Function

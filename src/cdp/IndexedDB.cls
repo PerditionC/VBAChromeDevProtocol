@@ -129,8 +129,8 @@ Public Function requestData( _
     ByVal databaseName AS string, _
     ByVal objectStoreName AS string, _
     ByVal indexName AS string, _
-    ByVal skipCount AS integer, _
-    ByVal pageSize AS integer, _
+    ByVal skipCount AS Long, _
+    ByVal pageSize AS Long, _
     Optional ByVal keyRange AS Variant _
 ) AS Dictionary
     ' securityOrigin: string Security origin.
@@ -146,8 +146,8 @@ Public Function requestData( _
     params("databaseName") = CStr(databaseName)
     params("objectStoreName") = CStr(objectStoreName)
     params("indexName") = CStr(indexName)
-    params("skipCount") = CInt(skipCount)
-    params("pageSize") = CInt(pageSize)
+    params("skipCount") = CLng(skipCount)
+    params("pageSize") = CLng(pageSize)
     If Not IsMissing(keyRange) Then Set params("keyRange") = keyRange
 
     Dim results as Dictionary

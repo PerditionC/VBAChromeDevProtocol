@@ -134,7 +134,7 @@ Public Function profileSnapshot( _
 
     Dim params As New Dictionary
     params("snapshotId") = CStr(snapshotId)
-    If Not IsMissing(minRepeatCount) Then params("minRepeatCount") = CInt(minRepeatCount)
+    If Not IsMissing(minRepeatCount) Then params("minRepeatCount") = CLng(minRepeatCount)
     If Not IsMissing(minDuration) Then params("minDuration") = CDbl(minDuration)
     If Not IsMissing(clipRect) Then Set params("clipRect") = clipRect
 
@@ -172,8 +172,8 @@ Public Function replaySnapshot( _
 
     Dim params As New Dictionary
     params("snapshotId") = CStr(snapshotId)
-    If Not IsMissing(fromStep) Then params("fromStep") = CInt(fromStep)
-    If Not IsMissing(toStep) Then params("toStep") = CInt(toStep)
+    If Not IsMissing(fromStep) Then params("fromStep") = CLng(fromStep)
+    If Not IsMissing(toStep) Then params("toStep") = CLng(toStep)
     If Not IsMissing(pScale) Then params("scale") = CDbl(pScale)
 
     Dim results as Dictionary

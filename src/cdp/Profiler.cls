@@ -88,12 +88,12 @@ End Function
 
 ' Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 Public Sub setSamplingInterval( _
-    ByVal interval AS integer _
+    ByVal interval AS Long _
 )
     ' interval: integer New sampling interval in microseconds.
 
     Dim params As New Dictionary
-    params("interval") = CInt(interval)
+    params("interval") = CLng(interval)
 
     cdp.InvokeMethod "Profiler.setSamplingInterval", params
 End Sub
@@ -138,12 +138,12 @@ End Sub
 
 ' 
 ' Returns: profile - Recorded profile.
-Public Function stop() AS Dictionary
+Public Function stopProfiler() AS Dictionary
     Dim params As New Dictionary
     Dim results as Dictionary
     Set results = cdp.InvokeMethod("Profiler.stop", params)
     If cdp.ErrorCode = 0 Then
-        If results.Exists("profile") Then Set stop = results("profile")
+        If results.Exists("profile") Then Set stopProfiler = results("profile")
     End If
 End Function
 

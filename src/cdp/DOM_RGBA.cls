@@ -15,15 +15,15 @@ Option Explicit
 
 ' r : integer
 ' The red component, in the [0-255] range.
-Public r AS integer
+Public r AS Long
 
 ' g : integer
 ' The green component, in the [0-255] range.
-Public g AS integer
+Public g AS Long
 
 ' b : integer
 ' The blue component, in the [0-255] range.
-Public b AS integer
+Public b AS Long
 
 ' a : number
 ' Optional
@@ -33,9 +33,9 @@ Public a AS Double
 Public Function init(ByVal obj as Dictionary) As cdpDOMRGBA
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let r = CInt(obj.Item("r"))
-    Let g = CInt(obj.Item("g"))
-    Let b = CInt(obj.Item("b"))
+    Let r = CLng(obj.Item("r"))
+    Let g = CLng(obj.Item("g"))
+    Let b = CLng(obj.Item("b"))
     If obj.Exists("a") Then Let a = CDbl(obj.Item("a"))
 
     Set init = Me

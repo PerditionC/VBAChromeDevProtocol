@@ -50,17 +50,17 @@ Public tangentialPressure AS Double
 ' tiltX : integer
 ' Optional
 ' The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
-Public tiltX AS integer
+Public tiltX AS Long
 
 ' tiltY : integer
 ' Optional
 ' The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-Public tiltY AS integer
+Public tiltY AS Long
 
 ' twist : integer
 ' Optional
 ' The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
-Public twist AS integer
+Public twist AS Long
 
 ' id : number
 ' Optional
@@ -77,9 +77,9 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("rotationAngle") Then Let rotationAngle = CDbl(obj.Item("rotationAngle"))
     If obj.Exists("force") Then Let force = CDbl(obj.Item("force"))
     If obj.Exists("tangentialPressure") Then Let tangentialPressure = CDbl(obj.Item("tangentialPressure"))
-    If obj.Exists("tiltX") Then Let tiltX = CInt(obj.Item("tiltX"))
-    If obj.Exists("tiltY") Then Let tiltY = CInt(obj.Item("tiltY"))
-    If obj.Exists("twist") Then Let twist = CInt(obj.Item("twist"))
+    If obj.Exists("tiltX") Then Let tiltX = CLng(obj.Item("tiltX"))
+    If obj.Exists("tiltY") Then Let tiltY = CLng(obj.Item("tiltY"))
+    If obj.Exists("twist") Then Let twist = CLng(obj.Item("twist"))
     If obj.Exists("id") Then Let id = CDbl(obj.Item("id"))
 
     Set init = Me

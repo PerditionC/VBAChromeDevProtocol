@@ -42,7 +42,7 @@ Public url AS string
 ' lineNumber : integer
 ' Optional
 ' Line number in the resource.
-Public lineNumber AS integer
+Public lineNumber AS Long
 
 ' stackTrace : Runtime.StackTrace
 ' Optional
@@ -74,7 +74,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("category") Then Let category = CStr(obj.Item("category"))
     Let timestamp = CDbl(obj.Item("timestamp"))
     If obj.Exists("url") Then Let url = CStr(obj.Item("url"))
-    If obj.Exists("lineNumber") Then Let lineNumber = CInt(obj.Item("lineNumber"))
+    If obj.Exists("lineNumber") Then Let lineNumber = CLng(obj.Item("lineNumber"))
     If obj.Exists("stackTrace") Then
         Set stackTrace = New cdpRuntimeStackTrace
         stackTrace.init obj.Item("stackTrace")

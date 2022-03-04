@@ -161,7 +161,7 @@ Public Sub dispatchDragEvent( _
     params("x") = CDbl(x)
     params("y") = CDbl(y)
     Set params("data") = data
-    If Not IsMissing(modifiers) Then params("modifiers") = CInt(modifiers)
+    If Not IsMissing(modifiers) Then params("modifiers") = CLng(modifiers)
 
     cdp.InvokeMethod "Input.dispatchDragEvent", params
 End Sub
@@ -209,19 +209,19 @@ Public Sub dispatchKeyEvent( _
 
     Dim params As New Dictionary
     params("type") = CStr(pType)
-    If Not IsMissing(modifiers) Then params("modifiers") = CInt(modifiers)
+    If Not IsMissing(modifiers) Then params("modifiers") = CLng(modifiers)
     If Not IsMissing(timestamp) Then params("timestamp") = CDbl(timestamp)
     If Not IsMissing(text) Then params("text") = CStr(text)
     If Not IsMissing(unmodifiedText) Then params("unmodifiedText") = CStr(unmodifiedText)
     If Not IsMissing(keyIdentifier) Then params("keyIdentifier") = CStr(keyIdentifier)
     If Not IsMissing(code) Then params("code") = CStr(code)
     If Not IsMissing(key) Then params("key") = CStr(key)
-    If Not IsMissing(windowsVirtualKeyCode) Then params("windowsVirtualKeyCode") = CInt(windowsVirtualKeyCode)
-    If Not IsMissing(nativeVirtualKeyCode) Then params("nativeVirtualKeyCode") = CInt(nativeVirtualKeyCode)
+    If Not IsMissing(windowsVirtualKeyCode) Then params("windowsVirtualKeyCode") = CLng(windowsVirtualKeyCode)
+    If Not IsMissing(nativeVirtualKeyCode) Then params("nativeVirtualKeyCode") = CLng(nativeVirtualKeyCode)
     If Not IsMissing(autoRepeat) Then params("autoRepeat") = CBool(autoRepeat)
     If Not IsMissing(isKeypad) Then params("isKeypad") = CBool(isKeypad)
     If Not IsMissing(isSystemKey) Then params("isSystemKey") = CBool(isSystemKey)
-    If Not IsMissing(location) Then params("location") = CInt(location)
+    If Not IsMissing(location) Then params("location") = CLng(location)
     If Not IsMissing(commands) Then Set params("commands") = commands
 
     cdp.InvokeMethod "Input.dispatchKeyEvent", params
@@ -247,8 +247,8 @@ End Sub
 ' Experimental
 Public Sub imeSetComposition( _
     ByVal text AS string, _
-    ByVal selectionStart AS integer, _
-    ByVal selectionEnd AS integer, _
+    ByVal selectionStart AS Long, _
+    ByVal selectionEnd AS Long, _
     Optional ByVal replacementStart AS Variant, _
     Optional ByVal replacementEnd AS Variant _
 )
@@ -260,10 +260,10 @@ Public Sub imeSetComposition( _
 
     Dim params As New Dictionary
     params("text") = CStr(text)
-    params("selectionStart") = CInt(selectionStart)
-    params("selectionEnd") = CInt(selectionEnd)
-    If Not IsMissing(replacementStart) Then params("replacementStart") = CInt(replacementStart)
-    If Not IsMissing(replacementEnd) Then params("replacementEnd") = CInt(replacementEnd)
+    params("selectionStart") = CLng(selectionStart)
+    params("selectionEnd") = CLng(selectionEnd)
+    If Not IsMissing(replacementStart) Then params("replacementStart") = CLng(replacementStart)
+    If Not IsMissing(replacementEnd) Then params("replacementEnd") = CLng(replacementEnd)
 
     cdp.InvokeMethod "Input.imeSetComposition", params
 End Sub
@@ -311,16 +311,16 @@ Public Sub dispatchMouseEvent( _
     params("type") = CStr(pType)
     params("x") = CDbl(x)
     params("y") = CDbl(y)
-    If Not IsMissing(modifiers) Then params("modifiers") = CInt(modifiers)
+    If Not IsMissing(modifiers) Then params("modifiers") = CLng(modifiers)
     If Not IsMissing(timestamp) Then params("timestamp") = CDbl(timestamp)
     If Not IsMissing(button) Then params("button") = CStr(button)
-    If Not IsMissing(buttons) Then params("buttons") = CInt(buttons)
-    If Not IsMissing(clickCount) Then params("clickCount") = CInt(clickCount)
+    If Not IsMissing(buttons) Then params("buttons") = CLng(buttons)
+    If Not IsMissing(clickCount) Then params("clickCount") = CLng(clickCount)
     If Not IsMissing(force) Then params("force") = CDbl(force)
     If Not IsMissing(tangentialPressure) Then params("tangentialPressure") = CDbl(tangentialPressure)
-    If Not IsMissing(tiltX) Then params("tiltX") = CInt(tiltX)
-    If Not IsMissing(tiltY) Then params("tiltY") = CInt(tiltY)
-    If Not IsMissing(twist) Then params("twist") = CInt(twist)
+    If Not IsMissing(tiltX) Then params("tiltX") = CLng(tiltX)
+    If Not IsMissing(tiltY) Then params("tiltY") = CLng(tiltY)
+    If Not IsMissing(twist) Then params("twist") = CLng(twist)
     If Not IsMissing(deltaX) Then params("deltaX") = CDbl(deltaX)
     If Not IsMissing(deltaY) Then params("deltaY") = CDbl(deltaY)
     If Not IsMissing(pointerType) Then params("pointerType") = CStr(pointerType)
@@ -347,7 +347,7 @@ Public Sub dispatchTouchEvent( _
     Dim params As New Dictionary
     params("type") = CStr(pType)
     Set params("touchPoints") = touchPoints
-    If Not IsMissing(modifiers) Then params("modifiers") = CInt(modifiers)
+    If Not IsMissing(modifiers) Then params("modifiers") = CLng(modifiers)
     If Not IsMissing(timestamp) Then params("timestamp") = CDbl(timestamp)
 
     cdp.InvokeMethod "Input.dispatchTouchEvent", params
@@ -357,8 +357,8 @@ End Sub
 ' Experimental
 Public Sub emulateTouchFromMouseEvent( _
     ByVal pType AS string, _
-    ByVal x AS integer, _
-    ByVal y AS integer, _
+    ByVal x AS Long, _
+    ByVal y AS Long, _
     ByVal button AS string, _
     Optional ByVal timestamp AS Variant, _
     Optional ByVal deltaX AS Variant, _
@@ -379,14 +379,14 @@ Public Sub emulateTouchFromMouseEvent( _
 
     Dim params As New Dictionary
     params("type") = CStr(pType)
-    params("x") = CInt(x)
-    params("y") = CInt(y)
+    params("x") = CLng(x)
+    params("y") = CLng(y)
     params("button") = CStr(button)
     If Not IsMissing(timestamp) Then params("timestamp") = CDbl(timestamp)
     If Not IsMissing(deltaX) Then params("deltaX") = CDbl(deltaX)
     If Not IsMissing(deltaY) Then params("deltaY") = CDbl(deltaY)
-    If Not IsMissing(modifiers) Then params("modifiers") = CInt(modifiers)
-    If Not IsMissing(clickCount) Then params("clickCount") = CInt(clickCount)
+    If Not IsMissing(modifiers) Then params("modifiers") = CLng(modifiers)
+    If Not IsMissing(clickCount) Then params("clickCount") = CLng(clickCount)
 
     cdp.InvokeMethod "Input.emulateTouchFromMouseEvent", params
 End Sub
@@ -437,7 +437,7 @@ Public Sub synthesizePinchGesture( _
     params("x") = CDbl(x)
     params("y") = CDbl(y)
     params("scaleFactor") = CDbl(scaleFactor)
-    If Not IsMissing(relativeSpeed) Then params("relativeSpeed") = CInt(relativeSpeed)
+    If Not IsMissing(relativeSpeed) Then params("relativeSpeed") = CLng(relativeSpeed)
     If Not IsMissing(gestureSourceType) Then params("gestureSourceType") = CStr(gestureSourceType)
 
     cdp.InvokeMethod "Input.synthesizePinchGesture", params
@@ -483,10 +483,10 @@ Public Sub synthesizeScrollGesture( _
     If Not IsMissing(xOverscroll) Then params("xOverscroll") = CDbl(xOverscroll)
     If Not IsMissing(yOverscroll) Then params("yOverscroll") = CDbl(yOverscroll)
     If Not IsMissing(preventFling) Then params("preventFling") = CBool(preventFling)
-    If Not IsMissing(speed) Then params("speed") = CInt(speed)
+    If Not IsMissing(speed) Then params("speed") = CLng(speed)
     If Not IsMissing(gestureSourceType) Then params("gestureSourceType") = CStr(gestureSourceType)
-    If Not IsMissing(repeatCount) Then params("repeatCount") = CInt(repeatCount)
-    If Not IsMissing(repeatDelayMs) Then params("repeatDelayMs") = CInt(repeatDelayMs)
+    If Not IsMissing(repeatCount) Then params("repeatCount") = CLng(repeatCount)
+    If Not IsMissing(repeatDelayMs) Then params("repeatDelayMs") = CLng(repeatDelayMs)
     If Not IsMissing(interactionMarkerName) Then params("interactionMarkerName") = CStr(interactionMarkerName)
 
     cdp.InvokeMethod "Input.synthesizeScrollGesture", params
@@ -511,8 +511,8 @@ Public Sub synthesizeTapGesture( _
     Dim params As New Dictionary
     params("x") = CDbl(x)
     params("y") = CDbl(y)
-    If Not IsMissing(duration) Then params("duration") = CInt(duration)
-    If Not IsMissing(tapCount) Then params("tapCount") = CInt(tapCount)
+    If Not IsMissing(duration) Then params("duration") = CLng(duration)
+    If Not IsMissing(tapCount) Then params("tapCount") = CLng(tapCount)
     If Not IsMissing(gestureSourceType) Then params("gestureSourceType") = CStr(gestureSourceType)
 
     cdp.InvokeMethod "Input.synthesizeTapGesture", params

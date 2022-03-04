@@ -64,20 +64,20 @@ End Enum
 ' Node identifier that is passed into the rest of the DOM messages as the `nodeId`. Backend
     '   will only push node with given `id` once. It is aware of all requested nodes and will only
     '   fire DOM events for nodes known to the client.
-Public nodeId AS integer
+Public nodeId AS Long
 
 ' parentId : NodeId
 ' Optional
 ' The id of the parent node if any.
-Public parentId AS integer
+Public parentId AS Long
 
 ' backendNodeId : BackendNodeId
 ' The BackendNodeId for this node.
-Public backendNodeId AS integer
+Public backendNodeId AS Long
 
 ' nodeType : integer
 ' `Node`'s nodeType.
-Public nodeType AS integer
+Public nodeType AS Long
 
 ' nodeName : string
 ' `Node`'s nodeName.
@@ -94,7 +94,7 @@ Public nodeValue AS string
 ' childNodeCount : integer
 ' Optional
 ' Child count for `Container` nodes.
-Public childNodeCount AS integer
+Public childNodeCount AS Long
 
 ' children : array of cdpDOMNode
 ' Optional
@@ -207,14 +207,14 @@ Public Function init(ByVal obj as Dictionary, Optional ByVal b As AutomateBrowse
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
     Dim v as Variant
 
-    Let nodeId = CInt(obj.Item("nodeId"))
-    If obj.Exists("parentId") Then Let parentId = CInt(obj.Item("parentId"))
-    Let backendNodeId = CInt(obj.Item("backendNodeId"))
-    Let nodeType = CInt(obj.Item("nodeType"))
+    Let nodeId = CLng(obj.Item("nodeId"))
+    If obj.Exists("parentId") Then Let parentId = CLng(obj.Item("parentId"))
+    Let backendNodeId = CLng(obj.Item("backendNodeId"))
+    Let nodeType = CLng(obj.Item("nodeType"))
     Let nodeName = CStr(obj.Item("nodeName"))
     Let localName = CStr(obj.Item("localName"))
     Let nodeValue = CStr(obj.Item("nodeValue"))
-    If obj.Exists("childNodeCount") Then Let childNodeCount = CInt(obj.Item("childNodeCount"))
+    If obj.Exists("childNodeCount") Then Let childNodeCount = CLng(obj.Item("childNodeCount"))
     If obj.Exists("children") Then
         For each v in obj.Item("children")
             Dim obj_children As cdpDOMNode: Set obj_children = New cdpDOMNode

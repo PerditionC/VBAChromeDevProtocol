@@ -19,23 +19,23 @@ Public message AS string
 
 ' critical : integer
 ' If criticial, this is a non-recoverable parse error.
-Public critical AS integer
+Public critical AS Long
 
 ' line : integer
 ' Error line.
-Public line AS integer
+Public line AS Long
 
 ' column : integer
 ' Error column.
-Public column AS integer
+Public column AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpPageAppManifestError
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let message = CStr(obj.Item("message"))
-    Let critical = CInt(obj.Item("critical"))
-    Let line = CInt(obj.Item("line"))
-    Let column = CInt(obj.Item("column"))
+    Let critical = CLng(obj.Item("critical"))
+    Let line = CLng(obj.Item("line"))
+    Let column = CLng(obj.Item("column"))
 
     Set init = Me
 End Function

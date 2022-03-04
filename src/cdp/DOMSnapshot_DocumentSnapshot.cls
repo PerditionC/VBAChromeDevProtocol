@@ -15,35 +15,35 @@ Option Explicit
 
 ' documentURL : StringIndex
 ' Document URL that `Document` or `FrameOwner` node points to.
-Public documentURL AS integer
+Public documentURL AS Long
 
 ' title : StringIndex
 ' Document title.
-Public title AS integer
+Public title AS Long
 
 ' baseURL : StringIndex
 ' Base URL that `Document` or `FrameOwner` node uses for URL completion.
-Public baseURL AS integer
+Public baseURL AS Long
 
 ' contentLanguage : StringIndex
 ' Contains the document's content language.
-Public contentLanguage AS integer
+Public contentLanguage AS Long
 
 ' encodingName : StringIndex
 ' Contains the document's character set encoding.
-Public encodingName AS integer
+Public encodingName AS Long
 
 ' publicId : StringIndex
 ' `DocumentType` node's publicId.
-Public publicId AS integer
+Public publicId AS Long
 
 ' systemId : StringIndex
 ' `DocumentType` node's systemId.
-Public systemId AS integer
+Public systemId AS Long
 
 ' frameId : StringIndex
 ' Frame ID for frame owner elements and also for the document node.
-Public frameId AS integer
+Public frameId AS Long
 
 ' nodes : NodeTreeSnapshot
 ' A table with dom nodes.
@@ -80,14 +80,14 @@ Public contentHeight AS Double
 Public Function init(ByVal obj as Dictionary) As cdpDOMSnapshotDocumentSnapshot
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let documentURL = CInt(obj.Item("documentURL"))
-    Let title = CInt(obj.Item("title"))
-    Let baseURL = CInt(obj.Item("baseURL"))
-    Let contentLanguage = CInt(obj.Item("contentLanguage"))
-    Let encodingName = CInt(obj.Item("encodingName"))
-    Let publicId = CInt(obj.Item("publicId"))
-    Let systemId = CInt(obj.Item("systemId"))
-    Let frameId = CInt(obj.Item("frameId"))
+    Let documentURL = CLng(obj.Item("documentURL"))
+    Let title = CLng(obj.Item("title"))
+    Let baseURL = CLng(obj.Item("baseURL"))
+    Let contentLanguage = CLng(obj.Item("contentLanguage"))
+    Let encodingName = CLng(obj.Item("encodingName"))
+    Let publicId = CLng(obj.Item("publicId"))
+    Let systemId = CLng(obj.Item("systemId"))
+    Let frameId = CLng(obj.Item("frameId"))
     Set nodes = New cdpDOMSnapshotNodeTreeSnapshot
     nodes.init obj.Item("nodes")
     Set layout = New cdpDOMSnapshotLayoutTreeSnapsho

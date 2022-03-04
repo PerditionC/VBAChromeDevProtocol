@@ -19,7 +19,7 @@ Public fieldType AS string
 
 ' id : integer
 ' Specifies process id.
-Public id AS integer
+Public id AS Long
 
 ' cpuTime : number
 ' Specifies cumulative CPU usage in seconds across all threads of the
@@ -30,7 +30,7 @@ Public Function init(ByVal obj as Dictionary) As cdpSystemInfoProcessInfo
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Let fieldType = CStr(obj.Item("type"))
-    Let id = CInt(obj.Item("id"))
+    Let id = CLng(obj.Item("id"))
     Let cpuTime = CDbl(obj.Item("cpuTime"))
 
     Set init = Me

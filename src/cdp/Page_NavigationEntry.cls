@@ -15,7 +15,7 @@ Option Explicit
 
 ' id : integer
 ' Unique id of the navigation history entry.
-Public id AS integer
+Public id AS Long
 
 ' url : string
 ' URL of the navigation history entry.
@@ -36,7 +36,7 @@ Public transitionType AS string
 Public Function init(ByVal obj as Dictionary) As cdpPageNavigationEntry
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let id = CInt(obj.Item("id"))
+    Let id = CLng(obj.Item("id"))
     Let url = CStr(obj.Item("url"))
     Let userTypedURL = CStr(obj.Item("userTypedURL"))
     Let title = CStr(obj.Item("title"))

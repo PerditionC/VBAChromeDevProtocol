@@ -193,8 +193,8 @@ Public Function createTarget( _
 
     Dim params As New Dictionary
     params("url") = CStr(url)
-    If Not IsMissing(width) Then params("width") = CInt(width)
-    If Not IsMissing(height) Then params("height") = CInt(height)
+    If Not IsMissing(width) Then params("width") = CLng(width)
+    If Not IsMissing(height) Then params("height") = CLng(height)
     If Not IsMissing(browserContextId) Then params("browserContextId") = CStr(browserContextId)
     If Not IsMissing(enableBeginFrameControl) Then params("enableBeginFrameControl") = CBool(enableBeginFrameControl)
     If Not IsMissing(newWindow) Then params("newWindow") = CBool(newWindow)

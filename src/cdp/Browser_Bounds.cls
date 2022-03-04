@@ -16,22 +16,22 @@ Option Explicit
 ' left : integer
 ' Optional
 ' The offset from the left edge of the screen to the window in pixels.
-Public left AS integer
+Public left AS Long
 
 ' top : integer
 ' Optional
 ' The offset from the top edge of the screen to the window in pixels.
-Public top AS integer
+Public top AS Long
 
 ' width : integer
 ' Optional
 ' The window width in pixels.
-Public width AS integer
+Public width AS Long
 
 ' height : integer
 ' Optional
 ' The window height in pixels.
-Public height AS integer
+Public height AS Long
 
 ' windowState : WindowState
 ' Optional
@@ -41,10 +41,10 @@ Public windowState AS string
 Public Function init(ByVal obj as Dictionary) As cdpBrowserBounds
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    If obj.Exists("left") Then Let left = CInt(obj.Item("left"))
-    If obj.Exists("top") Then Let top = CInt(obj.Item("top"))
-    If obj.Exists("width") Then Let width = CInt(obj.Item("width"))
-    If obj.Exists("height") Then Let height = CInt(obj.Item("height"))
+    If obj.Exists("left") Then Let left = CLng(obj.Item("left"))
+    If obj.Exists("top") Then Let top = CLng(obj.Item("top"))
+    If obj.Exists("width") Then Let width = CLng(obj.Item("width"))
+    If obj.Exists("height") Then Let height = CLng(obj.Item("height"))
     If obj.Exists("windowState") Then Let windowState = CStr(obj.Item("windowState"))
 
     Set init = Me

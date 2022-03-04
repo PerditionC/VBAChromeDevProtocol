@@ -15,27 +15,27 @@ Option Explicit
 
 ' startLine : integer
 ' Start line of range.
-Public startLine AS integer
+Public startLine AS Long
 
 ' startColumn : integer
 ' Start column of range (inclusive).
-Public startColumn AS integer
+Public startColumn AS Long
 
 ' endLine : integer
 ' End line of range
-Public endLine AS integer
+Public endLine AS Long
 
 ' endColumn : integer
 ' End column of range (exclusive).
-Public endColumn AS integer
+Public endColumn AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpCSSSourceRange
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let startLine = CInt(obj.Item("startLine"))
-    Let startColumn = CInt(obj.Item("startColumn"))
-    Let endLine = CInt(obj.Item("endLine"))
-    Let endColumn = CInt(obj.Item("endColumn"))
+    Let startLine = CLng(obj.Item("startLine"))
+    Let startColumn = CLng(obj.Item("startColumn"))
+    Let endLine = CLng(obj.Item("endLine"))
+    Let endColumn = CLng(obj.Item("endColumn"))
 
     Set init = Me
 End Function

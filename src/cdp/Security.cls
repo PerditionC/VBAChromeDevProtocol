@@ -242,14 +242,14 @@ End Sub
 
 ' Handles a certificate error that fired a certificateError event.
 Public Sub handleCertificateError( _
-    ByVal eventId AS integer, _
+    ByVal eventId AS Long, _
     ByVal action AS string _
 )
     ' eventId: integer The ID of the event.
     ' action: CertificateErrorAction The action to take on the certificate error.
 
     Dim params As New Dictionary
-    params("eventId") = CInt(eventId)
+    params("eventId") = CLng(eventId)
     params("action") = CStr(action)
 
     cdp.InvokeMethod "Security.handleCertificateError", params

@@ -19,14 +19,14 @@ Public flexContainerHighlightConfig AS cdpOverlayFlexContainerHighligh
 
 ' nodeId : DOM.NodeId
 ' Identifier of the node to highlight.
-Public nodeId AS integer
+Public nodeId AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpOverlayFlexNodeHighlightConf
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
     Set flexContainerHighlightConfig = New cdpOverlayFlexContainerHighligh
     flexContainerHighlightConfig.init obj.Item("flexContainerHighlightConfig")
-    Let nodeId = CInt(obj.Item("nodeId"))
+    Let nodeId = CLng(obj.Item("nodeId"))
 
     Set init = Me
 End Function

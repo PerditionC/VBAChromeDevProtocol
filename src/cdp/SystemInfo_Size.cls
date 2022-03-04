@@ -15,17 +15,17 @@ Option Explicit
 
 ' width : integer
 ' Width in pixels.
-Public width AS integer
+Public width AS Long
 
 ' height : integer
 ' Height in pixels.
-Public height AS integer
+Public height AS Long
 
 Public Function init(ByVal obj as Dictionary) As cdpSystemInfoSize
 Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
 
-    Let width = CInt(obj.Item("width"))
-    Let height = CInt(obj.Item("height"))
+    Let width = CLng(obj.Item("width"))
+    Let height = CLng(obj.Item("height"))
 
     Set init = Me
 End Function

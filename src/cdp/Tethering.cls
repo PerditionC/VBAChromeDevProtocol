@@ -38,24 +38,24 @@ End Sub
 
 ' Request browser port binding.
 Public Sub bind( _
-    ByVal port AS integer _
+    ByVal port AS Long _
 )
     ' port: integer Port number to bind.
 
     Dim params As New Dictionary
-    params("port") = CInt(port)
+    params("port") = CLng(port)
 
     cdp.InvokeMethod "Tethering.bind", params
 End Sub
 
 ' Request browser port unbinding.
 Public Sub unbind( _
-    ByVal port AS integer _
+    ByVal port AS Long _
 )
     ' port: integer Port number to unbind.
 
     Dim params As New Dictionary
-    params("port") = CInt(port)
+    params("port") = CLng(port)
 
     cdp.InvokeMethod "Tethering.unbind", params
 End Sub

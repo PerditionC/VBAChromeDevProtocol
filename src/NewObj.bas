@@ -1,7 +1,9 @@
 Attribute VB_Name = "NewObj"
+' Helpers to create class Objects from other Projects
+Option Explicit
+
+
 Public Function New_clsCDP() As clsCDP
-    'Call TerminateProcess("msedge.exe", True)
-    
     Set New_clsCDP = New clsCDP
     
     'With New_clsCDP

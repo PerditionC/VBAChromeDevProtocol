@@ -19,11 +19,11 @@ Public name AS string
 
 ' sum : integer
 ' Sum of sample values.
-Public sum AS integer
+Public sum AS Long
 
 ' count : integer
 ' Total number of samples.
-Public count AS integer
+Public count AS Long
 
 ' buckets : array of cdpBrowserBucket
 ' Buckets.
@@ -34,8 +34,8 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Dim v as Variant
 
     Let name = CStr(obj.Item("name"))
-    Let sum = CInt(obj.Item("sum"))
-    Let count = CInt(obj.Item("count"))
+    Let sum = CLng(obj.Item("sum"))
+    Let count = CLng(obj.Item("count"))
     For each v in obj.Item("buckets")
         Dim obj_buckets As cdpBrowserBucket: Set obj_buckets = New cdpBrowserBucket
         obj_buckets.init v

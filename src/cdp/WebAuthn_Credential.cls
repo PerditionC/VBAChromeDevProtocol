@@ -41,7 +41,7 @@ Public userHandle AS String
 ' Signature counter. This is incremented by one for each successful
     '   assertion.
     '   See https://w3c.github.io/webauthn/#signature-counter
-Public signCount AS integer
+Public signCount AS Long
 
 ' largeBlob : binary
 ' Optional
@@ -57,7 +57,7 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("rpId") Then Let rpId = CStr(obj.Item("rpId"))
     Let privateKey = CStr(obj.Item("privateKey"))
     If obj.Exists("userHandle") Then Let userHandle = CStr(obj.Item("userHandle"))
-    Let signCount = CInt(obj.Item("signCount"))
+    Let signCount = CLng(obj.Item("signCount"))
     If obj.Exists("largeBlob") Then Let largeBlob = CStr(obj.Item("largeBlob"))
 
     Set init = Me
