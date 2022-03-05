@@ -158,7 +158,13 @@ Public Function peakMessage() As Dictionary
         ' is there a message to process?
         If strRes <> "" Then
             ' convert to easier to use form (i.e. convert raw string to json object)
+            On Error Resume Next
             Set objRes = JsonConverter.ParseJson(strRes)
+            If Err.number <> 0 Then
+                strRes = vbNullString
+                GoTo messageHandled
+            End If
+            On Error GoTo ErrHandler
                                     
             ' see if this is an event (no "id") or response to a message (has "id" of message)
             ' process event or queue message
@@ -411,94 +417,28 @@ Public Function launch( _
     Optional autoAttach As Boolean = True, _
     Optional partialMatch As Boolean = True, _
     Optional useWebSocket As Boolean = False, _
-    Optional useExistingBrowser As Boolean = False _
+    Optional useExistingBrowser As Boolean = False, _
+    Optional whichBrowser As browserType = browserType.AnyBrowser _
     ) As Boolean
-    ' ensure browser is not already running (kill it if it is)
-    If Not (useWebSocket And useExistingBrowser) Then
-        If Not TerminateProcess(ProcessName:="msedge.exe", PromptBefore:=True) Then
-            ' abort if browser is already running and failed to kill it or user elected not to terminate
-            Exit Function
-        End If
-    End If
-
-    Dim strCall As String
-    ' --remote-debugging-pipe allow communicating with Edge
-    ' --remote-debugging-port=9222 alternative for communication via TCP
-    ' --enable-automation can be omitted for Edge to avoid displaying "being controlled banner", but necessary for Chrome
-    ' --disable-infobars removes messages such as "being controlled by automation" banners, ignored by Edge, used by Chrome
-    ' --enable-logging allows viewing additional connection details, but causes opening of console windows
-    ' --user-data-dir=c:\temp\fakeEdgeUser to open in different profile, and therefore session than current user, but screws up because Admin managed user so don't use
-
-    ' only one of objBrowser or wsBrowser can be valid, depending how we are connecting initialize the correct one
-    If useWebSocket Then
-        Set objBrowser = Nothing
-        Set wsBrowser = New clsWebSocket
-        strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-port=9222 " & url
-        If (Not useExistingBrowser) Or (Not IsProcessRunning(ProcessName:="msedge.exe")) Then
-            If Not SpawnProcess(strCall) Then Exit Function
-        End If
-        
-        ' give it a bit to startup
-        Do Until IsProcessRunning(ProcessName:="msedge.exe")
-            Sleep 1
-        Loop
-        
-        ' get the path to the browser target websocket - we hard code only connecting to localhost port 9222
-        Dim wsPath As String
-        
-        ' we get the path (really full link) by connecting via HTTP to http://localhost:9222/json/version - note 9222 is same as specified on cmdline
-        ' and extracting the information from the webSocketDebuggerUrl field of the returned JSON
-        ' eg. "ws://localhost:9222/devtools/browser/f875efa4-b4ee-4c35-848b-73bc384a32bb"
-GetWebSocketEndPoint:
-        wsPath = wsBrowser.HttpGetMessage("localhost", 9222, "/json/version")
-        Dim versionInfo As Dictionary
-        On Error Resume Next
-        Set versionInfo = JsonConverter.ParseJson(wsPath)
-        If Err.Number <> 0 Then
-            Debug.Print "Retrying attempt to determine websocket endpoint"
-            GoTo GetWebSocketEndPoint
-        Else
-            On Error GoTo 0
-        End If
-        wsPath = versionInfo("webSocketDebuggerUrl")
-        wsPath = Right(wsPath, Len(wsPath) - Len("ws://localhost:9222"))
+    On Error GoTo ErrHandler
     
-        ' connect to the browser target websocket
-        With wsBrowser
-            .protocol = "ws://"
-            .server = "localhost"
-            .port = 9222
-            .path = wsPath   ' this one changes with each time browser is started
-            If Not .Connect() Then Exit Function ' False
-        End With
-    Else
-        Set objBrowser = New clsProcess
-        Set wsBrowser = Nothing
-        strCall = """C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"" --remote-debugging-pipe " & url
-        
-        Dim intRes As Integer
-        intRes = objBrowser.init(strCall)
-        If intRes <> 0 Then
-           'Call Err.Raise(-99, , "error start browser")
-        Exit Function ' False
-        End If
-        
-        ' give it a bit to startup
-        Sleep 1
+    browserProgram = whichBrowser ' specify requested browser, LaunchBrowser sets to browser we end up using
+    Dim o As Object
+    Set o = LaunchBrowser(browserProgram, url, useWebSocket, useExistingBrowser)
+    If o Is Nothing Then Exit Function ' error starting browser
+    If TypeName(o) = "clsProcess" Then
+        Set objBrowser = o
+    ElseIf TypeName(o) = "clsWebSocket" Then
+        Set wsBrowser = o
     End If
-        
-    ' for now we only support Edge, but eventually we will add the logic to spawn/recognize Chrome and FireFox along with Edge
-    browserProgram = browserType.Edge
     
     ' initialize message id used to track message responses
     lngLastID = 1
     
     ' if connected via pipe we need to clear pipe from any data written during startup
     Dim strRes As String
-    intRes = 0
-    
-    Dim intCounter As Integer
-    intCounter = 0
+    Dim intRes As Integer: intRes = 0
+    Dim intCounter As Integer: intCounter = 0
     
     Do Until intRes > 0 Or intCounter > 1000 Or useWebSocket
         intRes = objBrowser.readProcSTD(strRes)
@@ -518,6 +458,11 @@ GetWebSocketEndPoint:
     
     ' assume success
     launch = True
+    Exit Function
+ErrHandler:
+    Debug.Print "cldCDP.launch() - Error: " & Err.description
+    Stop
+    Resume
 End Function
 
 
