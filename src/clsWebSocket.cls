@@ -174,7 +174,7 @@ Public Function HttpGetMessage(ByVal pServer As String, ByVal port As Long, ByVa
     ReDim receiveBuffer(4096) As Byte
     Dim dwBufferLength As Long
     dwBufferLength = (UBound(receiveBuffer) - LBound(receiveBuffer) + 1)
-    Dim dwBytesTransferred As Long
+    Dim dwBytesTransferred As LongPtr
     dwBytesTransferred = 0
     If WinHttpReadData(hRequestHandle, receiveBuffer(0), CLng(dwBufferLength), dwBytesTransferred) = 0 Then
         pErrorText = "Error reading data"
@@ -696,7 +696,7 @@ End If
 
 Dim otherBuffer() As Byte  ' do it this way, so we can redim it later
 ReDim otherBuffer(4096) As Byte
-Dim dwBufferLength As LongPtr
+Dim dwBufferLength As Long
 ' get correct value in case of change to buffer size
 dwBufferLength = (UBound(otherBuffer) - LBound(otherBuffer))
 
