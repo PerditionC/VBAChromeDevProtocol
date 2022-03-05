@@ -84,7 +84,7 @@ Public Function processEvent(ByVal eventName As String, ByVal eventData As Dicti
     On Error GoTo errHandler
     Dim frameId As String, frame As cdpPageFrame
     Dim requestId As String, requestInfo As clsNetworkRequest
-    Dim contextId As Integer, context As cdpRuntimeExecutionContextDescr
+    Dim contextId As Long, context As cdpRuntimeExecutionContextDescr
     Dim targetId As String, targetInfo As cdpTargetTargetInfo
     Dim sessionId As String, session As clsSessionInfo
     If eventData.Exists("sessionId") Then sessionId = eventData("sessionId")
@@ -153,7 +153,7 @@ Public Function processEvent(ByVal eventName As String, ByVal eventData As Dicti
                 If context.auxData.Exists("frameId") Then
                     frameId = context.auxData.Item("frameId")
                     ' map FrameId (string) to ExecutionContextId (integer)
-                    session.frameExecCtxMapping.Item(frameId) = CInt(context.id)
+                    session.frameExecCtxMapping.Item(frameId) = CLng(context.id)
                     ' map FrameId (string) to Unique(Execution)Id (string)
                     session.frameExecCtxMapping.Item("$" & frameId) = CStr(context.uniqueId)
                     ' map ExecutionId (integer) to FrameId (string)
@@ -308,7 +308,7 @@ End Function
 ' sets just the window state
 ' windowId is the id of the window to change
 ' state is the desired state to set window to, one of: normal, minimized, maximized, ...
-Public Sub setWindowState(ByVal windowId As Integer, ByVal state As windowState)
+Public Sub setWindowState(ByVal windowId As Long, ByVal state As windowState)
     Dim dict As Dictionary
     Set dict = New Dictionary
     dict("windowId") = windowId
@@ -363,9 +363,9 @@ End Sub
 ' adjust positions, size, and/or state of browser window
 ' if position or size specified and window currently maximized, window will be returned to normal - moved/sized then maximized again
 ' if window is hidden, setting to any other state will unhide it
-' Integer: windowId is the window to resize, defaults to current window attached to (active target)
-' Integer: left, top are the X,Y position of the upper left corner of the window; note negative values are for secondary screen to the left of/above the primary screen
-' Integer: width, height are size of the window
+' Long: windowId is the window to resize, defaults to current window attached to (active target)
+' Long: left, top are the X,Y position of the upper left corner of the window; note negative values are for secondary screen to the left of/above the primary screen
+' Long: width, height are size of the window
 Public Sub resizeWindow(Optional ByVal windowId As Variant, _
                   Optional ByVal left As Variant, Optional ByVal top As Variant, _
                   Optional ByVal width As Variant, Optional ByVal height As Variant, _
@@ -650,7 +650,7 @@ Public Function quadToRect(quad As Collection) As Dictionary
 End Function
 
 ' given a nodeId (or backendNodeId), returns a rect Dictionary of the node's position and size (relative CSS pixels)
-Public Function getNodeRect(Optional nodeId As Integer, Optional backendNodeId) As Dictionary
+Public Function getNodeRect(Optional nodeId As Long, Optional backendNodeId) As Dictionary
     Dim dict As Dictionary, quad As Collection
     If backendNodeId = 0 Then
         Set dict = cdp.DOM.getBoxModel(nodeId:=nodeId)
@@ -666,7 +666,7 @@ Public Function getNodeRect(Optional nodeId As Integer, Optional backendNodeId) 
 End Function
 
 ' given a nodeId (or backendNodeId), calculates the center of the node
-Public Sub getNodeCenter(ByRef x As Double, ByRef y As Double, Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0)
+Public Sub getNodeCenter(ByRef x As Double, ByRef y As Double, Optional nodeId As Long = 0, Optional backendNodeId As Long = 0)
     ' get rect of node
     Dim dict As Dictionary, quad As Collection
     If nodeId <> 0 Then
@@ -684,7 +684,7 @@ Public Sub getNodeCenter(ByRef x As Double, ByRef y As Double, Optional nodeId A
 End Sub
 
 ' attempt to make node the currently focused (active) element
-Public Sub Focus(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional objectId As String = vbNullString)
+Public Sub focus(Optional nodeId As Long = 0, Optional backendNodeId As Long = 0, Optional objectId As String = vbNullString)
     If nodeId <> 0 Then
         cdp.DOM.Focus nodeId:=nodeId
         cdp.DOM.scrollIntoViewIfNeeded nodeId:=nodeId
@@ -700,7 +700,7 @@ End Sub
 ' Simulates a user clicking a node
 ' Note: this follows same algorithm and Selenium and other similar tools as opposed to javascript .click() method that does not always work as expected
 ' Warning: if click opens a new window/tab as opposed to navigating within same page then may return before new page has finished loading - must switch to new session and then wait
-Public Sub Click(Optional nodeId As Integer = 0, Optional backendNodeId As Integer = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None, Optional button As String = "left", Optional clickCount As Integer = 1)
+Public Sub Click(Optional nodeId As Long = 0, Optional backendNodeId As Long = 0, Optional strategy As NavigationStrategy = NavigationStrategy.None, Optional button As String = "left", Optional clickCount As Integer = 1)
     ' reset flag for window open event
     If Not curSession Is Nothing Then curSession.windowOpenEventOccurred = False
 
@@ -768,8 +768,8 @@ Public Function getNodeIdOrName(ByVal node As cdpDOMNode) As String
 End Function
 
 ' takes a nodeId or backendNodeId (or RemoteObject.objectId) and returns cdpDOMNode object
-Public Function getDomNode(Optional ByVal nodeId As Integer = 0, Optional ByVal backendNodeId As Integer = 0, Optional ByVal objectId As String = vbNullString, _
-                           Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+Public Function getDomNode(Optional ByVal nodeId As Long = 0, Optional ByVal backendNodeId As Long = 0, Optional ByVal objectId As String = vbNullString, _
+                           Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     Dim dict As Dictionary
     If objectId <> vbNullString Then
         Set dict = cdp.DOM.describeNode(objectId:=objectId, depth:=depth, pierce:=pierce)
@@ -787,14 +787,14 @@ Public Function getDomNode(Optional ByVal nodeId As Integer = 0, Optional ByVal 
 End Function
 
 ' converts a Runtime.RemoteObject into a DOM.Node
-Public Function RemoteObjectToDomNode(ByVal remoteObj As cdpRuntimeRemoteObject, Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+Public Function RemoteObjectToDomNode(ByVal remoteObj As cdpRuntimeRemoteObject, Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     Set RemoteObjectToDomNode = getDomNode(objectId:=remoteObj.objectId, depth:=depth, pierce:=pierce)
 End Function
 
 ' takes a Collection of nodeIds and returns a Dictionary of cdpDomNode objetcs
 ' Note: resulting dictionary is keyed on id if node has one, else name if has one, else a unique numerical value
 Public Function getDomNodes(Optional ByVal nodeIds As Collection, Optional ByVal backendNodeIds As Collection, Optional objectIds As Collection, Optional ByVal remoteNodeList As cdpRuntimeRemoteObject, _
-                            Optional depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary
+                            Optional depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary
     Dim nodes As Dictionary: Set nodes = New Dictionary
     Dim node As cdpDOMNode
     Dim v As Variant, key As Variant
@@ -921,8 +921,8 @@ End Function
 
 ' convenience function that maps frame name to id and then calls QuerySelector with frameId
 ' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
-Public Function QuerySelectorOnFrame(ByVal selector As String, ByVal frameName As String, Optional ByVal rootId As Integer = 0, Optional ByVal url As String = vbNullString, _
-                                     Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
+Public Function QuerySelectorOnFrame(ByVal selector As String, Optional ByVal frameName As String, Optional ByVal rootId As Long = 0, Optional ByVal url As String = vbNullString, _
+                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
     If curSession.frameNames.Exists(frameName) Then
         Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
     ElseIf rootId <> 0 Then
@@ -942,13 +942,13 @@ End Function
 
 ' if frameId = "" then assumes executing in main document context
 ' rootId is unused if frameId is specified
-Public Function querySelector(ByVal selector As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
-                              Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
-    On Error GoTo errHandler
+Public Function querySelector(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
+    On Error GoTo ErrHandler
     Dim maxRetries As Long: maxRetries = 60 * 5 ' we sleep for second after each retry, don't try longer than 5 minutes
     
     Do
-    Dim nodeId As Integer, docRootId As Integer, dict As Dictionary
+    Dim nodeId As Long, docRootId As Long, dict As Dictionary
     If frameId = vbNullString Then
         ' if no base element provided, use the document root of current target
         ' Note: we store in docRootId instead of updating rootId as if we need to retry, document may not be fully loaded so we may need to reget Document()
@@ -1004,8 +1004,8 @@ End Function
 ' classList is a space separated list of class names e.g. "classname1 classname2"
 ' or optionally an element type with class list in in square brackets, e.g. "input[classname1 classname2]"
 ' output format: element[class~='classname1'][class~='classname2'][...] (which is equivalent to element.classname1.classname2....)
-Public Function getNodesByClassName(ByVal classList As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
-                                 Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+Public Function getNodesByClassName(ByVal classList As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                                 Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     Dim selector As String, ndx As Integer
     If InStr(1, classList, "[", vbBinaryCompare) > 0 Then
         ' extract element names and class list
@@ -1034,8 +1034,8 @@ End Function
 
 ' convenience function that maps frame name to id and then calls QuerySelectorAll with frameId
 ' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
-Public Function QuerySelectorAllOnFrame(ByVal selector As String, ByVal frameName As String, Optional ByVal rootId As Integer = 0, Optional ByVal url As String = vbNullString, _
-                                     Optional ByVal Depth As Integer = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+Public Function QuerySelectorAllOnFrame(ByVal selector As String, Optional ByVal frameName As String, Optional ByVal rootId As Long = 0, Optional ByVal url As String = vbNullString, _
+                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     If curSession.frameNames.Exists(frameName) Then
         Set QuerySelectorAllOnFrame = querySelectorAll(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), Depth:=Depth, pierce:=pierce)
     ElseIf rootId <> 0 Then
@@ -1057,9 +1057,9 @@ End Function
 ' returns a Dictionary of cdpDomNodes matching selector, see getDomNodes
 ' Note: resulting Dictionary will be empty (0 items) if an error or no matching elements found
 ' see: https://www.w3.org/TR/CSS21/selector.html%23id-selectors for a quick overview of selector formatting
-Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Integer = 0, Optional ByVal frameId As String = vbNullString, _
-                                 Optional ByVal depth As Integer = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     On Error GoTo errHandler
+Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                                 Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     Set querySelectorAll = New Dictionary
     Dim nodeIds As Collection, dict As Dictionary
     Dim remoteObj As cdpRuntimeRemoteObject
@@ -1115,7 +1115,7 @@ ErrHandler:
 End Function
 
 ' returns document root and all child elements of main frame, optinally piercing frames and shadow DOMs
-Public Function Document(Optional ByVal Depth As Integer = 0, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+Public Function Document(Optional ByVal depth As Long = 0, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     If curSession.rootNode Is Nothing Then
         Dim dict As Dictionary
         Set dict = cdp.DOM.getDocument(Depth, pierce)
