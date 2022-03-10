@@ -922,20 +922,21 @@ End Function
 ' convenience function that maps frame name to id and then calls QuerySelector with frameId
 ' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
 Public Function QuerySelectorOnFrame(ByVal selector As String, Optional ByVal frameName As String, Optional ByVal rootId As Long = 0, Optional ByVal url As String = vbNullString, _
-                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
+                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, _
+                                     Optional waitUntilFound As Boolean = True, Optional waitUntilVisible As Boolean = True) As cdpDOMNode
     If curSession.frameNames.Exists(frameName) Then
-        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
+        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound, waitUntilVisible:=waitUntilVisible)
     ElseIf rootId <> 0 Then
         ' use frame associated with rootId object
         Dim node As cdpDOMNode
         Set node = getDomNode(nodeId:=rootId)
-        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=node.frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
+        Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=node.frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound, waitUntilVisible:=waitUntilVisible)
     ElseIf url <> vbNullString Then
         Dim frameId As String
         frameId = GetFrameIdByUrl(url)
         ' if we found a matching frame, then run query
         If frameId <> vbNullString Then
-            Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound)
+            Set QuerySelectorOnFrame = querySelector(selector, rootId:=rootId, frameId:=frameId, depth:=depth, pierce:=pierce, waitUntilFound:=waitUntilFound, waitUntilVisible:=waitUntilVisible)
         End If
     End If
 End Function
@@ -943,7 +944,8 @@ End Function
 ' if frameId = "" then assumes executing in main document context
 ' rootId is unused if frameId is specified
 Public Function querySelector(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
-                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, Optional waitUntilFound As Boolean = True) As cdpDOMNode
+                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, _
+                              Optional waitUntilFound As Boolean = True, Optional waitUntilVisible As Boolean = True) As cdpDOMNode
     On Error GoTo ErrHandler
     Dim maxRetries As Long: maxRetries = 60 * 5 ' we sleep for second after each retry, don't try longer than 5 minutes
     
@@ -992,6 +994,14 @@ Public Function querySelector(ByVal selector As String, Optional ByVal rootId As
         Sleep 1
     End If
     Loop While (querySelector Is Nothing) And waitUntilFound And (maxRetries > 0)
+    
+    ' selector has to be found to check for visibility, so waitUntilVisible ignored if waitUntilFound is false
+    If waitUntilFound And waitUntilVisible Then
+        Do While Not querySelector.isVisible
+            Sleep 1
+        Loop
+    End If
+    
     Exit Function
 errHandler:
     Debug.Print "Browser.querySelector - " & Err.description

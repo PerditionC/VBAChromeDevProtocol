@@ -628,6 +628,46 @@ Public Property Get outerHTML() As String
 End Property
 
 
+' returns True only if element meets both criteria:
+'   has a positive width and height and
+'   CSS display property is not "none" or "hidden"
+Public Function isVisible() As Boolean
+    'isVisible = False
+    
+    ' first check if has a positive width and height
+    Dim x As Double, y As Double
+    getCenter x, y
+    If (Abs(x) > 0#) And (Abs(y) > 0#) Then
+        ' now get computed CSS display value
+        Dim style As cdpCSSCSSComputedStyleProperty
+        Set style = getCSSStyle("display")
+        If Not style Is Nothing Then
+            If (style.value <> "none") And (style.value <> "hidden") Then
+                isVisible = True
+            End If
+        End If
+    End If
+End Function
+
+
+' retrieves current CSS computed style for specified property
+Public Function getCSSStyle(ByVal name As String) As cdpCSSCSSComputedStyleProperty
+    Dim styles As Collection
+    Browser.cdp.CSS.enable ' must be enabled or call to computer style will fail
+    Set styles = Browser.cdp.CSS.getComputedStyleForNode(nodeId)
+    Browser.cdp.CSS.disable
+    Dim v As Variant
+    For Each v In styles
+        If v("name") = name Then
+            Dim style As cdpCSSCSSComputedStyleProperty
+            Set style = New cdpCSSCSSComputedStyleProperty
+            style.init v
+            Set getCSSStyle = style
+            Exit Function
+        End If
+    Next v
+End Function
+
 
 ' returns neighboring child node of parent
 ' returns Nothing if no next neighbor or parent unknown
