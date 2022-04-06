@@ -414,9 +414,10 @@ Public Function launch( _
     Optional url As String = "about:blank", _
     Optional partialMatch As Boolean = True, _
     Optional useWebSocket As Boolean = False, _
-    Optional useExistingBrowser As Boolean = False _
+    Optional useExistingBrowser As Boolean = False, _
+    Optional reconnectUrl As String = vbNullString _
     ) As Boolean
-    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch, useWebSocket:=useWebSocket, useExistingBrowser:=useExistingBrowser) Then
+    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch, useWebSocket:=useWebSocket, useExistingBrowser:=useExistingBrowser, reconnectUrl:=reconnectUrl) Then
         ' initialize our original session
         If cdp.sessionId = vbNullString Then Stop
         Set mainSession = sessions(cdp.sessionId)
@@ -1113,7 +1114,8 @@ Public Function GetNodeWithValue(ByRef nodes As Dictionary, ByVal value As Strin
     Dim v As Variant, node As cdpDOMNode
     For Each v In nodes.items
         Set node = v
-        If node.elementValue = value Then
+        If Trim(node.elementValue) = value Then
+            ' we found our matching node, so return it
             Set GetNodeWithValue = node
             Exit For
         End If

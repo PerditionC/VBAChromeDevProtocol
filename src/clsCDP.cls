@@ -418,7 +418,8 @@ Public Function launch( _
     Optional partialMatch As Boolean = True, _
     Optional useWebSocket As Boolean = False, _
     Optional useExistingBrowser As Boolean = False, _
-    Optional whichBrowser As browserType = browserType.AnyBrowser _
+    Optional whichBrowser As browserType = browserType.AnyBrowser, _
+    Optional reconnectUrl As String = vbNullString _
     ) As Boolean
     On Error GoTo ErrHandler
     
@@ -450,7 +451,7 @@ Public Function launch( _
     ' automatically attach to requested page or any page if no specific one requested
     ' WARNING if we didn't spawn browser then url may not match any page Target!
     If autoAttach Then
-        If Me.attach(url, partialMatch:=partialMatch) = vbNullString Then
+        If Me.attach(url, partialMatch:=partialMatch, altUrl:=reconnectUrl) = vbNullString Then
             If useWebSocket Then wsBrowser.Disconnect
             Exit Function ' failed to attach on launch
         End If
@@ -466,14 +467,40 @@ ErrHandler:
 End Function
 
 
+' returns True if urls match
+Private Function urlMatch(ByRef targetUrl As String, ByRef strUrl As String, ByVal partialMatch As Boolean)
+    If targetUrl = strUrl Then
+foundMatch:
+        urlMatch = True
+    Else
+        ' check if http: url was automatically upgraded to https:
+        If (left(strUrl, Len("http:")) = "http:") And (left(targetUrl, Len("https:")) = "https:") Then
+            ' if comparison ignoring http: and https: protocols match, then assume our target
+            If Mid(targetUrl, Len("https:") + 1) = Mid(strUrl, Len("http:") + 1) Then GoTo foundMatch
+        End If
+        
+        ' if no protocol was provided, e.g. just "www.google.com" then do match ignoring protocol
+        If left(strUrl, 4) <> "http" Then
+            If Mid(targetUrl, Len("http://") + 1) = strUrl Then GoTo foundMatch
+            If Mid(targetUrl, Len("https://") + 1) = strUrl Then GoTo foundMatch
+        End If
+        
+        ' finally if user requested partial matches to work, check for that
+        If partialMatch Then
+            If InStr(1, targetUrl, strUrl, vbTextCompare) > 0 Then GoTo foundMatch
+        End If
+    End If
+End Function
+
 ' This function must be called after launch and before all other methods
 ' This function attaches to a session of the browser
 ' If targetId is not "" then attempts to attach to specified target, otherwise first determines targetId for url and then attaches
 ' strUrl is the page to match, by default looks for newtab page if left as ""
 ' if strUrl is provided and partial match is false, then may fail to attach if browser changes url (e.g. Google site may append "?gws_rd=ssl" to url)
 ' if partialMatch is true then attaches to first target whose url contains strUrl
+' a second altUrl may also be specified, such as if reconnecting where the initial url may differ from an initial connection
 ' Returns the sessionId if successfully attached
-Public Function attach(Optional ByVal strUrl As String = vbNullString, Optional ByVal targetId As String = vbNullString, Optional partialMatch As Boolean = False) As String
+Public Function attach(Optional ByVal strUrl As String = vbNullString, Optional ByVal targetId As String = vbNullString, Optional partialMatch As Boolean = False, Optional altUrl As String = vbNullString) As String
     If targetId <> vbNullString Then GoTo TargetId_Provided
     
     If strUrl = vbNullString Then
@@ -514,23 +541,9 @@ checkAgain:
         
         Dim targetUrl As String
         targetUrl = objDic3.Item("url")
-        If targetUrl <> strUrl Then
-            ' check if http: url was automatically upgraded to https:
-            If (left(strUrl, Len("http:")) = "http:") And (left(targetUrl, Len("https:")) = "https:") Then
-                ' if comparison ignoring http: and https: protocols match, then assume our target
-                If Mid(targetUrl, Len("https:") + 1) = Mid(strUrl, Len("http:") + 1) Then GoTo foundTarget
-            End If
-            ' if no protocol was provided, e.g. just "www.google.com" then do match ignoring protocol
-            If left(strUrl, 4) <> "http" Then
-                If Mid(targetUrl, Len("http://") + 1) = strUrl Then GoTo foundTarget
-                If Mid(targetUrl, Len("https://") + 1) = strUrl Then GoTo foundTarget
-            End If
-            ' finally if user requested partial matches to work, check for that
-            If partialMatch Then
-                If InStr(1, targetUrl, strUrl, vbTextCompare) > 0 Then GoTo foundTarget
-            End If
-            GoTo nextloop1
-        End If
+        If urlMatch(targetUrl, strUrl, partialMatch) Then GoTo foundTarget
+        If altUrl <> vbNullString Then If urlMatch(targetUrl, altUrl, partialMatch) Then GoTo foundTarget
+        GoTo nextloop1
         
 foundTarget:
         boolFound = True
