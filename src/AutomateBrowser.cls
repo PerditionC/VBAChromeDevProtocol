@@ -1126,6 +1126,14 @@ ErrHandler:
     Stop
 End Function
 
+' performs a querySelectorAll using specified selector and returns first node whose value matches label
+Public Function QueryNodeWithValue(ByVal selector As String, ByVal value As String) As cdpDOMNode
+    Dim nodes As Dictionary
+    Set nodes = querySelectorAll(selector)
+    Set QueryNodeWithValue = GetNodeWithValue(nodes, value)
+End Function
+
+
 ' returns document root and all child elements of main frame, optinally piercing frames and shadow DOMs
 Public Function Document(Optional ByVal depth As Long = 0, Optional ByVal pierce As Boolean = False) As cdpDOMNode
     If curSession.rootNode Is Nothing Then
