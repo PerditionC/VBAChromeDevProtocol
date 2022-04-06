@@ -375,6 +375,19 @@ Public Sub Click(Optional ByVal strategy As NavigationStrategy = NavigationStrat
     Browser.Click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
 End Sub
 
+
+Public Function QuerySelector(ByVal selector As String, Optional ByVal frameId As String = vbNullString, _
+                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, _
+                              Optional waitUntilFound As Boolean = True, Optional waitUntilVisible As Boolean = True) As cdpDOMNode
+    Set QuerySelector = Browser.QuerySelector(selector, nodeId, frameId, depth, pierce, waitUntilFound, waitUntilVisible)
+End Function
+
+Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                                 Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+    Set querySelectorAll = Browser.querySelectorAll(selector, nodeId, frameId, depth, pierce)
+End Function
+
+
 Public Sub focus()
     Browser.focus nodeId:=nodeId, backendNodeId:=backendNodeId
 End Sub
