@@ -661,7 +661,7 @@ Public Function GetMessageUTF8() As String
     GetMessageUTF8 = GetMessageUTF8 & Chr(0)
 
     If left(GetMessageUTF8, 1) <> "{" Then Stop
-    If Len(GetMessageUTF8) > 4096 Then Stop
+    'If Len(GetMessageUTF8) > 4096 Then Stop
     Exit Function
 ErrHandler:
     Debug.Print "GetMessageUTF8() - Error: " & Err.description
