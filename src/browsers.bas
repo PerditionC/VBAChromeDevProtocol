@@ -2,10 +2,10 @@ Attribute VB_Name = "browsers"
 ' provides information about supported browsers
 Option Explicit
 
-Private Const pathEdge As String = "C:\Program Files(x86)\Microsoft\Edge\Application\"
+Private Const pathEdge As String = "C:\Program Files (x86)\Microsoft\Edge\Application\"
 Private Const processNameEdge As String = "msedge.exe"
 
-Private Const pathChrome As String = "C:\Program Files(x86)\Google\Chrome\Application\"
+Private Const pathChrome As String = "C:\Program Files (x86)\Google\Chrome\Application\"
 Private Const processNameChrome As String = "chrome.exe"
 
 Private Const pathFirefox As String = "C:\Program Files\Mozilla Firefox\"
