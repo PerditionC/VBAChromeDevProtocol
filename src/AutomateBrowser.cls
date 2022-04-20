@@ -1068,9 +1068,9 @@ End Function
 ' returns a Dictionary of cdpDomNodes matching selector, see getDomNodes
 ' Note: resulting Dictionary will be empty (0 items) if an error or no matching elements found
 ' see: https://www.w3.org/TR/CSS21/selector.html%23id-selectors for a quick overview of selector formatting
-    On Error GoTo errHandler
 Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
                                  Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+    On Error GoTo ErrHandler
     Set querySelectorAll = New Dictionary
     Dim nodeIds As Collection, dict As Dictionary
     Dim remoteObj As cdpRuntimeRemoteObject
