@@ -15,6 +15,9 @@ Primarily connects directly to browser using Chrome/Edge's ability to use the CD
 - improve/add usage documentation
 - generator needs some more work (still has some class names too long/clash, still has some clashes with reserved words, incorrectly assumes class for unspecified _object_)
 
+## Note
+when downloading the source files from git, be sure to convert to DOS/Windows CRLF style endings for the text files or Office may import as wrong module type (regular modules instead of class modules) - to be updated to ensure git always does this
+
 ## Usage
 see Example.xlsm - documentation to be added
 
