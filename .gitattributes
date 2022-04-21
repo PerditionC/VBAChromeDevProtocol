@@ -1,4 +1,4 @@
 *.xls* -text -diff
 *.xla* -text -diff
 *.bas text diff eol=crlf
-*.cls text diff eol=crlf # force so imported correctly by VBA
+*.cls text diff eol=crlf
