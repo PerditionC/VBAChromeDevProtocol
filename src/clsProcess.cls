@@ -221,8 +221,15 @@ End Function
 
 ' This functions sends a CDP message to edge
 Public Function writeProc(ByVal strData As String) As Integer
+    On Error GoTo ErrHandler
+    
     Dim lngWritten As Long
     writeProc = WriteFile(hCDPInWr, ByVal strData, Len(strData), lngWritten, ByVal 0&)
+
+    Exit Function
+ErrHandler:
+    Debug.Print "ERROR: writeProc(" & strData & ") - " & Err.description & " (DLL err=" & Err.LastDllError & ")"
+    Err.Raise Err.Number, Err.source, "VBAChromeDevProtocol.clsProcess.writeProc: " & Err.description & " (DLL err=" & Err.LastDllError & ")", Err.HelpFile, Err.HelpContext
 End Function
 
 Private Sub Class_Terminate()

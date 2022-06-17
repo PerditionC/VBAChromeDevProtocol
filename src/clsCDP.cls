@@ -111,12 +111,18 @@ End Sub
 
 ' returns Nothing if no more messages, otherwise returns the most recent message received
 Public Function popMessageFromQueue() As Dictionary
+    On Error GoTo ErrHandler
     Dim key As String
     key = CStr(objAllMessages.count - 1) ' last item added key is one less than current count, 0 based
     If objAllMessages.Exists(key) Then
         Set popMessageFromQueue = objAllMessages(key)
         objAllMessages.Remove key
     End If
+    
+    Exit Function
+ErrHandler:
+    Debug.Print "ERROR: popMessageFromQueue() - " & Err.description
+    Err.Raise Err.Number, Err.source, "VBAChromeDevProtocol.clsCDP.popMessageFromQueue: " & Err.description, Err.HelpFile, Err.HelpContext
 End Function
 
 ' clears any existing queued messages (events and responses)
@@ -210,6 +216,7 @@ End Function
 ' but if called with nowait=True then returns without waiting for reply - you must call peakMessage in a loop to receive reply
 ' peakMessage is called at least once to retrieve any immediately available data
 Private Function sendMessage(ByVal strMessage As String, Optional ByVal nowait As Boolean = False) As Dictionary
+    On Error GoTo ErrHandler
     ' lngLastId is id of current most recent message sent (it is incremented when the next message is sent)
     'We increase the global ID counter, this is the id of the message we are sending now
     lngLastID = lngLastID + 1
@@ -280,6 +287,11 @@ Private Function sendMessage(ByVal strMessage As String, Optional ByVal nowait A
         Debug.Print strMessage
         Debug.Print "-----"
     End If
+    
+    Exit Function
+ErrHandler:
+    Debug.Print "ERROR: sendMessage(" & strMessage & ", nowait=" & nowait & ") - " & Err.description
+    Err.Raise Err.Number, Err.source, "VBAChromeDevProtocol.clsCDP.sendMessage: " & Err.description, Err.HelpFile, Err.HelpContext
 End Function
 
 
