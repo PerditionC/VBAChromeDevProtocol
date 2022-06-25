@@ -2,15 +2,25 @@ Attribute VB_Name = "browsers"
 ' provides information about supported browsers
 Option Explicit
 
-Private Const pathEdge As String = "C:\Program Files (x86)\Microsoft\Edge\Application\"
 Private Const processNameEdge As String = "msedge.exe"
+Private Const browserExeSubPathEdge As String = "\Microsoft\Edge\Application\msedge.exe"
 
-Private Const pathChrome As String = "C:\Program Files (x86)\Google\Chrome\Application\"
 Private Const processNameChrome As String = "chrome.exe"
+Private Const browserExeSubPathChrome As String = "\Google\Chrome\Application\chrome.exe"
 
-Private Const pathFirefox As String = "C:\Program Files\Mozilla Firefox\"
 Private Const processNameFirefox As String = "firefox.exe"
+Private Const browserExeSubPathFirefox As String = "\Mozilla Firefox\firefox.exe"
 
+Public Function browserStatus(ByVal oneBrowser As browserType) As String
+   browserStatus = "Available"
+   If getProcessPathAndName(oneBrowser) = vbNullString Then browserStatus = "Not installed": Exit Function
+   If IsProcessRunning(ProcessName:=getProcessName(oneBrowser)) Then browserStatus = "Running": Exit Function
+End Function
+
+Private Function browserIsInstalled(ByVal oneBrowser As browserType)
+   browserIsInstalled = False
+   If getProcessPathAndName(oneBrowser) <> vbNullString Then browserIsInstalled = True
+End Function
 
 ' returns just the process name for matching browser
 Private Function getProcessName(ByVal whichBrowser As browserType)
@@ -26,35 +36,69 @@ Private Function getProcessName(ByVal whichBrowser As browserType)
     End If
 End Function
 
-' returns the process path and name for matching browser
-Private Function getProcessPathAndName(ByVal whichBrowser As browserType)
-    If (whichBrowser And browserType.Edge) = browserType.Edge Then
-        getProcessPathAndName = pathEdge & processNameEdge
-    ElseIf (whichBrowser And browserType.Chrome) = browserType.Chrome Then
-        getProcessPathAndName = pathChrome & processNameChrome
-    ElseIf (whichBrowser And browserType.Firefox) = browserType.Firefox Then
-        getProcessPathAndName = pathFirefox & processNameFirefox
-    Else
-        Debug.Print "Unknown browserType!"
-        Stop
-    End If
+
+'
+' Return the file path of supported browser if browser is installed on computer
+'
+Private Function getProcessPathAndName(ByVal oneBrowser As browserType) As String
+
+   getProcessPathAndName = vbNullString
+   Dim browserExeSubPath As String
+   
+   browserExeSubPath = vbNullString
+   If oneBrowser = browserType.Edge Then browserExeSubPath = browserExeSubPathEdge
+   If oneBrowser = browserType.Chrome Then browserExeSubPath = browserExeSubPathChrome
+   If oneBrowser = browserType.Firefox Then browserExeSubPath = browserExeSubPathFirefox
+   If browserExeSubPath = vbNullString Then Exit Function
+   
+   ' Get «program files (X86)» exact path  (sometimes there is a space before (X86) so get it with Environ$
+  
+   Dim programFiles As String
+   Dim programFilesX86 As String
+   programFilesX86 = Environ$("PROGRAMFILES(X86)")
+   If Environ$("ProgramW6432") = "" Then
+      programFiles = Environ$("ProgramFiles")
+   Else
+      programFiles = Environ$("ProgramW6432")
+   End If
+   '
+   ' Sometimes Firefox is installed in AppData/Local... (documented on internet but not tested...)
+   Dim appDataLocal As String
+   appDataLocal = Environ$("LocalAppData")
+   
+   ' verify if browser exists in Program Files
+   If Dir(programFiles & browserExeSubPath, vbNormal) <> "" Then getProcessPathAndName = programFiles & browserExeSubPath: Exit Function
+      
+   ' verify if browser exists in Program Files (X86)
+   If Dir(programFilesX86 & browserExeSubPath, vbNormal) <> "" Then getProcessPathAndName = programFilesX86 & browserExeSubPath: Exit Function
+         
+   ' verify if browser exists in AppData\Local
+   If Dir(appDataLocal & browserExeSubPath, vbNormal) <> "" Then getProcessPathAndName = appDataLocal & browserExeSubPath: Exit Function
+
+   
+    
 End Function
 
 
-' ensure browser process is started and connected
-' whichBrowser determines the browser to connect to
-' if not using websocket then we must spawn the browser, so first try to find a browser
-' without an existing process [Edge, Chrome, Firefox -> using only specified options]
-' and if none found then kill existing process and spawn requested browser
-' (i.e. if AnyBrowser is specified then launches Edge, if Chrome & Firefox specified
-' then launches Chrome, ...)
+' LaunchBrowser : validates if browser is installed and can be launched
+'                 or ensure browser process is started and connected
+'
+' whichBrowser : the browser to connect to
+'    Edge, Chrome, FireFox
+'    Options to run first unused browser when not using WebSocket
+'        AnyBrowser: Edge, Chrome, FireFox  if all running, kill Edge and launch Edge
+'        Chromium: Edge, Chrome  if all running, kill Edge and launch Edge
+'                                                                
 ' if a websocket is to be used then see if useexisting browser is requested, if
 ' not use same algorithm to determine browser as direct pipe case
 ' but if want to reuse we search for existing process and only if not found do we
 ' spawn, not AnyBrowser and Chromium will always spawn/use Edge, otherwise specified browser used
 ' Note: Edge is used first and Chrome only because Chrome is generally in use by person
 ' and Firefox may not be installed and its CDP support is not as mature
-' whichBrowser is set to browser used and connection is returned
+'
+' at the end, whichBrowser is set to browser used for connection and connection is returned
+
+'
 Public Function LaunchBrowser( _
     ByRef whichBrowser As browserType, _
     Optional url As String = vbNullString, _
@@ -65,31 +109,37 @@ Public Function LaunchBrowser( _
     Dim objBrowser As clsProcess
     Dim wsBrowser As clsWebSocket
     
-    ' check for browser running and select first requested that is not running if found
+    ' check for browser(s) running 
     Dim runningBrowsers As browserType
     If IsProcessRunning(ProcessName:=getProcessName(browserType.Edge)) Then runningBrowsers = runningBrowsers Or browserType.Edge
     If IsProcessRunning(ProcessName:=getProcessName(browserType.Chrome)) Then runningBrowsers = runningBrowsers Or browserType.Chrome
     If IsProcessRunning(ProcessName:=getProcessName(browserType.Firefox)) Then runningBrowsers = runningBrowsers Or browserType.Firefox
     
-    If ((whichBrowser And browserType.Edge) = browserType.Edge) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Edge) <> browserType.Edge)) Then
+    ' select first browser within whichBrowser that is not running (if installed)
+    If browserIsInstalled(browserType.Edge) And ((whichBrowser And browserType.Edge) = browserType.Edge) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Edge) <> browserType.Edge)) Then
         whichBrowser = browserType.Edge
-    ElseIf ((whichBrowser And browserType.Chrome) = browserType.Chrome) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Chrome) <> browserType.Chrome)) Then
+    ElseIf browserIsInstalled(browserType.Chrome) And ((whichBrowser And browserType.Chrome) = browserType.Chrome) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Chrome) <> browserType.Chrome)) Then
         whichBrowser = browserType.Chrome
-    ElseIf ((whichBrowser And browserType.Firefox) = browserType.Firefox) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Firefox) <> browserType.Firefox)) Then
+    ElseIf browserIsInstalled(browserType.Firefox) And ((whichBrowser And browserType.Firefox) = browserType.Firefox) And ((useWebSocket And useExistingBrowser) Or ((runningBrowsers And browserType.Firefox) <> browserType.Firefox)) Then
         whichBrowser = browserType.Firefox
     Else
-        ' all requested browsers are running so we need to kill the existing browser
-        If ((whichBrowser And browserType.Edge) = browserType.Edge) Then
+        ' at this point all requested browsers are running so we need to identify first installed browser within whichBrowser
+        If browserIsInstalled(browserType.Edge) And ((whichBrowser And browserType.Edge) = browserType.Edge) Then
             whichBrowser = browserType.Edge
-        ElseIf ((whichBrowser And browserType.Chrome) = browserType.Chrome) Then
+        ElseIf browserIsInstalled(browserType.Chrome) And ((whichBrowser And browserType.Chrome) = browserType.Chrome) Then
             whichBrowser = browserType.Chrome
-        ElseIf ((whichBrowser And browserType.Firefox) = browserType.Firefox) Then
+        ElseIf browserIsInstalled(browserType.Firefox) And ((whichBrowser And browserType.Firefox) = browserType.Firefox) Then
             whichBrowser = browserType.Firefox
         Else
+            'At this point, whichBrowser contains no installed browsers
             Debug.Print "LaunchBrowser() - unable to determine browser to start!"
             Stop
+            Exit Function
         End If
     End If
+    
+    ' At this point, whichBrowser contains the browser to start or to kill and restart
+    ' Verification was made that whichBrowser is installed on the running computer
     
     
     ' ensure browser is not already running (kill it if it is)
