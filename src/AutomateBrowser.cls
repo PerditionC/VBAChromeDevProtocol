@@ -415,9 +415,12 @@ Public Function launch( _
     Optional partialMatch As Boolean = True, _
     Optional useWebSocket As Boolean = False, _
     Optional useExistingBrowser As Boolean = False, _
-    Optional reconnectUrl As String = vbNullString _
+    Optional reconnectUrl As String = vbNullString, _
+    Optional byVal whichBrowser as browserType = anyBrowser, _
+    Optional byVal additionnalInlineCommands as string = vbNullString, _
+    Optional byVal killWithoutAsking as boolean = False _
     ) As Boolean
-    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch, useWebSocket:=useWebSocket, useExistingBrowser:=useExistingBrowser, reconnectUrl:=reconnectUrl) Then
+    If cdp.launch(url, autoAttach:=True, partialMatch:=partialMatch, useWebSocket:=useWebSocket, useExistingBrowser:=useExistingBrowser, reconnectUrl:=reconnectUrl, whichBrowser:=whichBrowser, additionnalInlineCommands :=additionnalInlineCommands, killWithoutAsking:=killWithoutAsking) Then
         ' initialize our original session
         If cdp.sessionId = vbNullString Then Stop
         Set mainSession = sessions(cdp.sessionId)
