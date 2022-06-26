@@ -70,6 +70,7 @@ End Enum
 
 
 Public Enum browserType
+    noBrowser = 0
     Chrome = 1
     Edge = 2
     Firefox = 4
