@@ -117,7 +117,9 @@ Public Function LaunchBrowser( _
     ByRef whichBrowser As browserType, _
     Optional url As String = vbNullString, _
     Optional useWebSocket As Boolean = False, _
-    Optional useExistingBrowser As Boolean = False _
+    Optional useExistingBrowser As Boolean = False, _
+    Optional additionnalInlineCommands as String = vbNullString, _
+    Optional killWithoutAsking as boolean = false _
     ) As Object
     Dim browserConnectionObj As Object
     Dim objBrowser As clsProcess
@@ -158,7 +160,7 @@ Public Function LaunchBrowser( _
     
     ' ensure browser is not already running (kill it if it is)
     If Not (useWebSocket And useExistingBrowser) Then
-        If Not TerminateProcess(ProcessName:=getProcessName(whichBrowser), PromptBefore:=True) Then
+        If Not TerminateProcess(ProcessName:=getProcessName(whichBrowser), PromptBefore:=not killWithoutAsking) Then
             ' abort if browser is already running and failed to kill it or user elected not to terminate
             Exit Function
         End If
@@ -177,7 +179,7 @@ Public Function LaunchBrowser( _
         Set objBrowser = Nothing
         Set wsBrowser = New clsWebSocket
         Set LaunchBrowser = wsBrowser
-        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-port=9222 " & url
+        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-port=9222 " & additionnalInlineCommands & " " & url
         If (Not useExistingBrowser) Or (Not IsProcessRunning(ProcessName:=getProcessName(whichBrowser))) Then
             If Not SpawnProcess(strCall) Then Exit Function
         End If
@@ -225,7 +227,7 @@ GetWebSocketEndPoint:
         Set objBrowser = New clsProcess
         Set wsBrowser = Nothing
         Set LaunchBrowser = objBrowser
-        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-pipe " & url
+        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-pipe " & additionnalInlineCommands & " " &  url
         
         Dim intRes As Integer
         intRes = objBrowser.init(strCall)
