@@ -439,7 +439,7 @@ Public Function launch( _
     
     browserProgram = whichBrowser ' specify requested browser, LaunchBrowser sets to browser we end up using
     Dim o As Object
-    Set o = LaunchBrowser(browserProgram, url, useWebSocket, useExistingBrowser)
+    Set o = LaunchBrowser(browserProgram, url, useWebSocket, useExistingBrowser, additionnalInlineCommands, killWithoutAsking)
     If o Is Nothing Then Exit Function ' error starting browser
     If TypeName(o) = "clsProcess" Then
         Set objBrowser = o
