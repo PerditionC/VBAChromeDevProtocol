@@ -431,6 +431,8 @@ Public Function launch( _
     Optional useWebSocket As Boolean = False, _
     Optional useExistingBrowser As Boolean = False, _
     Optional whichBrowser As browserType = browserType.AnyBrowser, _
+    Optional byVal additionnalInlineCommands as string = vbNullString, _
+    Optional byVal killWithoutAsking as boolean = False, _
     Optional reconnectUrl As String = vbNullString _
     ) As Boolean
     On Error GoTo ErrHandler
