@@ -22,19 +22,19 @@ Private Function browserIsInstalled(ByVal oneBrowser As browserType)
    If getProcessPathAndName(oneBrowser) <> vbNullString Then browserIsInstalled = True
 End Function
      
-Public function getFirstAvailableBrowser ( byval browserOne as browsertTpe = noBrowser, byval browserTwo as browserType = noBrowser, byval browserThree as browserType = noBrowser) as browserType
-   getFirstAvailableBrowser=noBrowser
-   if browserStatus(browserOne) = "Available" then getFirstAvailableBrowser=browserOne: exit function
-   if browserStatus(browserTwo) = "Available" then getFirstAvailableBrowser=browserTwo: exit function
-   if browserStatus(browserThree) = "Available" then getFirstAvailableBrowser=browserThree: exit function
-end function
+Public Function getFirstAvailableBrowser(Optional ByVal browserOne As browsertType = noBrowser, Optional ByVal browserTwo As browserType = noBrowser, Optional ByVal browserThree As browserType = noBrowser) As browserType
+   getFirstAvailableBrowser = noBrowser
+   If browserStatus(browserOne) = "Available" Then getFirstAvailableBrowser = browserOne: Exit Function
+   If browserStatus(browserTwo) = "Available" Then getFirstAvailableBrowser = browserTwo: Exit Function
+   If browserStatus(browserThree) = "Available" Then getFirstAvailableBrowser = browserThree: Exit Function
+End Function
 
-Public function getFirstInstalledBrowser ( byval browserOne as browserType = noBrowser, byval browserTwo as browserType = noBrowser, byval browserThree as browserType = noBrowser) as browserType
-   getFirstInstalledBrowser=noBrowser
-   if browserIsInstalled(browserOne) then getFirstInstalledBrowser=browserOne: exit function
-   if browserIsInstalled(browserTwo) then getFirstInstalledBrowser=browserTwo: exit function
-   if browserIsInstalled(browserThree) then getFirstInstalledBrowser=browserThree: exit function 
-end function
+Public Function getFirstInstalledBrowser(Optional ByVal browserOne As browsertType = noBrowser, Optional ByVal browserTwo As browserType = noBrowser, Optional ByVal browserThree As browserType = noBrowser) As browserType
+   getFirstInstalledBrowser = noBrowser
+   If browserIsInstalled(browserOne) Then getFirstInstalledBrowser = browserOne: Exit Function
+   If browserIsInstalled(browserTwo) Then getFirstInstalledBrowser = browserTwo: Exit Function
+   If browserIsInstalled(browserThree) Then getFirstInstalledBrowser = browserThree: Exit Function
+End Function
                                  
 ' returns just the process name for matching browser
 Private Function getProcessName(ByVal whichBrowser As browserType)
