@@ -93,6 +93,14 @@ Private Function getProcessPathAndName(ByVal oneBrowser As browserType) As Strin
     
 End Function
 
+' To start a browser when no need to control
+Public function startBrowserNoControl(oneBrowser as browserType, optional url as string=vbNullstring) as boolean
+   dim browserFile as string
+   startBrowserNoControl=true
+   browserFile=getProcessPathAndName(oneBrowser)
+   if browserFile <> vbNullString then Shell ("""" & browserFile & """ """ & url & """"):exit function
+   startBrowserNoControl=false
+end function
 
 ' LaunchBrowser : validates if browser is installed and can be launched
 '                 or ensure browser process is started and connected
