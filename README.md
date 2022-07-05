@@ -10,8 +10,9 @@ Initial work based on information and clsEdge from https://www.codeproject.com/T
 
 Primarily connects directly to browser using Chrome/Edge's ability to use the CDP via pipes when started, however, now also has basic support for connecting to browser through standard websocket interface so can reuse already open browser if started with CDP port 9222 listening.
 
+Currently primarily tested with and assumes working with Edge; however will detect and support spawning Chrome and possibly FireFox (Chrome should work at least in websocket mode, Firefox is untested) 
+
 ## TODO
-- currently only tested with and assumes working with Edge; future versions will detect and support spawning Chrome and possibly FireFox
 - improve/add usage documentation
 - generator needs some more work (still has some class names too long/clash, still has some clashes with reserved words, incorrectly assumes class for unspecified _object_)
 
@@ -30,5 +31,7 @@ see Example.xlsm - documentation to be added
 - WinHttpCommon / clsWebSocket : https://github.com/EagleAglow/vba-websocket-class - MIT copyright EagleAglow
 - ClipboardUtils : https://msdn.microsoft.com/en-us/library/office/ff192913.aspx?f=255&MSPPError=-2147217396
 - WinWindowStyle : https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
+
+- Denis Lessard for work detecting correct path and which browsers are installed along with improving logic for which one to spawn
 
 Testing and enhancements by Jason Pullen and Kenneth J. Davis
