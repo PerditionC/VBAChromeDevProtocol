@@ -1,0 +1,99 @@
+                    <meta charset="utf-8" emacsmode="-*- markdown -*">
+                            **VBAChromeDevProtocol**
+
+VBAChromeDevProtocol is a set of Visual Basic for Applications (VBA) source files
+to allow controlling Chrome, Edge (and to a limited extent, Firefox) by using
+the browser's Chrome Developer Protocol.  This can be used to automate various
+tasks with browser.  Normally Selenium, Puppeteer, or Playwright should be used
+as these are mature software with a community to back them.  However, if you are
+unable to install additional software or simply want a self contained solution
+that doesn't require the user to install additional software then this can be an
+option.  This is primarily tested using Excel, but should be compatible with
+other applications such as Access or Outlook which also support VBA.
+
+Quick Start
+===============================================================================
+
+The basics, e.g. launch Google's site
+-------------------------------------------------------------------------------
+To use, within a Sub in a VBA module create an AutomateBrowser object, launch
+the browser to the desired page to navigate to, and then quit the browser.
+
+
+```
+Sub demo()
+    Dim browser As AutomateBrowser
+    Set browser = new_automateBrowser
+    browser.launch "https://www.google.com/"
+    Debug.Print JsonConverter.ConvertToJson(browser.cdp.browser.getWindowForTarget)
+    browser.Quit
+End Sub
+```
+
+License
+-------------------------------------------------------------------------------
+
+Primarily licensed under MIT terms, however, uses existing projects and samples
+which are licensed under 
+	[MIT](https://opensource.org/licenses/MIT), 
+	[The Code Project Open License / CPOL](http://www.codeproject.com/info/cpol10.aspx), 
+     [Creative Commons license / stack overflow](https://creativecommons.org/licenses/by-sa/4.0/)
+and 
+	[Microsoft documentation terms](https://docs.microsoft.com/en-us/legal/termsofuse)
+
+Tutorials
+===============================================================================
+
+Setup
+-------------------------------------------------------------------------------
+
+Basic Example
+-------------------------------------------------------------------------------
+
+Reference (API)
+===============================================================================
+
+AutomateBrowser
+-------------------------------------------------------------------------------
+
+clsCDP
+-------------------------------------------------------------------------------
+
+
+Related Projects 
+===============================================================================
+
+Special Thanks
+--------------
+
+* clsCDP derived from clsEdge : https://www.codeproject.com/Tips/5307593/Automate-Chrome-Edge-using-VBA - CPOL license copyright ChrisK23
+
+* JsonConverter : https://github.com/VBA-tools/VBA-JSON - MIT/BSD license copyright Ryo Yokoyama
+
+* clsProcess : https://stackoverflow.com/questions/62172551/error-with-createpipe-in-vba-office-64bit - CC BY-SA 4.0 license
+
+* basUtf8FromString : https://www.di-mgt.com.au/basUtf8FromString64.bas.html - MIT copyright David Ireland DI Management Services Pty
+
+* WinHttpCommon / clsWebSocket : https://github.com/EagleAglow/vba-websocket-class - MIT copyright EagleAglow
+
+* ClipboardUtils : https://msdn.microsoft.com/en-us/library/office/ff192913.aspx?f=255&MSPPError=-2147217396
+
+* WinWindowStyle : https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
+
+
+Other Links
+-----------
+
+* [Chrome Developer Protocol documentation](https://chromedevtools.github.io/devtools-protocol/)
+
+* [Playwright](https://playwright.dev/)
+
+* [Puppeteer](https://github.com/puppeteer/puppeteer)
+
+* [Selenium](https://www.selenium.dev/)
+
+
+
+
+<script>markdeepOptions={tocStyle:'short'};</script>
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
