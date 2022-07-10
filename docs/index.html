@@ -47,8 +47,138 @@ Tutorials
 Setup
 -------------------------------------------------------------------------------
 
+- create a new document (e.g. in Excel, new document), for browser control
+
+- in the VBA editor (development tools) copy the source modules from [here](https://github.com/PerditionC/VBAChromeDevProtocol/).
+  Be sure to copy all the files in src/ directory and needed ones from src/cdp/
+  *(The files in generator are only used to create the files in src/cdp/ and
+    the files in src/examples are not needed normally.)*
+
+  * Either do the long and arduous task of _Importing File..._ for each
+    of the source files or
+
+  * Open the src directory in Windows Explorer and drag the files to the VBA
+    modules' window in Excel
+
+    ![highlight & drag-n-drop source files to VBA Project window, modules section](dnd-files.png)
+
+- add a reference to Microsoft Scripting Runtime *needed for Dictionary*
+  (Optionally and unsupported, use alternative Dictionary class - 
+   see https://github.com/VBA-tools/VBA-Dictionary)
+
+  ![add reference to scrrun.dll](scrrun.jpg)
+
+- **save** document as addin (or macro enabled file), e.g. as "CDP Addin.xlam"
+
+- create another document, this will be your project!
+
+- add a reference to previously created file, e.g. to "CDP Addin.xlam"
+
+> &#x1F4C3; **Note:** Source files need to have DOS/Windows [\r\n] line endings
+>                  or VBA will import class modules incorrectly as modules
+>                  (i.e. if files have only \n line endings, import will fail)
+
+> &#x1F4C3; **Note:** Or use the "CDP Addings.xlam" included in the distribution
+>                     instead of recreating it.
+
 Basic Example
 -------------------------------------------------------------------------------
+
+### Minimal
+
+Minimally, you need to create an instance of the AutomateBrowser (or clsCDP)
+class and launch the browser to desired web page.  Optionally, close the browser.
+
+```basic
+Sub Ex_Minimal()
+    ' create an instance to our AutomateBrowser class
+    ' the module this subroutine is created in must have a reference to the
+    ' document with the VBAChromeDevProtocol source files imported into.
+    Dim browser As AutomateBrowser
+    Set browser = new_automateBrowser
+    ' start up the browser, which ever one first found of Edge, Chrome, Firefox
+    ' and pass it the command line option to load our web page on startup.
+    browser.launch "https://www.google.com/"
+    ' optionally close the browser once done
+    'browser.Quit
+End Sub
+```
+
+### Simple Interaction
+
+```basic
+Sub Google_search()
+    ' common setup, create browser class and spawn browser
+    Dim b As AutomateBrowser: Set b = new_automateBrowser
+    b.launch
+    b.navigate "https://www.google.com"
+    
+    'find node by class
+    Dim SearchBar As cdpDOMNode
+    Set SearchBar = b.querySelector(".gLFyf.gsfi")
+    
+    'do something to/with the node; i like having the methods here vs by b.method node.nodeId, etc
+    SearchBar.elementAttribute("value") = "cats"
+    sleep 1
+    SearchBar.elementAttribute("value") = ""
+    sleep 1
+    SearchBar.elementValue = "big cats"
+    ' print out some of its properties
+    Debug.Print SearchBar.innerText
+    Debug.Print SearchBar.Title
+    Debug.Print SearchBar.Value
+    Debug.Print SearchBar.elementValue
+       
+    sleep 1
+    Dim myInputs As Dictionary
+    Dim myInput As cdpDOMNode
+    
+    'find nodes by tag
+    Set myInputs = b.querySelectorAll("input[class~='gLFyf'][class~='gsfi']")
+    Set myInput = myInputs.Items(0)
+    myInput.SetValue "tiger", SNV_FakeInput
+    
+    sleep 1 
+   
+    myInput.SetValue "lion", SNV_Clipboard
+    ' clear popup list
+    b.cdp.SimulateInput.dispatchKeyEvent "keyDown", code:="Escape", windowsVirtualKeyCode:=27
+    b.cdp.SimulateInput.dispatchKeyEvent "keyUp"
+    
+    'find a node by class name
+    'Set myInputs = b.getNodesByClassName("gLFyf gsfi")
+    'Set myInput = myInputs.Items(0)
+    myInput.elementValue = "baby cats"
+    Debug.Print myInput.elementValue
+    
+    sleep 1
+    
+    'loop through nodes to find a specific node
+    Dim v As Variant
+    For Each v In myInputs.Items
+        Set myInput = v
+        If myInput.elementAttribute("class") = "gLFyf gsfi" Then
+            myInput.SetValue "kittens"
+            Exit For
+        End If
+    Next v
+    
+    ' clear popup list
+    sleep 1 ' needed before we press escape to give time for popup to pop up
+    b.cdp.SimulateInput.dispatchKeyEvent "keyDown", code:="Escape", windowsVirtualKeyCode:=27
+    b.cdp.SimulateInput.dispatchKeyEvent "keyUp"
+    
+    'find node by exact selector path as copied from debugger
+    Dim SearchButton As cdpDOMNode
+    Set SearchButton = b.querySelector("body > div.L3eUgb > div.o3j99.ikrT4e.om7nvf > form > div:nth-child(1) > div.A8SBwf > div.FPdoLc.lJ9FBc > center > input.gNO89b")
+    SearchButton.Click
+    
+    sleep 1
+    b.alert "weeee it worked. click 'ok' to close"
+    
+    b.Quit
+End Sub
+```
 
 Reference (API)
 ===============================================================================
