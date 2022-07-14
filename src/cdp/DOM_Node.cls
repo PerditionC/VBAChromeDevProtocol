@@ -64,150 +64,152 @@ End Enum
 ' Node identifier that is passed into the rest of the DOM messages as the `nodeId`. Backend
     '   will only push node with given `id` once. It is aware of all requested nodes and will only
     '   fire DOM events for nodes known to the client.
-Public nodeId AS Long
+Public nodeId As Long
 
 ' parentId : NodeId
 ' Optional
 ' The id of the parent node if any.
-Public parentId AS Long
+Public parentId As Long
 
 ' backendNodeId : BackendNodeId
 ' The BackendNodeId for this node.
-Public backendNodeId AS Long
+Public backendNodeId As Long
 
 ' nodeType : integer
 ' `Node`'s nodeType.
-Public nodeType AS Long
+Public nodeType As Long
 
 ' nodeName : string
 ' `Node`'s nodeName.
-Public nodeName AS string
+Public nodeName As String
 
 ' localName : string
 ' `Node`'s localName.
-Public localName AS string
+Public localName As String
 
 ' nodeValue : string
 ' `Node`'s nodeValue.
-Public nodeValue AS string
+Public nodeValue As String
 
 ' childNodeCount : integer
 ' Optional
 ' Child count for `Container` nodes.
-Public childNodeCount AS Long
+Public childNodeCount As Long
 
 ' children : array of cdpDOMNode
 ' Optional
 ' Child nodes of this node when requested with children.
-Public children AS Collection
+Public children As Collection
 
 ' attributes : array of string
 ' Optional
 ' Attributes of the `Element` node in the form of flat array `[name1, value1, name2, value2]`.
-Public attributes AS Collection
+Public attributes As Collection
 
 ' documentURL : string
 ' Optional
 ' Document URL that `Document` or `FrameOwner` node points to.
-Public documentURL AS string
+Public documentURL As String
 
 ' baseURL : string
 ' Optional
 ' Base URL that `Document` or `FrameOwner` node uses for URL completion.
-Public baseURL AS string
+Public baseURL As String
 
 ' publicId : string
 ' Optional
 ' `DocumentType`'s publicId.
-Public publicId AS string
+Public publicId As String
 
 ' systemId : string
 ' Optional
 ' `DocumentType`'s systemId.
-Public systemId AS string
+Public systemId As String
 
 ' internalSubset : string
 ' Optional
 ' `DocumentType`'s internalSubset.
-Public internalSubset AS string
+Public internalSubset As String
 
 ' xmlVersion : string
 ' Optional
 ' `Document`'s XML version in case of XML documents.
-Public xmlVersion AS string
+Public xmlVersion As String
 
 ' name : string
 ' Optional
 ' `Attr`'s name.
-Public name AS string
+Public name As String
 
 ' value : string
 ' Optional
 ' `Attr`'s value.
-Public value AS string
+Public value As String
 
 ' pseudoType : PseudoType
 ' Optional
 ' Pseudo element type for this node.
-Public pseudoType AS string
+Public pseudoType As String
 
 ' shadowRootType : ShadowRootType
 ' Optional
 ' Shadow root type.
-Public shadowRootType AS string
+Public shadowRootType As String
 
 ' frameId : Page.FrameId
 ' Optional
 ' Frame ID for frame owner elements.
-Public frameId AS string
+Public frameId As String
 
 ' contentDocument : Node
 ' Optional
 ' Content document for frame owner elements.
-Public contentDocument AS cdpDOMNode
+Public contentDocument As cdpDOMNode
 
 ' shadowRoots : array of cdpDOMNode
 ' Optional
 ' Shadow root list for given element host.
-Public shadowRoots AS Collection
+Public shadowRoots As Collection
 
 ' templateContent : Node
 ' Optional
 ' Content document fragment for template elements.
-Public templateContent AS cdpDOMNode
+Public templateContent As cdpDOMNode
 
 ' pseudoElements : array of cdpDOMNode
 ' Optional
 ' Pseudo elements associated with this node.
-Public pseudoElements AS Collection
+Public pseudoElements As Collection
 
 ' importedDocument : Node
 ' Optional
 ' Deprecated, as the HTML Imports API has been removed (crbug.com/937746).
     '   This property used to return the imported document for the HTMLImport links.
     '   The property is always undefined now.
-Public importedDocument AS cdpDOMNode
+Public importedDocument As cdpDOMNode
 
 ' distributedNodes : array of cdpDOMBackendNode
 ' Optional
 ' Distributed nodes for given insertion point.
-Public distributedNodes AS Collection
+Public distributedNodes As Collection
 
 ' isSVG : boolean
 ' Optional
 ' Whether the node is SVG.
-Public isSVG AS Variant ' boolean
+Public isSVG As Variant ' boolean
 
 ' compatibilityMode : CompatibilityMode
 ' Optional
-' 
-Public compatibilityMode AS string
+'
+Public compatibilityMode As String
 
-Public Function init(ByVal obj as Dictionary, Optional ByVal b As AutomateBrowser) As cdpDOMNode
-Attribute Item.VB_Description = "Initialize class from Dictionary returned by CDP method."
-    Dim v as Variant
+Public Function init(ByVal obj As Dictionary, Optional ByVal b As AutomateBrowser, Optional ByVal expectedNodeId As Integer, Optional ByVal parent As cdpDOMNode = Nothing) As cdpDOMNode
+Attribute init.VB_Description = "Initialize class from Dictionary returned by CDP method."
+    On Error GoTo ErrHandler
+    Dim v As Variant
 
     Let nodeId = CLng(obj.Item("nodeId"))
+    
     If obj.Exists("parentId") Then Let parentId = CLng(obj.Item("parentId"))
     Let backendNodeId = CLng(obj.Item("backendNodeId"))
     Let nodeType = CLng(obj.Item("nodeType"))
@@ -216,17 +218,19 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     Let nodeValue = CStr(obj.Item("nodeValue"))
     If obj.Exists("childNodeCount") Then Let childNodeCount = CLng(obj.Item("childNodeCount"))
     If obj.Exists("children") Then
-        For each v in obj.Item("children")
+        Set children = New Collection
+        For Each v In obj.Item("children")
             Dim obj_children As cdpDOMNode: Set obj_children = New cdpDOMNode
-            obj_children.init v
+            obj_children.init v, b, parent:=Me
             children.Add obj_children
             Set obj_children = Nothing
         Next v
     End If
     If obj.Exists("attributes") Then
-        For each v in obj.Item("attributes")
-            attributes.Add v
-        Next v
+        Set attributes = obj.Item("attributes")
+        'For Each v In obj.Item("attributes")
+        '    attributes.Add v
+        'Next v
     End If
     If obj.Exists("documentURL") Then Let documentURL = CStr(obj.Item("documentURL"))
     If obj.Exists("baseURL") Then Let baseURL = CStr(obj.Item("baseURL"))
@@ -241,34 +245,37 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     If obj.Exists("frameId") Then Let frameId = CStr(obj.Item("frameId"))
     If obj.Exists("contentDocument") Then
         Set contentDocument = New cdpDOMNode
-        contentDocument.init obj.Item("contentDocument")
+        contentDocument.init obj.Item("contentDocument"), b, parent:=Me
     End If
     If obj.Exists("shadowRoots") Then
-        For each v in obj.Item("shadowRoots")
+        Set shadowRoots = New Collection
+        For Each v In obj.Item("shadowRoots")
             Dim obj_shadowRoots As cdpDOMNode: Set obj_shadowRoots = New cdpDOMNode
-            obj_shadowRoots.init v
+            obj_shadowRoots.init v, b, parent:=Me
             shadowRoots.Add obj_shadowRoots
             Set obj_shadowRoots = Nothing
         Next v
     End If
     If obj.Exists("templateContent") Then
         Set templateContent = New cdpDOMNode
-        templateContent.init obj.Item("templateContent")
+        templateContent.init obj.Item("templateContent"), b, parent:=Me
     End If
     If obj.Exists("pseudoElements") Then
-        For each v in obj.Item("pseudoElements")
+        Set pseudoElements = New Collection
+        For Each v In obj.Item("pseudoElements")
             Dim obj_pseudoElements As cdpDOMNode: Set obj_pseudoElements = New cdpDOMNode
-            obj_pseudoElements.init v
+            obj_pseudoElements.init v, b, parent:=Me
             pseudoElements.Add obj_pseudoElements
             Set obj_pseudoElements = Nothing
         Next v
     End If
     If obj.Exists("importedDocument") Then
         Set importedDocument = New cdpDOMNode
-        importedDocument.init obj.Item("importedDocument")
+        importedDocument.init obj.Item("importedDocument"), b, parent:=Me
     End If
     If obj.Exists("distributedNodes") Then
-        For each v in obj.Item("distributedNodes")
+        Set distributedNodes = New Collection
+        For Each v In obj.Item("distributedNodes")
             Dim obj_distributedNodes As cdpDOMBackendNode: Set obj_distributedNodes = New cdpDOMBackendNode
             obj_distributedNodes.init v
             distributedNodes.Add obj_distributedNodes
@@ -298,10 +305,14 @@ Attribute Item.VB_Description = "Initialize class from Dictionary returned by CD
     End If
 
     Set init = Me
+    Exit Function
+ErrHandler:
+    Stop
+    Resume Next
 End Function
 
 Public Function asDictionary() As Dictionary
-    Dim dict as Dictionary: Set dict = New Dictionary
+    Dim dict As Dictionary: Set dict = New Dictionary
 
     dict("nodeId") = nodeId
     dict("parentId") = parentId
@@ -313,25 +324,25 @@ Public Function asDictionary() As Dictionary
     dict("childNodeCount") = childNodeCount
     Set dict("children") = children
     Set dict("attributes") = attributes
-    if documentURL <> vbNullString Then dict("documentURL") = documentURL
-    if baseURL <> vbNullString Then dict("baseURL") = baseURL
-    if publicId <> vbNullString Then dict("publicId") = publicId
-    if systemId <> vbNullString Then dict("systemId") = systemId
-    if internalSubset <> vbNullString Then dict("internalSubset") = internalSubset
-    if xmlVersion <> vbNullString Then dict("xmlVersion") = xmlVersion
-    if name <> vbNullString Then dict("name") = name
-    if value <> vbNullString Then dict("value") = value
-    if pseudoType <> vbNullString Then dict("pseudoType") = pseudoType
-    if shadowRootType <> vbNullString Then dict("shadowRootType") = shadowRootType
-    if frameId <> vbNullString Then dict("frameId") = frameId
+    If documentURL <> vbNullString Then dict("documentURL") = documentURL
+    If baseURL <> vbNullString Then dict("baseURL") = baseURL
+    If publicId <> vbNullString Then dict("publicId") = publicId
+    If systemId <> vbNullString Then dict("systemId") = systemId
+    If internalSubset <> vbNullString Then dict("internalSubset") = internalSubset
+    If xmlVersion <> vbNullString Then dict("xmlVersion") = xmlVersion
+    If name <> vbNullString Then dict("name") = name
+    If value <> vbNullString Then dict("value") = value
+    If pseudoType <> vbNullString Then dict("pseudoType") = pseudoType
+    If shadowRootType <> vbNullString Then dict("shadowRootType") = shadowRootType
+    If frameId <> vbNullString Then dict("frameId") = frameId
     If Not contentDocument Is Nothing Then Set dict("contentDocument") = contentDocument.asDictionary()
     Set dict("shadowRoots") = shadowRoots
     If Not templateContent Is Nothing Then Set dict("templateContent") = templateContent.asDictionary()
     Set dict("pseudoElements") = pseudoElements
     If Not importedDocument Is Nothing Then Set dict("importedDocument") = importedDocument.asDictionary()
     Set dict("distributedNodes") = distributedNodes
-    if Not IsEmpty(isSVG) Then dict("isSVG") = isSVG
-    if compatibilityMode <> vbNullString Then dict("compatibilityMode") = compatibilityMode
+    If Not IsEmpty(isSVG) Then dict("isSVG") = isSVG
+    If compatibilityMode <> vbNullString Then dict("compatibilityMode") = compatibilityMode
 
     Set asDictionary = dict
 End Function
@@ -342,11 +353,43 @@ Private Sub Class_Initialize()
     Set shadowRoots = New Collection
     Set pseudoElements = New Collection
     Set distributedNodes = New Collection
+    
+    autoSetMode = SNV_Automatic
+End Sub
+
+Private Sub Class_Terminate()
+    Set Browser = Nothing
+    Set resolveNode = Nothing
+    Set objectProperties = Nothing
+    Set parentNode = Nothing
+    
+    Set children = Nothing
+    Set attributes = Nothing
+    Set shadowRoots = Nothing
+    Set pseudoElements = Nothing
+    Set distributedNodes = Nothing
 End Sub
 
 ' ************* Convenience functions *********************
 Public Sub Click(Optional ByVal strategy As NavigationStrategy = NavigationStrategy.None)
     Browser.Click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
+End Sub
+
+
+Public Function QuerySelector(ByVal selector As String, Optional ByVal frameId As String = vbNullString, _
+                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, _
+                              Optional waitUntilFound As Boolean = True, Optional waitUntilVisible As Boolean = True) As cdpDOMNode
+    Set QuerySelector = Browser.QuerySelector(selector, nodeId, frameId, depth, pierce, waitUntilFound, waitUntilVisible)
+End Function
+
+Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                                 Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+    Set querySelectorAll = Browser.querySelectorAll(selector, nodeId, frameId, depth, pierce)
+End Function
+
+
+Public Sub focus()
+    Browser.focus nodeId:=nodeId, backendNodeId:=backendNodeId
 End Sub
 
 Public Sub getCenter(ByRef x As Double, ByRef y As Double)
@@ -358,7 +401,7 @@ Public Property Get elementValue() As String
     Dim child As cdpDOMNode, v As Variant
     
     ' look for shadowDom for value
-    If shadowRoots.Count > 0 Then
+    If shadowRoots.count > 0 Then
         ' we assume textContent is our value
         Set child = shadowRoots(1)
         elementValue = child.textContent
@@ -475,7 +518,8 @@ Public Sub setValue(ByVal newValue As String, Optional mode As SetNodeValueMode 
             For ndx = 1 To Len(newValue)
                 c = Mid$(newValue, ndx, 1)
                 Browser.cdp.SimulateInput.dispatchKeyEvent "keyDown", Text:=c
-                Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
+                ' doing all three can cause duplicate characters input, char doesn't always work though, so use keyDown/keyUp
+                'Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
                 Browser.cdp.SimulateInput.dispatchKeyEvent "keyUp"
             Next ndx
     End Select
@@ -512,6 +556,11 @@ Public Property Let elementAttribute(ByVal name As String, ByVal value As String
 End Property
 
 
+' clears our cache so next call to getProperty (or related) retrieves [updated] property values
+Public Sub refreshProperties()
+    Set objectProperties = Nothing
+End Sub
+
 ' returns specified javascript property associated with this node
 ' see Runtime.getProperties
 ' Note: this call may take a noticable amount of time, especially when called on multiple nodes with many properties
@@ -519,7 +568,7 @@ Public Function getProperty(ByVal propertyName As String) As cdpRuntimePropertyD
     Dim index As Integer
     Dim objectProperty As Dictionary
     
-    If objectProperties Is Nothing Then Set objectProperties = Browser.GetProperties(Me)
+    If objectProperties Is Nothing Then Set objectProperties = Browser.getProperties(Me)
     If Not objectProperties Is Nothing Then
         If objectProperties.Exists(propertyName) Then
             Dim prop As cdpRuntimePropertyDescriptor
@@ -536,7 +585,7 @@ Public Function getPropertyValue(ByVal propertyName As String) As String
     Dim index As Integer
     Dim objectProperty As Dictionary
     
-    If objectProperties Is Nothing Then Set objectProperties = Browser.GetProperties(Me)
+    If objectProperties Is Nothing Then Set objectProperties = Browser.getProperties(Me)
     If Not objectProperties Is Nothing Then
         If objectProperties.Exists(propertyName) Then
             Dim prop As cdpRuntimePropertyDescriptor
@@ -591,6 +640,46 @@ Public Property Get outerHTML() As String
     outerHTML = Browser.cdp.DOM.getOuterHTML(objectId:=resolveNode.objectId)
 End Property
 
+
+' returns True only if element meets both criteria:
+'   has a positive width and height and
+'   CSS display property is not "none" or "hidden"
+Public Function isVisible() As Boolean
+    'isVisible = False
+    
+    ' first check if has a positive width and height
+    Dim x As Double, y As Double
+    getCenter x, y
+    If (Abs(x) > 0#) And (Abs(y) > 0#) Then
+        ' now get computed CSS display value
+        Dim style As cdpCSSCSSComputedStyleProperty
+        Set style = getCSSStyle("display")
+        If Not style Is Nothing Then
+            If (style.value <> "none") And (style.value <> "hidden") Then
+                isVisible = True
+            End If
+        End If
+    End If
+End Function
+
+
+' retrieves current CSS computed style for specified property
+Public Function getCSSStyle(ByVal name As String) As cdpCSSCSSComputedStyleProperty
+    Dim styles As Collection
+    Browser.cdp.CSS.enable ' must be enabled or call to computer style will fail
+    Set styles = Browser.cdp.CSS.getComputedStyleForNode(nodeId)
+    Browser.cdp.CSS.disable
+    Dim v As Variant
+    For Each v In styles
+        If v("name") = name Then
+            Dim style As cdpCSSCSSComputedStyleProperty
+            Set style = New cdpCSSCSSComputedStyleProperty
+            style.init v
+            Set getCSSStyle = style
+            Exit Function
+        End If
+    Next v
+End Function
 
 
 ' returns neighboring child node of parent
