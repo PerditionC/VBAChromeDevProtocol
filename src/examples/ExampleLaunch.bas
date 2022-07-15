@@ -1,5 +1,5 @@
 Attribute VB_Name = "ExampleLaunch"
-
+' Examples starting supported browsers
 Option Explicit
 
 Dim browser As Object
@@ -22,14 +22,39 @@ Sub runBrowsers() ' This example will open a new instance of each of the install
 End Sub
  
 
+' helper to convert enum to string for browser status
+Private Function browserStatusToStr(browserStatus As BrowserAvailability) As String
+    Dim s As String
+    Select Case browserStatus
+        Case BrowserAvailability.Available
+            s = "Available"
+        Case BrowserAvailability.Running
+            s = "Running"
+        Case BrowserAvailability.Not_Installed
+            s = "Not Installed"
+        Case Else
+            s = "Unknown"
+    End Select
+    browserStatusToStr = s
+End Function
+
+' helper that gets current browser status and converts enum to string
+Private Function browserStatusAsStr(ByVal browser As browserType) As String
+    browserStatusAsStr = browserStatusToStr(browserStatus(browser))
+End Function
+
+' Example to show the status of all supported browsers on current running computer
 Sub showStatusOfAllSupportedBrowsers()
    
    Dim msg As String
-   msg = "Edge:" & vbTab & browserStatus(Edge) & vbCrLf & "Chrome:" & vbTab & browserStatus(Chrome) & vbCrLf & "Firefox:" & vbTab & browserStatus(firefox)
+   msg = "Edge:" & vbTab & browserStatusAsStr(Edge) & vbCrLf & "Chrome:" & vbTab & browserStatusAsStr(Chrome) & vbCrLf & "Firefox:" & vbTab & browserStatusAsStr(firefox)
    MsgBox msg, vbOKOnly, "Status of supported browsers"
-   
+
 End Sub
 
+
+' Example of explicitly launching just the Chrome browser regardless of which browsers are installed and current running state
+' and passing along additional command line arguments
 Public Sub forceLaunchChrome()
    
    Set browser = New_AutomateBrowser
@@ -38,7 +63,9 @@ Public Sub forceLaunchChrome()
    
    browser.launch whichBrowser:=browserType.Chrome, url:=url, additionnalInlineCommands:=inlineCommand, killWithoutAsking:=kill
     
+   
    Call doYourThings
+    
     
    ' Close browser
    On Error Resume Next
@@ -48,6 +75,9 @@ Public Sub forceLaunchChrome()
    
 End Sub
 
+
+' Example of explicitly launching just the Chrome browser, but only if it is installed on current computer, ignores current running state
+' and passing along additional command line arguments
 Public Sub forceLaunchChromeIfInstalled()
    
    Set browser = New_AutomateBrowser
@@ -56,7 +86,7 @@ Public Sub forceLaunchChromeIfInstalled()
    
    If browserStatus(Chrome) = "Not installed" Then
       MsgBox ("Chrome : " & browserStatus(Chrome) & vbLf & _
-             "Requets aborted")
+             "Request aborted")
       Set browser = Nothing
    End If
    
@@ -71,6 +101,11 @@ Public Sub forceLaunchChromeIfInstalled()
    On Error GoTo 0
 
 End Sub
+
+
+' Example of explicitly launching just the Chrome browser, but only if it is installed on current computer,
+' if already running, then will ask user before killing and respawning it using default mechanism
+' and passing along additional command line arguments
 Public Sub forceLaunchChromeDefaultAsk()
    
    Set browser = New_AutomateBrowser
@@ -79,7 +114,7 @@ Public Sub forceLaunchChromeDefaultAsk()
    
    If browserStatus(Chrome) = "Not installed" Then
       MsgBox ("Chrome : " & browserStatus(Chrome) & vbLf & _
-             "Requets aborted")
+             "Request aborted")
       Set browser = Nothing
    End If
    
@@ -96,6 +131,11 @@ Public Sub forceLaunchChromeDefaultAsk()
    On Error GoTo 0
 
 End Sub
+
+
+' Example of explicitly launching just the Chrome browser, but only if it is installed on current computer,
+' if already running, then will ask user before killing and respawning it using custom message and default force kill option
+' and passing along additional command line arguments
 Public Sub launchChromeCustomAsk()
    
    Set browser = New_AutomateBrowser
@@ -108,7 +148,7 @@ Public Sub launchChromeCustomAsk()
       Set browser = Nothing
    End If
    
-   If browserStatus(Chrome) = "Running" Then
+   If browserStatus(Chrome) = BrowserAvailability.Running Then
       If MsgBox("Browser Chrome already running and needs to be killed to proceed with current action. Is it OK to close Chrome and loose current pages in all tabs ?", vbYesNo) = vbNo Then
          MsgBox ("Request cancelled")
       End If
@@ -119,6 +159,7 @@ Public Sub launchChromeCustomAsk()
     
    Call doYourThings
    
+   
    ' Close browser
    On Error Resume Next
    browser.Quit
@@ -126,6 +167,9 @@ Public Sub launchChromeCustomAsk()
    On Error GoTo 0
 
 End Sub
+
+
+' Example of launching any browser installed and preferably not already running
 Public Sub forceLaunchAnyBrowser()
    
    Set browser = New_AutomateBrowser
@@ -144,6 +188,8 @@ Public Sub forceLaunchAnyBrowser()
 
 End Sub
 
+
+' Example of launching browser installed but with custom order to determine which to use
 Public Sub launchReorderedPriorityBrowser()
 
    Dim BT As browserType
@@ -171,7 +217,9 @@ Public Sub launchReorderedPriorityBrowser()
    '
    browser.launch whichBrowser:=BT, url:=url, killWithoutAsking:=kill
     
+   
    Call doYourThings
+   
    
    ' Close browser
    On Error Resume Next
@@ -181,10 +229,12 @@ Public Sub launchReorderedPriorityBrowser()
    
 End Sub
 
+
+' Example task to accomplish with spawned browser, change to accomplish desired goal
 Private Sub doYourThings()
 
    '
-   ' At this point, you need to verify if «browser» is at the right html page
+   ' At this point, you need to verify if "browser" is at the right html page
    ' See other examples in this example.xlsm file
    '
    MsgBox (browser.document.Title)
