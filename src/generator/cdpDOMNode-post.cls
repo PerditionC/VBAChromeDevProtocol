@@ -3,6 +3,23 @@ Public Sub Click(Optional ByVal strategy As NavigationStrategy = NavigationStrat
     Browser.Click nodeId:=nodeId, backendNodeId:=backendNodeId, strategy:=strategy
 End Sub
 
+
+Public Function querySelector(ByVal selector As String, Optional ByVal frameId As String = vbNullString, _
+                              Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False, _
+                              Optional waitUntilFound As Boolean = True, Optional waitUntilVisible As Boolean = True) As cdpDOMNode
+    Set querySelector = Browser.querySelector(selector, nodeId, frameId, depth, pierce, waitUntilFound, waitUntilVisible)
+End Function
+
+Public Function querySelectorAll(ByVal selector As String, Optional ByVal rootId As Long = 0, Optional ByVal frameId As String = vbNullString, _
+                                 Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
+    Set querySelectorAll = Browser.querySelectorAll(selector, nodeId, frameId, depth, pierce)
+End Function
+
+
+Public Sub focus()
+    Browser.focus nodeId:=nodeId, backendNodeId:=backendNodeId
+End Sub
+
 Public Sub getCenter(ByRef x As Double, ByRef y As Double)
     Browser.getNodeCenter x, y, nodeId:=nodeId, backendNodeId:=backendNodeId
 End Sub
@@ -128,8 +145,9 @@ Public Sub setValue(ByVal newValue As String, Optional mode As SetNodeValueMode 
             Dim c As String, ndx As Long
             For ndx = 1 To Len(newValue)
                 c = Mid$(newValue, ndx, 1)
-                Browser.cdp.SimulateInput.dispatchKeyEvent "keyDown", Text:=c
-                Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
+                Browser.cdp.SimulateInput.dispatchKeyEvent "keyDown", text:=c
+                ' doing all three can cause duplicate characters input, char doesn't always work though, so use keyDown/keyUp
+                'Browser.cdp.SimulateInput.dispatchKeyEvent "char", Text:=c
                 Browser.cdp.SimulateInput.dispatchKeyEvent "keyUp"
             Next ndx
     End Select
@@ -165,6 +183,11 @@ Public Property Let elementAttribute(ByVal name As String, ByVal value As String
     End If
 End Property
 
+
+' clears our cache so next call to getProperty (or related) retrieves [updated] property values
+Public Sub refreshProperties()
+    Set objectProperties = Nothing
+End Sub
 
 ' returns specified javascript property associated with this node
 ' see Runtime.getProperties
@@ -245,6 +268,46 @@ Public Property Get outerHTML() As String
     outerHTML = Browser.cdp.DOM.getOuterHTML(objectId:=resolveNode.objectId)
 End Property
 
+
+' returns True only if element meets both criteria:
+'   has a positive width and height and
+'   CSS display property is not "none" or "hidden"
+Public Function isVisible() As Boolean
+    'isVisible = False
+    
+    ' first check if has a positive width and height
+    Dim x As Double, y As Double
+    getCenter x, y
+    If (Abs(x) > 0#) And (Abs(y) > 0#) Then
+        ' now get computed CSS display value
+        Dim style As cdpCSSCSSComputedStyleProperty
+        Set style = getCSSStyle("display")
+        If Not style Is Nothing Then
+            If (style.value <> "none") And (style.value <> "hidden") Then
+                isVisible = True
+            End If
+        End If
+    End If
+End Function
+
+
+' retrieves current CSS computed style for specified property
+Public Function getCSSStyle(ByVal name As String) As cdpCSSCSSComputedStyleProperty
+    Dim styles As Collection
+    Browser.cdp.css.enable ' must be enabled or call to computer style will fail
+    Set styles = Browser.cdp.css.getComputedStyleForNode(nodeId)
+    Browser.cdp.css.disable
+    Dim v As Variant
+    For Each v In styles
+        If v("name") = name Then
+            Dim style As cdpCSSCSSComputedStyleProperty
+            Set style = New cdpCSSCSSComputedStyleProperty
+            style.init v
+            Set getCSSStyle = style
+            Exit Function
+        End If
+    Next v
+End Function
 
 
 ' returns neighboring child node of parent
