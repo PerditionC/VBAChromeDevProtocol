@@ -189,6 +189,181 @@ AutomateBrowser
 clsCDP
 -------------------------------------------------------------------------------
 
+Facades ( examples from similar tools)
+===============================================================================
+
+Pupeeter
+-------------------------------------------------------------------------------
+
+### Example for comparison
+
+From https://hacks.mozilla.org/2021/01/improving-cross-browser-testing-part-2-new-automation-features-in-firefox-nightly/
+and https://github.com/puppeteer/puppeteer/blob/main/examples/cross-browser.js
+
+#### Original
+An example (in javascript) launching firefox from puppeteer and getting an element:
+
+``` javascript
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({
+    product: 'firefox',
+  });
+
+  const page = await browser.newPage();
+  console.log(await browser.version());
+
+  await page.goto('https://news.ycombinator.com/');
+
+  // Extract articles from the page.
+  const resultsSelector = '.titlelink';
+  const links = await page.evaluate(resultsSelector => {
+    const anchors = Array.from(document.querySelectorAll(resultsSelector));
+    return anchors.map(anchor => {
+      const title = anchor.textContent.trim();
+      return `${title} - ${anchor.href}`;
+    });
+  }, resultsSelector);
+  console.log(links.join('\n'));
+
+  await browser.close();
+})();
+```
+
+#### Equivalent
+And the same example using VBAChromeDevProtocol (in VBA):
+
+``` vb
+Sub Puppeteer_Example()
+    Dim v As Variant
+    
+'   const puppeteer = require('puppeteer');
+'
+'   (async () => {
+'     const browser = await puppeteer.launch({
+'   product:     'firefox',
+'     });
+'     const page = await browser.newPage();
+    Dim browser As AutomateBrowser: Set browser = new_AutomateBrowser
+    ' !!! firefox not yet working, use Edge or Chrome
+    ' browser.launch whichBrowser:=firefox, useWebSocket:=True
+    browser.launch whichBrowser:=Chromium
+    
+'     console.log(await browser.version());
+    Dim versionInfo As Dictionary
+    Set versionInfo = browser.cdp.browser.getVersion
+    For Each v In versionInfo.Keys
+        Debug.Print v & " : " & versionInfo(v)
+    Next v
+    
+'     await page.goto('https://news.ycombinator.com/');
+    browser.navigate "https://news.ycombinator.com/"
+    
+'     // Extract articles from the page.
+'     const resultsSelector = '.titlelink';
+    Const resultsSelector = ".titlelink"
+    
+'     const links = await page.evaluate(resultsSelector => {
+    Dim links() As String
+
+'       const anchors = Array.from(document.querySelectorAll(resultsSelector));
+    Dim anchors As Dictionary
+    Set anchors = browser.querySelectorAll(resultsSelector)
+
+'       return anchors.map(anchor => {
+'         const title = anchor.textContent.trim();
+'         return `${title} - ${anchor.href}`;
+'       });
+'     }, resultsSelector);
+    Dim linkCount As Long: linkCount = 0
+    For Each v In anchors.Items
+        Dim anchor As cdpDOMNode: Set anchor = v
+        Dim title As String: title = Trim(anchor.textContent)
+        ReDim Preserve links(linkCount) As String
+        links(linkCount) = title & " - " & anchor.getPropertyValue("href")
+        linkCount = linkCount + 1
+    Next v
+    
+'     console.log(links.join('\n'));
+    Debug.Print Join(links, vbNewLine)
+
+'     await browser.close();
+'   })();
+    browser.Quit
+End Sub
+```
+
+#### Alternative
+Or same example but like original executing logic in browser context 
+
+``` vb
+Sub Puppeteer_Example_Evaluate()
+    Dim v As Variant
+    
+'   const puppeteer = require('puppeteer');
+'
+'   (async () => {
+'     const browser = await puppeteer.launch({
+'   product:     'firefox',
+'     });
+'     const page = await browser.newPage();
+    Dim browser As AutomateBrowser: Set browser = new_AutomateBrowser
+    'browser.launch whichBrowser:=firefox, useWebSocket:=True
+    browser.launch whichBrowser:=Chromium
+    
+'     console.log(await browser.version());
+    Dim versionInfo As Dictionary
+    Set versionInfo = browser.cdp.browser.getVersion
+    For Each v In versionInfo.Keys
+        Debug.Print v & " : " & versionInfo(v)
+    Next v
+    
+'     await page.goto('https://news.ycombinator.com/');
+    browser.navigate "https://news.ycombinator.com/"
+    
+'     // Extract articles from the page.
+'     const resultsSelector = '.titlelink';
+    Const resultsSelector = "'.titlelink'"
+    
+'     const links = await page.evaluate(resultsSelector => {
+'       const anchors = Array.from(document.querySelectorAll(resultsSelector));
+'       return anchors.map(anchor => {
+'         const title = anchor.textContent.trim();
+'         return `${title} - ${anchor.href}`;
+'       });
+'     }, resultsSelector);
+    Dim js As String
+    js = "resultsSelector => { " & _
+         "  const anchors = Array.from(document.querySelectorAll(resultsSelector));" & _
+         "  return anchors.map(anchor => {" & _
+         "    const title = anchor.textContent.trim();" & _
+         "    return `${title} - ${anchor.href}`;" & _
+         "  });" & _
+         "}"
+    Dim links As String
+    links = browser.jsEval("(" & js & ")(" & resultsSelector & ").join('\n');")
+    
+'     console.log(links.join('\n'));
+    Debug.Print links
+
+'     await browser.close();
+'   })();
+    browser.Quit
+End Sub
+```
+
+### Chrome Replay export
+See Puppeteer.xlsm source for implementation.  From Chrome record your actions
+and then export the JSON version (not direct Puppeteer javascript).  Then load
+the resulting JSON to excute from VBA.
+
+``` vb
+' TODO
+```
+
+Selenium Facade
+-------------------------------------------------------------------------------
 
 Related Projects 
 ===============================================================================
@@ -219,8 +394,10 @@ Other Links
 * [Playwright](https://playwright.dev/)
 
 * [Puppeteer](https://github.com/puppeteer/puppeteer)
+* [Puppeteer Sharp](https://www.puppeteersharp.com/)
 
 * [Selenium](https://www.selenium.dev/)
+* [SeleniumBasic](https://florentbr.github.io/SeleniumBasic/)
 
 
 
