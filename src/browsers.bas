@@ -156,7 +156,7 @@ Public Function LaunchBrowser( _
     Optional url As String = vbNullString, _
     Optional useWebSocket As Boolean = False, _
     Optional useExistingBrowser As Boolean = False, _
-    Optional additionnalInlineCommands As String = vbNullString, _
+    Optional additionalInlineCommands As String = vbNullString, _
     Optional killWithoutAsking As Boolean = False _
     ) As Object
     Dim browserConnectionObj As Object
@@ -218,7 +218,7 @@ Public Function LaunchBrowser( _
         Set objBrowser = Nothing
         Set wsBrowser = New clsWebSocket
         Set LaunchBrowser = wsBrowser
-        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-port=9222 " & additionnalInlineCommands & " " & url
+        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-port=9222 " & additionalInlineCommands & " " & url
         If (Not useExistingBrowser) Or (Not IsProcessRunning(ProcessName:=getProcessName(whichBrowser))) Then
             If Not SpawnProcess(strCall) Then
                 MsgBox "Error spawning browser! Aborting!", vbCritical Or vbOKOnly
@@ -269,7 +269,7 @@ GetWebSocketEndPoint:
         Set objBrowser = New clsProcess
         Set wsBrowser = Nothing
         Set LaunchBrowser = objBrowser
-        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-pipe " & additionnalInlineCommands & " " & url
+        strCall = """" & getProcessPathAndName(whichBrowser) & """ --remote-debugging-pipe " & additionalInlineCommands & " " & url
         
         ' create pipes and spawn browser
         Dim intRes As Integer
