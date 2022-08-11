@@ -18806,7 +18806,7 @@
                 },
                 {
                     "name": "attachToTarget",
-                    "description": "Attaches to the target with given id.",
+                    "description": "Attaches to the target with given id.  AttachToTarget / DetachFromTarget only means that you can use use SendMessageToTarget and ReceivedMessageFromTarget to communicate with the target (direct websocket connection to Target not using browser Target for communication).",
                     "parameters": [
                         {
                             "name": "targetId",
