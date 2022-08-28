@@ -10,11 +10,11 @@ Private parentNode As cdpDOMNode
 ' which method to use to set a node's "value"
 Public Enum SetNodeValueMode
     SNV_Automatic ' guess best method to set value, may not work correctly
-    SNV_Attribute
-    SNV_Value
-    SNV_NodeValue
-    SNV_FakeInput
-    SNV_Clipboard
+    SNV_Attribute ' e.g. value attribute of an <input> element, i.e. input's value
+    SNV_Value     ' ???
+    SNV_NodeValue ' e.g. text of a <p> or <textarea> node not input's value
+    SNV_FakeInput ' simulated typing out input
+    SNV_Clipboard ' simulated copy and paste in value
 End Enum
 
 Private autoSetMode As SetNodeValueMode
