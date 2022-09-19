@@ -118,7 +118,7 @@ Public Const STARTF_USESHOWWINDOW As Long = &H1&
 'Public Declare PtrSafe Function GetAddrOf Lib "kernel32" Alias "MulDiv" (ByVal nNumber As Any, ByVal nNumerator As Long, ByVal nDenominator As Long) As Long
    ' This is the dummy function used to get the addres of a VB variable.
 
-Public Declare PtrSafe Sub MoveMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, source As Any, ByVal Length As LongPtr)
+Public Declare PtrSafe Sub MoveMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal length As LongPtr)
 
 
 Private Declare PtrSafe Sub sleep2 Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
@@ -196,12 +196,31 @@ Cleanup:
     Set process = Nothing
 End Function
 
-Public Function SpawnProcess(cmdLine As String) As Boolean
+
+' spawns process specified by cmdLine
+' returns True if process successfully spawned, does NOT wait for it to actually start
+' Optionally returns:
+'   hInPipe - reads from here are from child process's output to stdout
+'   hOutPipe - writes to here are sent to child process's stdin
+' createSecondaryPipes indicates a second set of bidirectional pipes should be created
+'   hAltInPipe - reads from here from the child process's output to secondary pipe
+'   hAltOutPipe - writes to here are sent to child process's secondary pipe for input
+Public Function SpawnProcess(cmdLine As String, _
+                Optional ByRef hInPipe As LongPtr, Optional ByRef hOutPipe As LongPtr, _
+                Optional createSecondaryPipes As Boolean = False, _
+                Optional ByRef hAltInPipe As LongPtr, Optional ByRef hAltOutPipe As LongPtr _
+                ) As Boolean
+    On Error GoTo ErrHandler
     Dim proc As PROCESS_INFORMATION
     Dim startupInfo As STARTUP_INFO
     Dim sa As SECURITY_ATTRIBUTES
     Dim hStdOutRd As LongPtr, hStdOutWr As LongPtr
     Dim hStdInRd As LongPtr, hStdInWr As LongPtr
+    Dim hCDPOutWr As LongPtr, hCDPOutRd As LongPtr
+    Dim hCDPInWr As LongPtr, hCDPInRd As LongPtr
+
+    Dim pipes As STDIO_BUFFER
+    Dim pipes2 As STDIO_BUFFER2
 
     ' initialize to default security attributes
     sa.nLength = Len(sa)
@@ -209,16 +228,56 @@ Public Function SpawnProcess(cmdLine As String) As Boolean
     sa.lpSecurityDescriptor = 0&
 
     ' First we create all 3 default pipes, stdin, stdout, stderr (we reuse stdout for stderr)
+    ' (writes to hStdInWr are input to the child process we create)
     If CreatePipe(hStdInRd, hStdInWr, sa, 0) = 0 Then
         Debug.Print "Error creating pipe for stdin"
         Exit Function
     End If
+    ' (reads from hStdOutRd are the output from the child process's writes to stdout)
     If CreatePipe(hStdOutRd, hStdOutWr, sa, 0) = 0 Then
         Debug.Print "Error creating pipe for stdout/stderr"
+        CloseHandle hStdInRd
+        CloseHandle hStdInWr
         Exit Function
     End If
        
+    ' create a second set of bidirectional sets, e.g. for the CDP Protocol
+    If createSecondaryPipes Then
+        ' the out pipe (writes to hCDPInWr are input to the process we create)
+        If CreatePipe(hCDPInRd, hCDPInWr, sa, 0) = 0 Then
+            Debug.Print "Error creating secondary pipe for input"
+            'close handles TODO
+            Exit Function
+        End If
+        ' the in pipe (reads from hCDPOutRd are the output from the process we create)
+        If CreatePipe(hCDPOutRd, hCDPOutWr, sa, 2 ^ 20) = 0 Then
+            Debug.Print "Error creating secondary pipe for output"
+            'close handles TODO
+            Exit Function
+        End If
     
+        ' then we fill the special structure for passing arbitrary pipes (i.e. fds)
+        ' to a process, Note pipes is copied into pipes2 for packing purposes
+        pipes.number_of_fds = 5
+    
+        pipes.os_handle(0) = hStdInRd
+        pipes.os_handle(1) = hStdOutWr
+        pipes.os_handle(2) = hStdOutWr
+        pipes.os_handle(3) = hCDPInRd
+        pipes.os_handle(4) = hCDPOutWr
+    
+        pipes.crt_flags(0) = 9
+        pipes.crt_flags(1) = 9
+        pipes.crt_flags(2) = 9
+        pipes.crt_flags(3) = 9
+        pipes.crt_flags(4) = 9
+    
+        ' pipes2 is filled by copying memory from pipes
+        pipes2.number_of_fds = pipes.number_of_fds
+        Call MoveMemory(pipes2.raw_bytes(0), pipes.crt_flags(0), 5)
+        Call MoveMemory(pipes2.raw_bytes(5), pipes.os_handle(0), UBound(pipes2.raw_bytes) - 4)
+    End If
+           
     With startupInfo
         .cb = Len(startupInfo)
         .dwFlags = STARTF_USESTDHANDLES Or STARTF_USESHOWWINDOW
@@ -226,8 +285,13 @@ Public Function SpawnProcess(cmdLine As String) As Boolean
         .hStdInput = hStdInRd
         .hStdError = hStdOutWr
         .wShowWindow = vbNormal
-        .cbReserved2 = 0&
-        .lpReserved2 = 0&
+        If createSecondaryPipes Then
+            .cbReserved2 = Len(pipes2)
+            .lpReserved2 = VarPtr(pipes2)
+        Else
+            .cbReserved2 = 0&
+            .lpReserved2 = 0&
+        End If
     End With
     
 
@@ -236,9 +300,31 @@ Public Function SpawnProcess(cmdLine As String) As Boolean
     End If
     
     ' We close the sides of the handles that we dont need anymore (child process side of pipes)
-    Call CloseHandle(hStdOutWr)
-    Call CloseHandle(hStdInRd)
+    CloseHandle hStdOutWr
+    CloseHandle hStdInRd
+    If createSecondaryPipes Then
+        CloseHandle hCDPOutWr
+        CloseHandle hCDPInRd
+    End If
     
+    ' if desired, return handles for communication
+    '   hInPipe - reads from here are from process's output to stdout
+    hInPipe = hStdOutRd
+    '   hOutPipe - writes to here are sent to process's stdin
+    hOutPipe = hStdInWr
+    ' and secondary pipe as well
+    If createSecondaryPipes Then
+        '   hAltInPipe - reads from here from the process's output to secondary pipe
+        hAltInPipe = hCDPOutRd
+        '   hAltOutPipe - writes to here are sent to process's secondary pipe
+        hAltOutPipe = hCDPInWr
+    End If
+        
     ' assume success
     SpawnProcess = True
+    Exit Function
+ErrHandler:
+    Debug.Print "VBAChromeDevProtocol:Functions:SpawnProcess() - Error:" & Err.description & " (" & Err.Number & ")"
+    Stop
+    Resume Next
 End Function
