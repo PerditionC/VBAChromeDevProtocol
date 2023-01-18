@@ -1049,7 +1049,7 @@ End Function
 ' convenience function that maps frame name to id and then calls QuerySelectorAll with frameId
 ' Note: if frameName is not provided then frameid of root node is used, if rootId is not provided then a frame url fragment must be provided, otherwise nothing is returned
 Public Function QuerySelectorAllOnFrame(ByVal selector As String, Optional ByVal frameName As String, Optional ByVal rootId As Long = 0, Optional ByVal url As String = vbNullString, _
-                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As cdpDOMNode
+                                     Optional ByVal depth As Long = -1, Optional ByVal pierce As Boolean = False) As Dictionary ' of cdpDomNode
     If curSession.frameNames.Exists(frameName) Then
         Set QuerySelectorAllOnFrame = querySelectorAll(selector, rootId:=rootId, frameId:=curSession.frameNames(frameName), Depth:=Depth, pierce:=pierce)
     ElseIf rootId <> 0 Then
